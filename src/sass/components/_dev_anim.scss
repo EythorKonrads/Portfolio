@@ -1,0 +1,28 @@
+.dev-anim{
+    position: absolute;
+    top: calc(50% + 140px);
+    right: -560px;
+    transform: translateY(-50%);
+    height: auto;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    &__item{
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        color: #fff;
+        font-size: 24px;
+        font-family: 'Monoton', cursive;
+        height: auto;
+        width: auto;
+        border-radius: 4px;
+        margin-right: 2px;
+
+        &--space{
+            width: 30px;
+        }
+    }
+}

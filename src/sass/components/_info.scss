@@ -1,0 +1,20 @@
+.info{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 60px 60px 60px 0;
+
+    &__desc{
+        position: relative;
+        left: calc(100% + 60px);
+        font-family: 'Roboto', sans-serif;
+        font-size: 1em;
+        font-weight: 300;
+        opacity: 0;
+        color: $color_white;
+    }
+}
