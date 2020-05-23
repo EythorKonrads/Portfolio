@@ -84,7 +84,12 @@ a, p {
 a {
   color: #9D7A75;
   text-decoration: none;
-  font-weight: 700; }
+  font-weight: 700;
+  cursor: pointer;
+  transition: ease-in-out 350ms; }
+  a:hover {
+    color: #fff;
+    transition: ease-in-out 350ms; }
 
 html {
   height: 100%;
@@ -94,84 +99,18 @@ html {
 body {
   height: auto;
   width: 100vw;
-  overflow-x: hidden; }
-
-.container {
-  height: 100vh;
-  width: 100vw;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  position: relative;
-  background-color: #555456; }
-
-.hero {
-  height: 100vh;
-  width: 100vw;
-  background-image: url("../../assets/images/hero_bg.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover; }
-  .hero__overlay {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: linear-gradient(to left, #202020, #202020 60%, rgba(0, 0, 0, 0.5) 100%); }
-
-.box-anim {
-  position: absolute;
-  bottom: calc(400px);
-  left: 0;
-  height: auto;
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  flex-wrap: wrap; }
-  .box-anim__item {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    color: #fff;
-    font-size: 16px;
-    font-family: 'Monoton', cursive;
-    height: auto;
-    width: auto;
-    border-radius: 4px;
-    margin-right: 2px;
-    opacity: 0; }
-    .box-anim__item--space {
-      width: 60px; }
-  @media screen and (min-width: 1024px) {
-    .box-anim__item {
-      font-size: 48px; }
-      .box-anim__item--space {
-        width: 30px; } }
-
-.dev-anim {
-  position: absolute;
-  top: calc(50% + 140px);
-  right: -560px;
-  transform: translateY(-50%);
-  height: auto;
-  width: auto;
+  overflow-x: hidden;
   display: flex;
   justify-content: center;
-  align-items: flex-start; }
-  .dev-anim__item {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    color: #fff;
-    font-size: 24px;
-    font-family: 'Monoton', cursive;
-    height: auto;
-    width: auto;
-    border-radius: 4px;
-    margin-right: 2px; }
-    .dev-anim__item--space {
-      width: 30px; }
+  background-color: #555456; }
+
+.container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  max-width: 1920px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; }
 
 .gallery {
   position: relative;
@@ -234,20 +173,67 @@ body {
   justify-content: flex-end;
   align-items: flex-start;
   flex-direction: column;
-  padding: 30px 30px 30px 0; }
+  padding: 15px 15px 15px 0; }
+  .info__anim {
+    position: relative;
+    left: 0;
+    height: 230px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start; }
+  .info__stagger {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    color: #fff;
+    font-size: 10px;
+    font-family: 'Monoton', cursive;
+    height: auto;
+    width: auto;
+    border-radius: 4px;
+    margin-right: 1px;
+    opacity: 0; }
+    .info__stagger--space {
+      width: 0px; }
   .info__desc {
     position: relative;
-    left: calc(100% + 30px);
+    left: calc(100% + 15px);
     opacity: 0;
     color: #fff; }
+  .info__contact {
+    opacity: 0; }
+  @media screen and (min-width: 321px) {
+    .info__anim {
+      height: 300px; }
+    .info__item {
+      font-size: 12px; } }
+  @media screen and (min-width: 376px) {
+    .info__anim {
+      height: 370px; } }
+  @media screen and (min-width: 768px) {
+    .info__stagger {
+      font-size: 22px; }
+      .info__stagger--space {
+        width: 15px; }
+    .info__break {
+      display: none; } }
   @media screen and (min-width: 1024px) {
     .info {
       padding: 60px 60px 60px 0; }
       .info__desc {
         position: relative;
-        left: calc(100% + 60px);
+        left: 50vw;
         opacity: 0;
         color: #fff; } }
+  @media screen and (min-width: 1200px) {
+    .info__stagger {
+      font-size: 42px; }
+      .info__stagger--space {
+        width: 30px; } }
+  @media screen and (min-width: 1440px) {
+    .info__stagger {
+      font-size: 48px; } }
 
 .image {
   position: relative;

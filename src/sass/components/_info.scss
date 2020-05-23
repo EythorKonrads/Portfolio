@@ -6,37 +6,90 @@
     justify-content: flex-end;
     align-items: flex-start;
     flex-direction: column;
-    padding: 30px 30px 30px 0;
+    padding: 15px 15px 15px 0;
 
+    &__anim{
+        position: relative;
+        left: 0;
+        height: 230px;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    &__stagger{
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        color: $color_white;
+        font-size: 10px;
+        font-family: 'Monoton', cursive;
+        height: auto;
+        width: auto;
+        border-radius: 4px;
+        margin-right: 1px;
+        opacity:  0;
+
+        &--space{
+            width: 0px;
+        }
+    }
     &__desc{
         position: relative;
-        left: calc(100% + 30px);
+        left: calc(100% + 15px);
         opacity: 0;
         color: $color_white;
     }
-    @media screen and (min-width: 480px){
-
+    &__contact{
+        opacity: 0;
+    }
+    @media screen and (min-width: 321px){
+        &__anim{
+            height: 300px;
+        }
+        &__item{
+            font-size: 12px;
+        }
+    }
+    @media screen and (min-width: 376px){
+        &__anim{
+            height: 370px;
+        }
     }
     @media screen and (min-width: 768px){
+        &__stagger{
+            font-size: 22px;
     
+            &--space{
+                width: 15px;
+            }
+        }
+        &__break{
+            display: none;
+        }
     }
     @media screen and (min-width: 1024px){
         padding: 60px 60px 60px 0;
 
         &__desc{
             position: relative;
-            left: calc(100% + 60px);
+            left: 50vw;
             opacity: 0;
             color: $color_white;
         }
     }
     @media screen and (min-width: 1200px){
+        &__stagger{
+            font-size: 42px;
     
+            &--space{
+                width: 30px;
+            }
+        }
     }
     @media screen and (min-width: 1440px){
-    
-    }
-    @media screen and (min-width: 1920px){
-    
+        &__stagger{
+            font-size: 48px;
+        }
     }
 }

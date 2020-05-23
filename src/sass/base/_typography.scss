@@ -1,22 +1,11 @@
 html{
     font-size: 12px;
-    @media screen and (min-width: 480px){
-    }
     @media screen and (min-width: 768px){
         font-size: 14px;
-    }
-    @media screen and (min-width: 1024px){
-    
     }
     @media screen and (min-width: 1200px){
         font-size: 16px;
     }
-    @media screen and (min-width: 1440px){
-    
-    }
-    @media screen and (min-width: 1920px){
-    
-    }  
 }
 a, p{
     font-family: 'Roboto', sans-serif;
@@ -27,22 +16,11 @@ a{
     color: $color_primary;
     text-decoration: none;
     font-weight: 700;
-}
-@media screen and (min-width: 480px){
+    cursor: pointer;
+    transition: $ts_standard;
 
-}
-@media screen and (min-width: 768px){
-
-}
-@media screen and (min-width: 1024px){
-
-}
-@media screen and (min-width: 1200px){
-
-}
-@media screen and (min-width: 1440px){
-
-}
-@media screen and (min-width: 1920px){
-
+    &:hover{
+        color: $color_white;
+        transition: $ts_standard;
+    }
 }
