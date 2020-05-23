@@ -190,6 +190,8 @@ body {
     justify-content: center;
     align-items: flex-end;
     color: #fff;
+    -webkit-text-fill-color: white;
+    -webkit-opacity: 1;
     font-size: 10px;
     font-family: 'Monoton', cursive;
     height: auto;
