@@ -76,6 +76,9 @@ html {
     html {
       font-size: 16px; } }
 
+h1 {
+  all: unset; }
+
 a, p {
   font-family: 'Roboto', sans-serif;
   font-size: 1em;
