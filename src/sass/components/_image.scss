@@ -6,8 +6,33 @@
     &__svg{
         position: absolute;
         bottom: 0;
-        left: 0;
-        height: 100%;
+        left: 50%;
+        height: 100vh;
         width: auto;
+        transform: translateX(-50%);
+    }
+    @media screen and (min-width: 480px){
+
+    }
+    @media screen and (min-width: 768px){
+    
+    }
+    @media screen and (min-width: 1024px){
+        &__svg{
+            left: 0;
+            transform: translateX(0);
+        }
+    }
+    @media screen and (min-width: 1200px){
+        &__svg{
+            left: 0;
+            transform: translateX(0);
+        }
+    }
+    @media screen and (min-width: 1440px){
+    
+    }
+    @media screen and (min-width: 1920px){
+    
     }
 }

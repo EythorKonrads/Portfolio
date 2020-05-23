@@ -1,6 +1,11 @@
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-const hdlnAnimHeight = (vh / 2) - document.querySelector('.info__desc').offsetHeight - 90
+let hdlnAnimHeight
+if(vw < 1200){
+    hdlnAnimHeight = (vh / 2) - document.querySelector('.info__desc').offsetHeight + 80
+}else{
+    hdlnAnimHeight = (vh / 2) - document.querySelector('.info__desc').offsetHeight - 90
+}
 const descAnimWidth = (vw / 2)
 
 

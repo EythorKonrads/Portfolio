@@ -6,15 +6,37 @@
     justify-content: flex-end;
     align-items: flex-start;
     flex-direction: column;
-    padding: 60px 60px 60px 0;
+    padding: 30px 30px 30px 0;
 
     &__desc{
         position: relative;
-        left: calc(100% + 60px);
-        font-family: 'Roboto', sans-serif;
-        font-size: 1em;
-        font-weight: 300;
+        left: calc(100% + 30px);
         opacity: 0;
         color: $color_white;
+    }
+    @media screen and (min-width: 480px){
+
+    }
+    @media screen and (min-width: 768px){
+    
+    }
+    @media screen and (min-width: 1024px){
+        padding: 60px 60px 60px 0;
+
+        &__desc{
+            position: relative;
+            left: calc(100% + 60px);
+            opacity: 0;
+            color: $color_white;
+        }
+    }
+    @media screen and (min-width: 1200px){
+    
+    }
+    @media screen and (min-width: 1440px){
+    
+    }
+    @media screen and (min-width: 1920px){
+    
     }
 }
