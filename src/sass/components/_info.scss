@@ -47,13 +47,18 @@
         &__anim{
             height: 300px;
         }
-        &__item{
+        &__stagger{
             font-size: 12px;
         }
     }
     @media screen and (min-width: 376px){
         &__anim{
             height: 370px;
+        }
+    }
+    @media screen and (min-width: 400px){
+        &__stagger{
+            font-size: 14px;
         }
     }
     @media screen and (min-width: 768px){

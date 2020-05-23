@@ -209,11 +209,14 @@ body {
   @media screen and (min-width: 321px) {
     .info__anim {
       height: 300px; }
-    .info__item {
+    .info__stagger {
       font-size: 12px; } }
   @media screen and (min-width: 376px) {
     .info__anim {
       height: 370px; } }
+  @media screen and (min-width: 400px) {
+    .info__stagger {
+      font-size: 14px; } }
   @media screen and (min-width: 768px) {
     .info__stagger {
       font-size: 22px; }
