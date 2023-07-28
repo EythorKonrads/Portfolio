@@ -5,15 +5,25 @@
 
     /* semantic color variables for this project */
     --color-background: var(--color-white);
-    --color-background-overlay: rgba(255, 255, 255, .35);
-    --color-hdln: var(--color-black);
-    --color-text: #252424;
-}
-  
-[data-theme="dark"] {
-    --color-background: #0f172a;
-    --color-background-overlay: rgba(15, 23, 42, .35);
+    --color-background-overlay: rgba(255, 255, 255, .25);
+    --color-box-shadow: rgba(15, 23, 42, .2);
+    // TODO: Un comment when light theme is added
+    // --color-hdln: var(--color-black);
+    // --color-text: #252424;
+
+    // TODO: Remove when light theme is added
     --color-hdln: var(--color-white);
-    --color-text: var(--color-gray);
-    --color-link: #779fd8;
+    --color-text: #dfe3ea;
+    --color-link: var(--color-text);
+    --color-link-hover: #9393e8;
+}
+
+[data-theme="dark"] {
+    --color-hdln: var(--color-white);
+    --color-text: #dfe3ea;
+
+    // TODO: Un comment when light theme is added
+    // --color-background: #0f172a;
+    // --color-background-overlay: rgba(15, 23, 42, .5);
+    // --color-box-shadow: rgba(255, 255, 255, .2);
 }

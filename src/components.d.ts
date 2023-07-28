@@ -7,11 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    copy: typeof import('./components/Hero copy.vue')['default']
-    ElMenu: typeof import('element-plus/es')['ElMenu']
-    ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
-    ElPageHeader: typeof import('element-plus/es')['ElPageHeader']
-    ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElLink: typeof import('element-plus/es')['ElLink']
     Header: typeof import('./components/Header.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Hero: typeof import('./components/Hero.vue')['default']

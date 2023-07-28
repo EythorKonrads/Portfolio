@@ -1,11 +1,34 @@
 <script setup>
+import { onMounted, ref, watch } from 'vue';
 import { RouterView } from 'vue-router'
-import Header from './components/Header.vue'
+// import Header from './components/Header.vue'
+
+const toggleSwitch = ref(false)
+
+onMounted(async () => {
+  const setTheme = localStorage.getItem("theme")
+  toggleSwitch.value = setTheme && setTheme === 'light' ? false : true
+})
+
+watch(toggleSwitch, val => {
+  const htmlElement = document.querySelector('html')
+  if (val) {
+    localStorage.setItem('theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
+    htmlElement.classList.remove('light')
+    htmlElement.classList.add('dark')
+  } else {
+    localStorage.setItem('theme', 'light');
+    document.documentElement.setAttribute('data-theme', 'light');
+    htmlElement.classList.remove('dark')
+    htmlElement.classList.add('light')
+  } 
+})
 </script>
 
 <template>
   <div class="app">
-    <Header />
+    <!-- <Header /> -->
     <RouterView />
   </div>
 </template>

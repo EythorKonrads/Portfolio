@@ -5,12 +5,12 @@ import Icon from './Icon.vue'
 <template>
   <div class="social">
     <ul class="social__wrapper">
-        <a class="social__link" href="https://github.com/ekonrads" target="_blank" rel="noopener noreferrer">
+        <el-link class="social__link" :underline="false" href="https://github.com/ekonrads" target="_blank" rel="noopener noreferrer">
           <Icon name="github" class="social__icon o-icon" />
-        </a>
-        <a class="social__link" href="https://www.linkedin.com/in/ey%C3%BE%C3%B3r-konr%C3%A1%C3%B0sson-285587130/" target="_blank" rel="noopener noreferrer">
+        </el-link>
+        <el-link class="social__link" :underline="false" href="https://www.linkedin.com/in/ekonrads/" target="_blank" rel="noopener noreferrer">
           <Icon name="linkedin" class="social__icon o-icon" />
-        </a>
+        </el-link>
     </ul>
   </div>
 </template>
@@ -22,10 +22,20 @@ import Icon from './Icon.vue'
   justify-content: center;
   flex-direction: column;
 
-  .social__item {
+  .social__wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+  .social__link {
+    text-decoration: none;
+    padding: .5rem;
+  }
+  .social__link:first-child {
+    padding-left: 0;
+  }
+  .social__link:last-child {
+    padding-right: 0;
   }
 }
 </style>
