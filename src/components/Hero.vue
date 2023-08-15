@@ -20,7 +20,7 @@ import Social from './Social.vue'
       <div class="hero__info">
         <h3 class="hero__secondary-hdln">About me</h3>
         <p class="hero__text">
-          Experienced front-end developer based in Copenhagen Denmark, I specialize in Vue.js, JavaScript and software arcitecture. With over 7 years of expertise, I bring creativity, efficiency, logigal thinking and tailored solutions to every project.
+          Experienced front-end developer based in Copenhagen Denmark, I specialize in Vue.js, JavaScript and software architecture. With over 7 years of expertise, I bring creativity, efficiency, logical thinking and tailored solutions to every project.
         </p>
         <a href="mailto:hello@ekonrads.com" class="hero__mail">
           Lets talk <el-icon class="hero__mail-icon" :size="20"><Promotion /></el-icon>
@@ -119,9 +119,12 @@ import Social from './Social.vue'
     .hero__texts {
       padding: 0;
     }
+    .hero__text {
+      text-align: center;
+    }
     .hero__card {
       flex-direction: column;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
     .hero__mail {
       align-self: center;
