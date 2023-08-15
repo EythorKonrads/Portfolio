@@ -119,9 +119,12 @@ import Social from './Social.vue'
     .hero__texts {
       padding: 0;
     }
+    .hero__text {
+      text-align: center;
+    }
     .hero__card {
       flex-direction: column;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
     .hero__mail {
       align-self: center;
