@@ -1,16 +1,20 @@
 <script setup>
 import Hero from '../components/Hero.vue'
+import Experience from '../components/Experience.vue'
 </script>
 
 <template>
   <div class="home">
-    <div class="home__waves"></div>
     <Hero class="home__hero" />
+    <div class="home__wrapper">
+      <Experience class="home__experience" />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home {
+  background-color: rgba(15, 23, 42, 1);
   min-height: 100vh;
   height: 100%;
   width: 100%;
@@ -18,25 +22,34 @@ import Hero from '../components/Hero.vue'
   max-width: 100vw;
   display: flex;
   align-items: center;
-  flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
-
-  .home__waves {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 200vw;
-    background-color: rgba(15, 23, 42, 1);
-    --mask:
-    radial-gradient(11.18em at 50% calc(100% - 15.00em),#000 99%,#0000 101%) calc(50% - 10em) 0/20em 100%,
-    radial-gradient(11.18em at 50% calc(100% + 10.00em),#0000 99%,#000 101%) 50% calc(100% - 5em)/20em 100% repeat-x;
-    -webkit-mask: var(--mask);
-    mask: var(--mask);
-    z-index: 1;
-  }
+ 
   .home__hero {
     z-index: 2;
+  }
+  .home__wrapper {
+    max-height: 100vh;
+    overflow: auto;
+    padding: 2em;
+    box-sizing: border-box;
+  }
+
+  @media screen and (max-width: 900px) {
+    .home__wrapper {
+      padding: 2em 0;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    max-height: none;
+
+    .home__wrapper {
+      max-height: none;
+      overflow: visible;
+    }
   }
 }
 </style>
