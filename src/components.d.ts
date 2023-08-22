@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Cases: typeof import('./components/Cases.vue')['default']
+    CasesCase: typeof import('./components/CasesCase.vue')['default']
     copy: typeof import('./components/Experience copy.vue')['default']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElLink: typeof import('element-plus/es')['ElLink']
