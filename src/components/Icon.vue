@@ -1,4 +1,3 @@
-
 <script setup>
 import {defineAsyncComponent} from 'vue'
 
@@ -27,17 +26,19 @@ const dynamicIcon = defineAsyncComponent(() => {
 
 <template>
     <template v-if="dynamicIcon">
-        <component :is="dynamicIcon" :class="{icon: icon}" />
+        <component
+            :is="dynamicIcon"
+            :class="{icon: icon}"
+        />
     </template>
 </template>
 
 <style lang="scss" scoped>
 .icon {
-	display: block;
-	width: 25px;
-	height: 1.7em;
-	color: currentColor;
-	fill: currentColor;
+    display: block;
+    width: 25px;
+    height: 1.7em;
+    color: currentColor;
+    fill: currentColor;
 }
-
 </style>
