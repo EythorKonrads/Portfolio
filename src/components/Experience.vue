@@ -4,13 +4,17 @@ import jobs from '@/assets/jobs.json'
 </script>
 
 <template>
-  <div class="expirience">
-    <div class="expirience__hdln">
-        <h2>Experience</h2>
-        <div class="expirience__line"></div>
+    <div class="expirience">
+        <div class="expirience__hdln">
+            <h2>Experience</h2>
+            <div class="expirience__line"></div>
+        </div>
+        <ExperienceJob
+            v-for="(job, key) in jobs"
+            :key="key"
+            :job="job"
+        />
     </div>
-    <ExperienceJob v-for="(job, key) in jobs" :key="key" :job="job" />
-  </div>
 </template>
 
 <style lang="scss" scoped>
