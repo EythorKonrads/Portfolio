@@ -17,11 +17,11 @@
         "projects": [
             {
                 "title": "Render",
-                "url":"https://render.dk"
+                "url": "https://render.dk"
             },
             {
                 "title": "Chess Champs",
-                "url":"https://chesschamps.io/"
+                "url": "https://chesschamps.io/"
             },
             {
                 "title": "JunArt"
@@ -74,11 +74,11 @@
         "projects": [
             {
                 "title": "DGIByen",
-                "url":"https://dgibyen.dk"
+                "url": "https://dgibyen.dk"
             },
             {
                 "title": "Studenterrådgivningen",
-                "url":"https://srg.dk"
+                "url": "https://srg.dk"
             }
         ],
         "tags": [
@@ -124,7 +124,7 @@
         "projects": [
             {
                 "title": "Tækniskólinn",
-                "url":"https://https://en.tskoli.is"
+                "url": "https://https://en.tskoli.is"
             }
         ],
         "tags": [
