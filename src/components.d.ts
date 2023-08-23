@@ -9,7 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Cases: typeof import('./components/Cases.vue')['default']
     CasesCase: typeof import('./components/CasesCase.vue')['default']
-    copy: typeof import('./components/Experience copy.vue')['default']
+    copy: typeof import('./components/Tags copy.vue')['default']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElLink: typeof import('element-plus/es')['ElLink']
     Experience: typeof import('./components/Experience.vue')['default']
@@ -18,8 +18,13 @@ declare module 'vue' {
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Hero: typeof import('./components/Hero.vue')['default']
     Icon: typeof import('./components/Icon.vue')['default']
+    Project: typeof import('./components/Project.vue')['default']
+    Projects: typeof import('./components/Projects.vue')['default']
+    Projectss: typeof import('./components/Projectss.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Social: typeof import('./components/Social.vue')['default']
+    Tag: typeof import('./components/Tag.vue')['default']
+    Tags: typeof import('./components/Tags.vue')['default']
   }
 }

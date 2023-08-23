@@ -13,7 +13,6 @@ import Social from './Social.vue'
                 </div>
             </div>
             <div class="hero__info">
-                <!-- <h3 class="hero__secondary-hdln">About me</h3> -->
                 <p class="hero__text">
                     Based in Copenhagen Denmark, I specialize in Vue.js, JavaScript and software architecture. With over 7 years of
                     expertise, I bring creativity, efficiency, logical thinking and tailored solutions to every project.
@@ -30,8 +29,8 @@ import Social from './Social.vue'
                 <el-icon
                     class="hero__mail-icon"
                     :size="20"
-                    ><Promotion
-                /></el-icon>
+                    ><Promotion />
+                </el-icon>
             </a>
         </div>
     </div>

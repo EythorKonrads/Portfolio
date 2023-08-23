@@ -27,9 +27,11 @@
 
   <script src="https://getinsights.io/js/insights.js"></script>
   <script>
-    insights.init('zbC1ja7PqHC8PWAK');
-    insights.trackPages();
-  </script>
+    if(window.location.hostname != "localhost") {
+      insights.init('zbC1ja7PqHC8PWAK');
+      insights.trackPages();
+    }
+    </script>
 </body>
 
 </html>

@@ -1,12 +1,14 @@
 <script setup>
 import Hero from '../components/Hero.vue'
 import Experience from '../components/Experience.vue'
+import Projects from '../components/Projects.vue'
 </script>
 
 <template>
     <div class="home">
         <Hero class="home__hero" />
         <div class="home__wrapper">
+            <Projects class="home__cases" />
             <Experience class="home__experience" />
         </div>
     </div>

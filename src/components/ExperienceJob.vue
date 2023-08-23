@@ -1,4 +1,5 @@
 <script setup>
+import Tags from './Tags.vue'
 defineProps({
     job: {
         type: Object,
@@ -28,13 +29,14 @@ defineProps({
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        {{ title?.title }}
+                        {{ title?.title }} <Promotion style="width: 1em; margin-left: 0.25em" />
                     </el-link>
                     <span
                         v-else
                         :key="key"
-                        >{{ title?.title }}</span
                     >
+                        {{ title?.title }}
+                    </span>
                     <br
                         v-if="key !== title.length - 1"
                         :key="key"
@@ -69,24 +71,15 @@ defineProps({
                     <span
                         v-else
                         class="expirience-job__project"
-                        >{{ project.title }}</span
                     >
+                        {{ project.title }}
+                    </span>
                 </template>
             </div>
-            <ul
+            <Tags
                 v-if="job?.tags"
-                class="expirience-job__list"
-            >
-                <li
-                    v-for="(tag, key) in job.tags"
-                    :key="key"
-                    class="expirience-job__list-item"
-                >
-                    <div class="expirience-job__tag">
-                        {{ tag.title }}
-                    </div>
-                </li>
-            </ul>
+                :tags="job?.tags"
+            />
         </div>
     </div>
 </template>
@@ -128,7 +121,6 @@ defineProps({
     }
 }
 .expirience-job__desc,
-.expirience-job__list,
 .expirience-job__projects {
     font-size: 0.75em;
 }
@@ -141,23 +133,5 @@ defineProps({
 .expirience-job__project {
     font-size: var(--el-link-font-size);
     margin-right: 0.25em;
-}
-.expirience-job__list {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-}
-.expirience-job__list-item {
-    color: #9393e8;
-    background-color: rgba(147, 147, 232, 0.1);
-    margin: 0.5em 0.375em 0 0;
-    border-radius: 9999px;
-    box-sizing: border-box;
-    font-size: 0.8em;
-}
-.expirience-job__tag {
-    padding: 0.25em 0.75em;
-    box-sizing: border-box;
 }
 </style>
