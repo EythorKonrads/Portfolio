@@ -8,7 +8,7 @@ import Icon from './Icon.vue'
             <el-link
                 class="social__link"
                 :underline="false"
-                href="https://github.com/ekonrads"
+                href="https://github.com/EythorKonrads"
                 target="_blank"
                 rel="noopener noreferrer"
             >
