@@ -13,7 +13,6 @@ declare module 'vue' {
     Experience: typeof import('./components/Experience.vue')['default']
     ExperienceJob: typeof import('./components/ExperienceJob.vue')['default']
     Header: typeof import('./components/Header.vue')['default']
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Hero: typeof import('./components/Hero.vue')['default']
     Icon: typeof import('./components/Icon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
