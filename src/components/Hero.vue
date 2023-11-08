@@ -3,10 +3,16 @@ import Social from './Social.vue'
 </script>
 
 <template>
-    <div class="hero">
+    <div
+        class="hero"
+        data-cy="hero"
+    >
         <div class="hero__wrapper">
             <div class="hero__card">
-                <div class="hero__image"></div>
+                <div
+                    class="hero__image"
+                    data-cy="heroImage"
+                ></div>
                 <div class="hero__texts">
                     <h1 class="hero__hdln">Eythor Konradsson</h1>
                     <h2 class="hero__secondary-hdln">Lead Frontend Developer</h2>
@@ -14,13 +20,19 @@ import Social from './Social.vue'
             </div>
             <div class="hero__info">
                 <!-- <h3 class="hero__secondary-hdln">About me</h3> -->
-                <p class="hero__text">
+                <p
+                    class="hero__text"
+                    data-cy="heroText"
+                >
                     Based in Copenhagen Denmark, I specialize in Vue.js, JavaScript and software architecture. With over 7 years of
                     expertise, I bring creativity, efficiency, logical thinking and tailored solutions to every project.
                 </p>
             </div>
         </div>
-        <div class="hero__links">
+        <div
+            class="hero__links"
+            data-cy="heroLinks"
+        >
             <Social />
             <a
                 href="mailto:hello@ekonrads.com"
@@ -30,8 +42,9 @@ import Social from './Social.vue'
                 <el-icon
                     class="hero__mail-icon"
                     :size="20"
-                    ><Promotion
-                /></el-icon>
+                >
+                    <Promotion />
+                </el-icon>
             </a>
         </div>
     </div>
