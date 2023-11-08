@@ -33,8 +33,9 @@ defineProps({
                     <span
                         v-else
                         :key="key"
-                        >{{ title?.title }}</span
                     >
+                        {{ title?.title }}
+                    </span>
                     <br
                         v-if="key !== title.length - 1"
                         :key="key"
@@ -69,8 +70,9 @@ defineProps({
                     <span
                         v-else
                         class="expirience-job__project"
-                        >{{ project.title }}</span
                     >
+                        {{ project.title }}
+                    </span>
                 </template>
             </div>
             <ul
