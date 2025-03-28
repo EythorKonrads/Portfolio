@@ -1,5 +1,55 @@
 [
     {
+        "dates": "2024 - present",
+        "titles": [
+            {
+                "title": "Co-founder | Developer - Norduo",
+                "url": "https://norduo.com"
+            }
+        ],
+        "description": "​As Co-Founder and Developer at Norduo, a Copenhagen-based software development company, I specialize in crafting personalized web solutions tailored to diverse client needs. At Norduo, we excel in developing a range of projects, from small WordPress sites to larger-scale applications, ensuring each solution combines functionality with intuitive design. Our expertise spans various technologies, including WordPress, WooCommerce, Vue.js, JavaScript, Svelte, and software architecture. By focusing on scalable and efficient software architecture, we deliver high-quality digital experiences that drive client success.",
+        "projects": [
+            {
+                "title": "HHauksson",
+                "url": "https://hhauksson.is"
+            }
+        ],
+        "tags": [
+            {
+                "title": "JavaScript",
+                "tag": "javascript"
+            },
+            {
+                "title": "Vue.js",
+                "tag": "vue"
+            },
+            {
+                "title": "SCSS",
+                "tag": "scss"
+            },
+            {
+                "title": "HTML",
+                "tag": "html"
+            },
+            {
+                "title": "Svelt",
+                "tag": "svelt"
+            },
+            {
+                "title": "Git",
+                "tag": "git"
+            },
+            {
+                "title": "WordPress",
+                "tag": "wordpress"
+            },
+            {
+                "title": "Elementor",
+                "tag": "elementor"
+            }
+        ]
+    },
+    {
         "dates": "aug 2018 - present",
         "titles": [
             {
@@ -13,7 +63,7 @@
                 "title": "Front-end developer"
             }
         ],
-        "description": "Participated in the development of an in-house SaaS product designed for automated marketing, crafted a dashboard platform to oversee content management for the SaaS product, and contributed to the creation of proprietary software aimed at expediting client deliveries. Assume a leadership role within the development team by fostering strong collaboration, sharing expertise, and offering mentorship to promote growth.",
+        "description": "Worked on developing an in-house SaaS product for automated marketing, built a dashboard for managing its content, and helped develop proprietary software to speed up client deliveries. Took on a leadership role by collaborating closely with the team, sharing knowledge, and mentoring others to improve overall development.",
         "projects": [
             {
                 "title": "Render",
@@ -41,7 +91,7 @@
                 "tag": "html"
             },
             {
-                "title": "VueJS 2/3",
+                "title": "Vue.js 2/3",
                 "tag": "vue"
             },
             {
@@ -70,7 +120,7 @@
                 "url": "https://www.mu.st/"
             }
         ],
-        "description": "As a Frontend Developer at a web agency, I skillfully executed and significantly contributed to a diverse array of website projects for various clients. My role involved not only creating visually appealing and user-friendly interfaces but also collaborating closely with cross-functional teams to ensure seamless integration of design and functionality. I consistently upheld industry best practices, adhering to coding standards, optimizing website performance, and maintaining an unwavering commitment to delivering exceptional user experiences.",
+        "description": "As a Frontend Developer at a web agency, I built and contributed to a wide range of client websites, focusing on creating clean, responsive, and user-friendly interfaces. Worked closely with designers and backend developers to ensure smooth integration of UI/UX and functionality. Followed best practices, wrote maintainable code, optimized performance, and prioritized delivering great user experiences.",
         "projects": [
             {
                 "title": "DGIByen",
@@ -79,6 +129,10 @@
             {
                 "title": "Studenterrådgivningen",
                 "url": "https://srg.dk"
+            },
+            {
+                "title": "Transportuddannelser",
+                "url": "https://transportuddannelser.dk/"
             }
         ],
         "tags": [
@@ -109,6 +163,14 @@
             {
                 "title": "Git",
                 "tag": "git"
+            },
+            {
+                "title": "WordPress",
+                "tag": "wordpress"
+            },
+            {
+                "title": "Elementor",
+                "tag": "elementor"
             }
         ]
     },
@@ -120,7 +182,7 @@
                 "url": "https://www.juni.is/"
             }
         ],
-        "description": "The internship program spanned eight weeks, with a commitment of one day per week. I focused on creating specific components/elements of the tskoli.is website. Guided by the principles of atomic design, our approach also aimed at systematically improving the website user interface through user testing",
+        "description": "The internship lasted eight weeks, with one workday per week. I worked on developing specific components for the tskoli.is website, following atomic design principles. The focus was on systematically improving the UI through user testing and iteration.",
         "projects": [
             {
                 "title": "Tækniskólinn",
