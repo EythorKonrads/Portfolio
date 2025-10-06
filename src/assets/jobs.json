@@ -3,11 +3,11 @@
         "dates": "2024 - present",
         "titles": [
             {
-                "title": "Co-founder | Developer - Norduo",
+                "title": "Co-founder/Developer - Norduo",
                 "url": "https://norduo.com"
             }
         ],
-        "description": "​As Co-Founder and Developer at Norduo, a Copenhagen-based software development company, I specialize in crafting personalized web solutions tailored to diverse client needs. At Norduo, we excel in developing a range of projects, from small WordPress sites to larger-scale applications, ensuring each solution combines functionality with intuitive design. Our expertise spans various technologies, including WordPress, WooCommerce, Vue.js, JavaScript, Svelte, and software architecture. By focusing on scalable and efficient software architecture, we deliver high-quality digital experiences that drive client success.",
+        "description": "As a Co-Founder and Developer at Norduo, a Copenhagen-based freelance partnership, I collaborate on building customized web solutions for clients with diverse needs. My work spans projects from small WordPress websites to larger web applications, combining intuitive design, strong functionality, and scalable software architecture to deliver high-quality digital experiences.",
         "projects": [
             {
                 "title": "HHauksson",
@@ -18,10 +18,6 @@
             {
                 "title": "JavaScript",
                 "tag": "javascript"
-            },
-            {
-                "title": "Vue.js",
-                "tag": "vue"
             },
             {
                 "title": "SCSS",
@@ -40,6 +36,10 @@
                 "tag": "git"
             },
             {
+                "title": "PHP",
+                "tag": "php"
+            },
+            {
                 "title": "WordPress",
                 "tag": "wordpress"
             },
@@ -50,28 +50,24 @@
         ]
     },
     {
-        "dates": "aug 2018 - present",
+        "dates": "2020 - 2025",
         "titles": [
             {
                 "title": "Lead Front-end developer - Render",
-                "url": "https://render.dk"
+                "url": "https://renderads.com/"
             },
             {
                 "title": "Senior Front-end developer"
-            },
-            {
-                "title": "Front-end developer"
             }
         ],
         "description": "Worked on developing an in-house SaaS product for automated marketing, built a dashboard for managing its content, and helped develop proprietary software to speed up client deliveries. Took on a leadership role by collaborating closely with the team, sharing knowledge, and mentoring others to improve overall development.",
         "projects": [
             {
                 "title": "Render",
-                "url": "https://render.dk"
+                "url": "https://renderads.com/"
             },
             {
-                "title": "Chess Champs",
-                "url": "https://chesschamps.io/"
+                "title": "Chess Champs"
             },
             {
                 "title": "JunArt"
@@ -109,15 +105,22 @@
             {
                 "title": "Git",
                 "tag": "git"
+            },
+            {
+                "title": "Cypress",
+                "tag": "cypress"
             }
         ]
     },
     {
-        "dates": "aug 2018 - 2020",
+        "dates": "2018 - 2020",
         "titles": [
             {
-                "title": "Front-end developer - MUST",
+                "title": "Senior Front-end developer - MUST ",
                 "url": "https://www.mu.st/"
+            },
+            {
+                "title": "Front-end developer"
             }
         ],
         "description": "As a Frontend Developer at a web agency, I built and contributed to a wide range of client websites, focusing on creating clean, responsive, and user-friendly interfaces. Worked closely with designers and backend developers to ensure smooth integration of UI/UX and functionality. Followed best practices, wrote maintainable code, optimized performance, and prioritized delivering great user experiences.",
@@ -163,6 +166,10 @@
             {
                 "title": "Git",
                 "tag": "git"
+            },
+            {
+                "title": "PHP",
+                "tag": "php"
             },
             {
                 "title": "WordPress",
