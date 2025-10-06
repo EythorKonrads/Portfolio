@@ -24,7 +24,7 @@ import Social from './Social.vue'
                     class="hero__text"
                     data-cy="heroText"
                 >
-                    Based in Copenhagen, Denmark, I specialize in Vue.js, JavaScript, and software architecture. With 7+ years of
+                    Based in Copenhagen, Denmark, I specialise in Vue.js, JavaScript, and software architecture. With 7+ years of
                     experience, I focus on building efficient, scalable, and well-structured solutions, combining creativity with logical
                     problem-solving to deliver high-quality software.
                 </p>
