@@ -65,12 +65,15 @@ defineProps({
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <Link style="width: 1em; margin-right: 0.25em" />{{ project.title }}
+                        <template v-if="key !== 0">| </template>
+                        <Link style="width: 1em; margin-right: 0.25em" />
+                        {{ project.title }}
                     </el-link>
                     <span
                         v-else
                         class="expirience-job__project"
                     >
+                        <template v-if="key !== 0">| </template>
                         {{ project.title }}
                     </span>
                 </template>
