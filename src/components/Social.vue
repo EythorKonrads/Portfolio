@@ -20,7 +20,7 @@ import Icon from './Icon.vue'
             <el-link
                 class="social__link"
                 :underline="false"
-                href="https://www.linkedin.com/in/ekonrads/"
+                href="https://www.linkedin.com/in/eythork/"
                 target="_blank"
                 rel="noopener noreferrer"
             >
