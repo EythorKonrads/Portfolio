@@ -19,12 +19,11 @@ import Social from './Social.vue'
                 </div>
             </div>
             <div class="hero__info">
-                <!-- <h3 class="hero__secondary-hdln">About me</h3> -->
                 <p
                     class="hero__text"
                     data-cy="heroText"
                 >
-                    Based in Copenhagen, Denmark, I specialise in Vue.js, JavaScript, and software architecture. With 7+ years of
+                    Based in Copenhagen, Denmark, I specialise in Vue.js, JavaScript, and software architecture. With 7+ years of work
                     experience, I focus on building efficient, scalable, and well-structured solutions, combining creativity with logical
                     problem-solving to deliver high-quality software.
                 </p>
