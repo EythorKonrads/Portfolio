@@ -7,6 +7,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    copy: typeof import('./components/ExperienceJob copy.vue')['default']
+    Education: typeof import('./components/Education.vue')['default']
+    EducationItem: typeof import('./components/EducationItem.vue')['default']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElLink: typeof import('element-plus/es')['ElLink']
     Experience: typeof import('./components/Experience.vue')['default']

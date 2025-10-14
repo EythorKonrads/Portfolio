@@ -1,6 +1,7 @@
 <script setup>
 import Hero from '../components/Hero.vue'
 import Experience from '../components/Experience.vue'
+import Education from '../components/Education.vue'
 </script>
 
 <template>
@@ -8,6 +9,7 @@ import Experience from '../components/Experience.vue'
         <Hero class="home__hero" />
         <div class="home__wrapper">
             <Experience class="home__experience" />
+            <Education class="home__education" />
         </div>
     </div>
 </template>
@@ -33,6 +35,9 @@ import Experience from '../components/Experience.vue'
         overflow: auto;
         padding: 2em;
         box-sizing: border-box;
+    }
+    .home__education {
+        margin-top: 2em;
     }
 
     @media screen and (max-width: 900px) {
