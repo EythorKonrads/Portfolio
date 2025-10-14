@@ -1,0 +1,118 @@
+[
+    {
+        "dates": "2017 - 2018",
+        "titles": [
+            {
+                "title": "Københavns Erhvervsakademie (KEA)",
+                "url": "https://mit.kea.dk/"
+            }
+        ],
+        "degree": "Bachelor's in Web Development",
+        "description": "Developed practical skills in creating and maintaining dynamic web applications, combining theoretical learning with a hands-on 10-week internship.",
+        "projects": [],
+        "tags": [
+            {
+                "title": "JavaScript",
+                "tag": "javascript"
+            },
+            {
+                "title": "SCSS",
+                "tag": "scss"
+            },
+            {
+                "title": "HTML",
+                "tag": "html"
+            },
+            {
+                "title": "Git",
+                "tag": "git"
+            },
+            {
+                "title": "Gulp",
+                "tag": "gulp"
+            },
+            {
+                "title": "jQuery",
+                "tag": "jquery"
+            },
+            {
+                "title": "PHP",
+                "tag": "php"
+            },
+            {
+                "title": "WordPress",
+                "tag": "wordpress"
+            },
+            {
+                "title": "React",
+                "tag": "react"
+            },
+            {
+                "title": "React",
+                "tag": "react"
+            },
+            {
+                "title": "AngularJs",
+                "tag": "angularjs"
+            },
+            {
+                "title": "WordPress",
+                "tag": "wordpress"
+            }
+        ]
+    },
+    {
+        "dates": "2015 - 2017",
+        "titles": [
+            {
+                "title": "Technical School Reykjavik",
+                "url": "https://en.tskoli.is/"
+            }
+        ],
+        "degree": "Diploma in Web Development",
+        "description": "Two year project driven study with close links to the private sector. Main focus on HTML, CSS and JavaScript.",
+        "projects": [],
+        "tags": [
+            {
+                "title": "JavaScript",
+                "tag": "javascript"
+            },
+            {
+                "title": "SCSS",
+                "tag": "scss"
+            },
+            {
+                "title": "HTML",
+                "tag": "html"
+            },
+            {
+                "title": "jQuery",
+                "tag": "jquery"
+            },
+            {
+                "title": "PHP",
+                "tag": "php"
+            },
+            {
+                "title": "WordPress",
+                "tag": "wordpress"
+            },
+            {
+                "title": "React",
+                "tag": "react"
+            },
+            {
+                "title": "ReactNative",
+                "tag": "reactnative"
+            },
+            {
+                "title": "Git",
+                "tag": "git"
+            },
+            {
+                "title": "AngularJs",
+                "tag": "angularjs"
+            }
+        ]
+    }
+]

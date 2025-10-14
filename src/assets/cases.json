@@ -1,0 +1,37 @@
+[
+    {
+        "titles": [
+            {
+                "title": "HHauksson website",
+                "url": "https://norduo.com/verk/hhauksson"
+            }
+        ],
+        "description": "H. Hauksson ehf. is an established Icelandic company with over 30 years of experience in selling construction materials, machinery, fencing supplies, and timber for the construction industry, agriculture, and tradespeople. The website hhauksson.is was developed as a digital presentation and communication platform, enabling customers to explore the product selection in a simple and accessible way.",
+        "tags": [
+            {
+                "title": "WordPress",
+                "tag": "wordpress"
+            },
+            {
+                "title": "Elementor",
+                "tag": "elementor"
+            },
+            {
+                "title": "PHP",
+                "tag": "php"
+            },
+            {
+                "title": "SCSS",
+                "tag": "scss"
+            },
+            {
+                "title": "HTML",
+                "tag": "html"
+            },
+            {
+                "title": "Git",
+                "tag": "git"
+            }
+        ]
+    }
+]
