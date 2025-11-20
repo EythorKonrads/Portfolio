@@ -1,226 +1,226 @@
 [
-    {
-        "dates": "2024 - present",
-        "titles": [
-            {
-                "title": "Co-founder/Developer - Norduo",
-                "url": "https://norduo.com"
-            }
-        ],
-        "description": "As a Co-Founder and Developer at Norduo, a Copenhagen-based freelance partnership, I collaborate on building customized web solutions for clients with diverse needs. My work spans projects from small WordPress websites to larger web applications, combining intuitive design, strong functionality, and scalable software architecture to deliver high-quality digital experiences.",
-        "projects": [
-            {
-                "title": "HHauksson",
-                "url": "https://hhauksson.is"
-            }
-        ],
-        "tags": [
-            {
-                "title": "JavaScript",
-                "tag": "javascript"
-            },
-            {
-                "title": "SCSS",
-                "tag": "scss"
-            },
-            {
-                "title": "HTML",
-                "tag": "html"
-            },
-            {
-                "title": "Svelt",
-                "tag": "svelt"
-            },
-            {
-                "title": "Git",
-                "tag": "git"
-            },
-            {
-                "title": "PHP",
-                "tag": "php"
-            },
-            {
-                "title": "WordPress",
-                "tag": "wordpress"
-            },
-            {
-                "title": "Elementor",
-                "tag": "elementor"
-            }
-        ]
-    },
-    {
-        "dates": "2020 - 2025",
-        "titles": [
-            {
-                "title": "Lead Front-end developer - Render",
-                "url": "https://renderads.com/"
-            },
-            {
-                "title": "Senior Front-end developer"
-            }
-        ],
-        "description": "Worked on developing an in-house SaaS product for automated marketing, built a dashboard for managing its content, and helped develop proprietary software to speed up client deliveries. Took on a leadership role by collaborating closely with the team, sharing knowledge, and mentoring others to improve overall development.",
-        "projects": [
-            {
-                "title": "Render",
-                "url": "https://renderads.com/"
-            },
-            {
-                "title": "Chess Champs"
-            },
-            {
-                "title": "JunArt"
-            }
-        ],
-        "tags": [
-            {
-                "title": "JavaScript",
-                "tag": "javascript"
-            },
-            {
-                "title": "SCSS",
-                "tag": "scss"
-            },
-            {
-                "title": "HTML",
-                "tag": "html"
-            },
-            {
-                "title": "Vue.js 2/3",
-                "tag": "vue"
-            },
-            {
-                "title": "Gulp",
-                "tag": "gulp"
-            },
-            {
-                "title": "jQuery",
-                "tag": "jquery"
-            },
-            {
-                "title": "React",
-                "tag": "react"
-            },
-            {
-                "title": "Git",
-                "tag": "git"
-            },
-            {
-                "title": "Cypress",
-                "tag": "cypress"
-            }
-        ]
-    },
-    {
-        "dates": "2018 - 2020",
-        "titles": [
-            {
-                "title": "Senior Front-end developer - MUST ",
-                "url": "https://www.mu.st/"
-            },
-            {
-                "title": "Front-end developer"
-            }
-        ],
-        "description": "As a Frontend Developer at a web agency, I built and contributed to a wide range of client websites, focusing on creating clean, responsive, and user-friendly interfaces. Worked closely with designers and backend developers to ensure smooth integration of UI/UX and functionality. Followed best practices, wrote maintainable code, optimized performance, and prioritized delivering great user experiences.",
-        "projects": [
-            {
-                "title": "DGIByen",
-                "url": "https://dgibyen.dk"
-            },
-            {
-                "title": "Studenterrådgivningen",
-                "url": "https://srg.dk"
-            },
-            {
-                "title": "Transportuddannelser",
-                "url": "https://transportuddannelser.dk/"
-            }
-        ],
-        "tags": [
-            {
-                "title": "JavaScript",
-                "tag": "javascript"
-            },
-            {
-                "title": "SCSS",
-                "tag": "scss"
-            },
-            {
-                "title": "HTML",
-                "tag": "html"
-            },
-            {
-                "title": "Gulp",
-                "tag": "gulp"
-            },
-            {
-                "title": "jQuery",
-                "tag": "jquery"
-            },
-            {
-                "title": "Angular",
-                "tag": "angular"
-            },
-            {
-                "title": "Git",
-                "tag": "git"
-            },
-            {
-                "title": "PHP",
-                "tag": "php"
-            },
-            {
-                "title": "WordPress",
-                "tag": "wordpress"
-            },
-            {
-                "title": "Elementor",
-                "tag": "elementor"
-            }
-        ]
-    },
-    {
-        "dates": "aug 2017 - oct 2017",
-        "titles": [
-            {
-                "title": "Front-end intern - Kosmos & Kaos (now Júní)",
-                "url": "https://www.juni.is/"
-            }
-        ],
-        "description": "The internship lasted eight weeks, with one workday per week. I worked on developing specific components for the tskoli.is website, following atomic design principles. The focus was on systematically improving the UI through user testing and iteration.",
-        "projects": [
-            {
-                "title": "Tækniskólinn",
-                "url": "https://https://en.tskoli.is"
-            }
-        ],
-        "tags": [
-            {
-                "title": "JavaScript",
-                "tag": "javascript"
-            },
-            {
-                "title": "SCSS",
-                "tag": "scss"
-            },
-            {
-                "title": "HTML",
-                "tag": "html"
-            },
-            {
-                "title": "Handlebars",
-                "tag": "handlebars"
-            },
-            {
-                "title": "jQuery",
-                "tag": "jquery"
-            },
-            {
-                "title": "Git",
-                "tag": "git"
-            }
-        ]
-    }
+  {
+    "dates": "2024 - present",
+    "titles": [
+      {
+        "title": "Co-founder/Developer - Norduo",
+        "url": "https://norduo.com"
+      }
+    ],
+    "description": "As a Co-Founder and Developer at Norduo, a Copenhagen-based freelance partnership, I collaborate on building customized web solutions for clients with diverse needs. My work spans projects from small WordPress websites to larger web applications, combining intuitive design, strong functionality, and scalable software architecture to deliver high-quality digital experiences.",
+    "projects": [
+      {
+        "title": "HHauksson",
+        "url": "https://hhauksson.is"
+      }
+    ],
+    "tags": [
+      {
+        "title": "JavaScript",
+        "tag": "javascript"
+      },
+      {
+        "title": "SCSS",
+        "tag": "scss"
+      },
+      {
+        "title": "HTML",
+        "tag": "html"
+      },
+      {
+        "title": "Svelt",
+        "tag": "svelt"
+      },
+      {
+        "title": "Git",
+        "tag": "git"
+      },
+      {
+        "title": "PHP",
+        "tag": "php"
+      },
+      {
+        "title": "WordPress",
+        "tag": "wordpress"
+      },
+      {
+        "title": "Elementor",
+        "tag": "elementor"
+      }
+    ]
+  },
+  {
+    "dates": "2020 - 2025",
+    "titles": [
+      {
+        "title": "Lead Front-end developer - Render",
+        "url": "https://renderads.com/"
+      },
+      {
+        "title": "Senior Front-end developer"
+      }
+    ],
+    "description": "Worked on developing an in-house SaaS product for automated marketing, built a dashboard for managing its content, and helped develop proprietary software to speed up client deliveries. Took on a leadership role by collaborating closely with the team, sharing knowledge, and mentoring others to improve overall development.",
+    "projects": [
+      {
+        "title": "Render",
+        "url": "https://renderads.com/"
+      },
+      {
+        "title": "Chess Champs"
+      },
+      {
+        "title": "JunArt"
+      }
+    ],
+    "tags": [
+      {
+        "title": "JavaScript",
+        "tag": "javascript"
+      },
+      {
+        "title": "SCSS",
+        "tag": "scss"
+      },
+      {
+        "title": "HTML",
+        "tag": "html"
+      },
+      {
+        "title": "Vue.js 2/3",
+        "tag": "vue"
+      },
+      {
+        "title": "Gulp",
+        "tag": "gulp"
+      },
+      {
+        "title": "jQuery",
+        "tag": "jquery"
+      },
+      {
+        "title": "React",
+        "tag": "react"
+      },
+      {
+        "title": "Git",
+        "tag": "git"
+      },
+      {
+        "title": "Cypress",
+        "tag": "cypress"
+      }
+    ]
+  },
+  {
+    "dates": "2018 - 2020",
+    "titles": [
+      {
+        "title": "Senior Front-end developer - MUST ",
+        "url": "https://www.mu.st/"
+      },
+      {
+        "title": "Front-end developer"
+      }
+    ],
+    "description": "As a Frontend Developer at a web agency, I built and contributed to a wide range of client websites, focusing on creating clean, responsive, and user-friendly interfaces. Worked closely with designers and backend developers to ensure smooth integration of UI/UX and functionality. Followed best practices, wrote maintainable code, optimized performance, and prioritized delivering great user experiences.",
+    "projects": [
+      {
+        "title": "DGIByen",
+        "url": "https://dgibyen.dk"
+      },
+      {
+        "title": "Studenterrådgivningen",
+        "url": "https://srg.dk"
+      },
+      {
+        "title": "Transportuddannelser",
+        "url": "https://transportuddannelser.dk/"
+      }
+    ],
+    "tags": [
+      {
+        "title": "JavaScript",
+        "tag": "javascript"
+      },
+      {
+        "title": "SCSS",
+        "tag": "scss"
+      },
+      {
+        "title": "HTML",
+        "tag": "html"
+      },
+      {
+        "title": "Gulp",
+        "tag": "gulp"
+      },
+      {
+        "title": "jQuery",
+        "tag": "jquery"
+      },
+      {
+        "title": "Angular",
+        "tag": "angular"
+      },
+      {
+        "title": "Git",
+        "tag": "git"
+      },
+      {
+        "title": "PHP",
+        "tag": "php"
+      },
+      {
+        "title": "WordPress",
+        "tag": "wordpress"
+      },
+      {
+        "title": "Elementor",
+        "tag": "elementor"
+      }
+    ]
+  },
+  {
+    "dates": "aug 2017 - oct 2017",
+    "titles": [
+      {
+        "title": "Front-end intern - Kosmos & Kaos (now Júní)",
+        "url": "https://www.juni.is/"
+      }
+    ],
+    "description": "The internship lasted eight weeks, with one workday per week. I worked on developing specific components for the tskoli.is website, following atomic design principles. The focus was on systematically improving the UI through user testing and iteration.",
+    "projects": [
+      {
+        "title": "Tækniskólinn",
+        "url": "https://https://en.tskoli.is"
+      }
+    ],
+    "tags": [
+      {
+        "title": "JavaScript",
+        "tag": "javascript"
+      },
+      {
+        "title": "SCSS",
+        "tag": "scss"
+      },
+      {
+        "title": "HTML",
+        "tag": "html"
+      },
+      {
+        "title": "Handlebars",
+        "tag": "handlebars"
+      },
+      {
+        "title": "jQuery",
+        "tag": "jquery"
+      },
+      {
+        "title": "Git",
+        "tag": "git"
+      }
+    ]
+  }
 ]
