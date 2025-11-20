@@ -250,7 +250,7 @@ export default {
   width: 100%;
   height: 300px;
   max-height: 300px;
-  margin-top: -32px;
+  margin-top: -37px;
   overflow: hidden;
   flex-shrink: 0;
   background-color: rgba(147, 147, 232, 0.1);
