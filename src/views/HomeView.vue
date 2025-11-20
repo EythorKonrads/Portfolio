@@ -2,6 +2,7 @@
 import Hero from '../components/Hero.vue'
 import Experience from '../components/Experience.vue'
 import Education from '../components/Education.vue'
+import Projects from '../components/Projects.vue';
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import Education from '../components/Education.vue'
             <Experience class="home__experience" />
             <Education class="home__education" />
         </div>
+      <Projects class="home__projects" />
     </div>
 </template>
 

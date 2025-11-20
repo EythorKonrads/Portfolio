@@ -1,0 +1,35 @@
+[
+  {
+    "title": "HHauksson website",
+    "image": "./hhauksson.webp",
+    "description": "H. Hauksson ehf. is an established Icelandic company with over 30 years of experience in selling construction materials, machinery, fencing supplies, and timber for the construction industry, agriculture, and tradespeople. The website hhauksson.is was developed as a digital presentation and communication platform, enabling customers to explore the product selection in a simple and accessible way. \n\n<b>A New Approach, Same Goal</b>\nThe company had previously maintained a simple website and had tried to improve it on their own with a new layout. However, those attempts proved time-consuming and technically challenging. We took over the project at that point, started the development from scratch, and stayed true to the original vision of a clear structure and user-friendly flow. The solution we created was easy to maintain, professionally presented, and designed with the future in mind.\n\n<b>Technical Implementation</b>\nWe decided to build the website on WordPress and used Elementor Pro to ensure flexibility in design and maintenance. With Advanced Custom Fields (ACF), we created custom product pages and content models that the H. Hauksson team can update independently, without technical assistance.\n\nTo establish a clear flow and structure, we created a site map that ensured all essential information was easily accessible in a logical and intuitive way.\n- Scalable and easy to maintain\n- Responsive design for phones, tablets, and desktops\n- Clear and efficient user experience across the site\n\nWe implemented Rank Math for search engine optimization (SEO), launched a Google Ads campaign, and integrated Google Analytics to track user behavior and support data-driven development.\n\n<b>Results & Follow-Up</b>\nThe new website has simplified the customer experience and made H. Hauksson’s product offering accessible in an efficient way. Information is now easy to find, and the site has strengthened both the company’s service and brand image.\n\nThrough a Google Ads campaign targeting key product categories, the company has reached a larger customer base. The campaign has delivered:\n- Increased website traffic\n- Better visibility in search results\n- Higher brand awareness\n\nFeedback from staff and users has been positive, and the website now serves as a solid foundation for ongoing development and marketing efforts.",
+    "technologies": [
+      {
+        "title": "WordPress",
+        "tag": "wordpress"
+      },
+      {
+        "title": "Elementor",
+        "tag": "elementor"
+      },
+      {
+        "title": "PHP",
+        "tag": "php"
+      },
+      {
+        "title": "JavaScript",
+        "tag": "javascript"
+      },
+      {
+        "title": "SCSS",
+        "tag": "scss"
+      },
+      {
+        "title": "HTML",
+        "tag": "html"
+      }
+    ],
+    "liveUrl": "https://hhauksson.is",
+    "githubUrl": null
+  }
+]
