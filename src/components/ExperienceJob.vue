@@ -33,9 +33,11 @@ defineProps({
           <br v-if="key !== title.length - 1" :key="key" />
         </template>
       </h3>
-      <p v-if="job?.description" class="expirience-job__desc">
-        {{ job.description }}
-      </p>
+      <p
+        v-if="job?.description"
+        class="expirience-job__desc"
+        v-html="job?.description"
+      ></p>
       <div v-if="job?.projects" class="expirience-job__projects">
         <template v-for="(project, key) in job.projects" :key="key">
           <el-link

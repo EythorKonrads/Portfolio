@@ -3,11 +3,11 @@
     "dates": "2024 - present",
     "titles": [
       {
-        "title": "Co-founder/Developer - Norduo",
+        "title": "Full-stack developer | Part-time - Norduo",
         "url": "https://norduo.com"
       }
     ],
-    "description": "As a Co-Founder and Developer at Norduo, a Copenhagen-based freelance partnership, I collaborate on building customized web solutions for clients with diverse needs. My work spans projects from small WordPress websites to larger web applications, combining intuitive design, strong functionality, and scalable software architecture to deliver high-quality digital experiences.",
+    "description": "Freelance partnership delivering small to mid-size WordPress websites, along with SEO optimization and Google Ads management.<ul><li>Developed a WordPress website leveraging Elementor Pro and custom PHP functionality.</li><li>Created a secure platform for managing and selling school class photos and children’s profile images to parents.</li><li>Managed all administrative duties, including operations, coordination, and support.</li><li>Launched and managed Google Ads campaigns for multiple clients.</li></ul>",
     "projects": [
       {
         "title": "HHauksson",
@@ -53,26 +53,10 @@
     "dates": "2020 - 2025",
     "titles": [
       {
-        "title": "Lead Front-end developer - Render",
-        "url": "https://renderads.com/"
-      },
-      {
-        "title": "Senior Front-end developer"
+        "title": "Lead Front-end developer - Render"
       }
     ],
-    "description": "Worked on developing an in-house SaaS product for automated marketing, built a dashboard for managing its content, and helped develop proprietary software to speed up client deliveries. Took on a leadership role by collaborating closely with the team, sharing knowledge, and mentoring others to improve overall development.",
-    "projects": [
-      {
-        "title": "Render",
-        "url": "https://renderads.com/"
-      },
-      {
-        "title": "Chess Champs"
-      },
-      {
-        "title": "JunArt"
-      }
-    ],
+    "description": "Automated content production platform focused on data-driven content creation across multiple marketing channels.<ul><li>Served as lead developer for several automated content-production tools built with Vue.js  enabling generation of adaptable layouts for a wide range of marketing channels.</li><li>Led development of a dashboard platform, overseeing the full application lifecycle from ticket creation and feature scoping to UX/UI design and front-end implementation.</li><li>Built and maintained automated CI pipelines with GitHub Actions, ensuring consistent testing and reliable releases.</li><li>Responsible for qualifying candidates, onboarding, and technical mentoring of new developers.</li><li>Supported an external client in the blockchain space by building and refining React interfaces while temporarily embedded in their team.</li><li>Implemented comprehensive component and end-to-end testing across all repositories using Cypress.</li><li>Led the refactoring of automated content-production tool, resulting in 60% less CloudFlare cost.</li></ul>",
     "tags": [
       {
         "title": "JavaScript",
@@ -116,14 +100,11 @@
     "dates": "2018 - 2020",
     "titles": [
       {
-        "title": "Senior Front-end developer - MUST ",
+        "title": "Senior Front-end developer - MUST Digital ",
         "url": "https://www.mu.st/"
-      },
-      {
-        "title": "Front-end developer"
       }
     ],
-    "description": "As a Frontend Developer at a web agency, I built and contributed to a wide range of client websites, focusing on creating clean, responsive, and user-friendly interfaces. Worked closely with designers and backend developers to ensure smooth integration of UI/UX and functionality. Followed best practices, wrote maintainable code, optimized performance, and prioritized delivering great user experiences.",
+    "description": "Web agency delivering a wide range of digital products for clients, including websites, apps, chatbots, ad banners, and more.<ul><li>Worked on wide range of client websites, focusing on creating clean, responsive, and user-friendly interfaces.</li><li>Worked closely with designers and backend developers to ensure smooth integration of UI/UX and functionality. </li><li>Followed best practices, wrote maintainable code, optimized performance, and prioritized delivering great user experiences.</li><li>Led the development of a large website for a major Danish client.</li><li>Led the development of two WordPress websites from concept to launch.</li></ul>",
     "projects": [
       {
         "title": "DGIByen",
@@ -189,11 +170,11 @@
         "url": "https://www.juni.is/"
       }
     ],
-    "description": "The internship lasted eight weeks, with one workday per week. I worked on developing specific components for the tskoli.is website, following atomic design principles. The focus was on systematically improving the UI through user testing and iteration.",
+    "description": "A digital service company specializes in developing digital solutions for businesses and institutions, offering comprehensive services in consulting, design, and programming.<ul><li>Delivered specific components for the Tækniskólinn website following atomic design principles.</li><li>Focused on systematically improving the UI through user testing and iteration.</li></ul>",
     "projects": [
       {
         "title": "Tækniskólinn",
-        "url": "https://https://en.tskoli.is"
+        "url": "https://en.tskoli.is"
       }
     ],
     "tags": [
