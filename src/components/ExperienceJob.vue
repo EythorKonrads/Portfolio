@@ -26,6 +26,10 @@ defineProps({
             rel="noopener noreferrer"
           >
             {{ title?.title }}
+            <Link
+              v-if="title?.url"
+              style="width: 1.25em; margin-left: 0.25em"
+            />
           </el-link>
           <span v-else :key="key">
             {{ title?.title }}
@@ -50,8 +54,8 @@ defineProps({
             rel="noopener noreferrer"
           >
             <template v-if="key !== 0">| </template>
-            <Link style="width: 1em; margin-right: 0.25em" />
             {{ project.title }}
+            <Link style="width: 1em; margin-left: 0.25em" />
           </el-link>
           <span v-else class="expirience-job__project">
             <template v-if="key !== 0">| </template>
@@ -94,7 +98,7 @@ defineProps({
 }
 .expirience-job__title {
   font-weight: 700;
-  color: rgba(100, 116, 139, 1);
+  color: var(--el-link-text-color);
 }
 .expirience-job__link {
   font-size: 1em;

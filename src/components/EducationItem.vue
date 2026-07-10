@@ -28,8 +28,16 @@ defineProps({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {{ title?.title }} |
+            {{ title?.title }}
+            <Link
+              v-if="title?.url"
+              style="width: 1.25em; margin-left: 0.25em; margin-right: 0.25em"
+            />
+            |
           </el-link>
+          <span v-else :key="key">
+            {{ title?.title }}
+          </span>
         </template>
         <span>&nbsp;{{ education.degree }} </span>
       </h3>
