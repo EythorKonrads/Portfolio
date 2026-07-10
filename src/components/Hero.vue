@@ -14,11 +14,13 @@ import Social from './Social.vue';
       </div>
       <div class="hero__info">
         <p class="hero__text" data-cy="heroText">
-          Based in Copenhagen, Denmark, I specialise in Vue.js, JavaScript, and
-          software architecture. With 7+ years of work experience, I focus on
-          building efficient, scalable, and well-structured solutions, combining
-          creativity with logical problem-solving to deliver high-quality
-          software.
+          Based in Copenhagen, Denmark, with 7+ years of experience working
+          primarily with Vue.js and JavaScript, and additional experience in
+          React. Strong focus on front-end architecture, performance, and
+          building well-structured, scalable applications. <br />I also have
+          experience as both a product owner and lead developer, where I have
+          been responsible for planning and delegating tasks to developers and
+          designers.
         </p>
       </div>
     </div>
