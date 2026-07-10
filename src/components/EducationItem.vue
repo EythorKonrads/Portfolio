@@ -131,6 +131,8 @@ defineProps({
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
+  list-style: none;
+  padding-inline-start: 0;
 }
 .education-item__list-item {
   color: #9393e8;
