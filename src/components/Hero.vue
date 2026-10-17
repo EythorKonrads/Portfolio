@@ -26,7 +26,7 @@ import Social from './Social.vue';
     </div>
     <div class="hero__links" data-cy="heroLinks">
       <Social />
-      <a href="mailto:hello@ekonrads.com" class="hero__mail">
+      <a href="mailto:kh.krimper@gmail.com" class="hero__mail">
         Lets talk
         <el-icon class="hero__mail-icon" :size="20">
           <Promotion />
