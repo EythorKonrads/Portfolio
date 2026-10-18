@@ -32,7 +32,7 @@ watch(toggleSwitch, (val) => {
 </template>
 
 <style lang="scss">
-@import './scss/main.scss';
+@use './scss/main.scss';
 </style>
 <style lang="scss" scoped>
 .app {

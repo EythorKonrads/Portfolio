@@ -1,0 +1,6 @@
+# Overrides variables of the same name set in the Netlify UI.
+[build.environment]
+  # Vite 8 needs Node ^20.19 || >=22.12; Cypress 16 needs Node 22+
+  NODE_VERSION = "24"
+  # Netlify only builds the site; skip Cypress's test-runner download
+  CYPRESS_INSTALL_BINARY = "0"

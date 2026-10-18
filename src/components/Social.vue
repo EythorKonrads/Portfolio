@@ -7,7 +7,7 @@ import Icon from './Icon.vue';
     <ul class="social__wrapper">
       <el-link
         class="social__link"
-        :underline="false"
+        underline="never"
         href="https://github.com/EythorKonrads"
         target="_blank"
         rel="noopener noreferrer"
@@ -16,7 +16,7 @@ import Icon from './Icon.vue';
       </el-link>
       <el-link
         class="social__link"
-        :underline="false"
+        underline="never"
         href="https://www.linkedin.com/in/eythork/"
         target="_blank"
         rel="noopener noreferrer"
