@@ -9,12 +9,16 @@ defineProps({
 </script>
 
 <template>
-  <div class="education-item">
-    <div class="education-item__date">
+  <div class="education-item" data-cy="educationItem">
+    <div class="education-item__date" data-cy="educationDates">
       <h3>{{ education.dates }}</h3>
     </div>
     <div class="education-item__wrapper">
-      <h3 v-if="education?.titles" class="education-item__title">
+      <h3
+        v-if="education?.titles"
+        class="education-item__title"
+        data-cy="educationTitle"
+      >
         <template
           v-for="(title, key) in education.titles"
           :key="`${key}-template`"
@@ -70,6 +74,7 @@ defineProps({
           v-for="(tag, key) in education.tags"
           :key="key"
           class="education-item__list-item"
+          data-cy="educationTag"
         >
           <div class="education-item__tag">
             {{ tag.title }}

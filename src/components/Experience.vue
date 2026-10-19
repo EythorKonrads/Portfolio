@@ -4,7 +4,7 @@ import jobs from '@/assets/jobs.json';
 </script>
 
 <template>
-  <div id="experience" class="experience">
+  <div id="experience" class="experience" data-cy="experience">
     <div v-reveal class="experience__hdln">
       <h2>Experience</h2>
       <div class="experience__line reveal-line"></div>

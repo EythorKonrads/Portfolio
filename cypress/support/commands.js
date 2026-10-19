@@ -1,25 +1,45 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+// Console errors recorded by cy.visitHome(); checked after every test
+let consoleError = null;
+
+beforeEach(() => {
+  consoleError = null;
+});
+
+afterEach(() => {
+  if (consoleError) {
+    expect(consoleError, 'console.error').not.to.have.been.called;
+  }
+});
+
+// Visit the home page and fail the test if it logs console errors.
+// Pass { reducedMotion: true } to emulate prefers-reduced-motion: reduce.
+Cypress.Commands.add('visitHome', ({ reducedMotion = false } = {}) => {
+  cy.wrap(
+    Cypress.automation('remote:debugger:protocol', {
+      command: 'Emulation.setEmulatedMedia',
+      params: {
+        features: [
+          {
+            name: 'prefers-reduced-motion',
+            value: reducedMotion ? 'reduce' : 'no-preference',
+          },
+        ],
+      },
+    }),
+    { log: false }
+  );
+
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      consoleError = cy.spy(win.console, 'error');
+    },
+  });
+});
+
+// Fails if the page is wider than the viewport.
+Cypress.Commands.add('assertNoHorizontalOverflow', () => {
+  cy.window().then((win) => {
+    const { scrollWidth } = win.document.documentElement;
+    expect(scrollWidth, 'page scroll width').to.be.at.most(win.innerWidth);
+  });
+});

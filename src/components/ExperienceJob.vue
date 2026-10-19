@@ -9,12 +9,12 @@ defineProps({
 </script>
 
 <template>
-  <div class="expirience-job">
-    <div class="expirience-job__date">
+  <div class="expirience-job" data-cy="job">
+    <div class="expirience-job__date" data-cy="jobDates">
       <h3>{{ job.dates }}</h3>
     </div>
     <div class="expirience-job__wrapper">
-      <h3 v-if="job?.titles" class="expirience-job__title">
+      <h3 v-if="job?.titles" class="expirience-job__title" data-cy="jobTitle">
         <template v-for="(title, key) in job.titles">
           <el-link
             v-if="title?.url"
@@ -68,6 +68,7 @@ defineProps({
           v-for="(tag, key) in job.tags"
           :key="key"
           class="expirience-job__list-item"
+          data-cy="jobTag"
         >
           <div class="expirience-job__tag">
             {{ tag.title }}

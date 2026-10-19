@@ -9,6 +9,7 @@ import Icon from './Icon.vue';
         class="social__link"
         underline="never"
         href="https://github.com/EythorKonrads"
+        data-cy="socialGithub"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -18,6 +19,7 @@ import Icon from './Icon.vue';
         class="social__link"
         underline="never"
         href="https://www.linkedin.com/in/eythork/"
+        data-cy="socialLinkedin"
         target="_blank"
         rel="noopener noreferrer"
       >

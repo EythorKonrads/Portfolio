@@ -4,7 +4,7 @@ import educations from '@/assets/educations.json';
 </script>
 
 <template>
-  <div id="education" class="education">
+  <div id="education" class="education" data-cy="education">
     <div v-reveal class="education__hdln">
       <h2>Education</h2>
       <div class="education__line reveal-line"></div>
