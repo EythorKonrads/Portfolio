@@ -35,6 +35,9 @@ import TagFilter from '../components/TagFilter.vue';
     z-index: 2;
   }
   .home__wrapper {
+    /* Fill the space beside the hero regardless of content width */
+    flex: 1 1 0;
+    min-width: 0;
     max-height: 100vh;
     overflow: auto;
     padding: 2em;
@@ -56,6 +59,8 @@ import TagFilter from '../components/TagFilter.vue';
     max-height: none;
 
     .home__wrapper {
+      flex: none;
+      width: 100%;
       max-height: none;
       overflow: visible;
     }

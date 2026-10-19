@@ -9,8 +9,7 @@ const sections = [
     items: jobs,
     field: 'tags',
     item: 'job',
-    tag: 'jobTag',
-    activeClass: 'expirience-job__list-item--active',
+    chip: '[data-cy="jobTag"] button',
     empty: 'experienceEmpty',
   },
   {
@@ -18,8 +17,7 @@ const sections = [
     items: educations,
     field: 'tags',
     item: 'educationItem',
-    tag: 'educationTag',
-    activeClass: 'education-item__list-item--active',
+    chip: '[data-cy="educationTag"] button',
     empty: 'educationEmpty',
   },
   {
@@ -27,8 +25,7 @@ const sections = [
     items: projects,
     field: 'technologies',
     item: 'projectCard',
-    tag: 'projectTag',
-    activeClass: 'project-item__tech-tag--active',
+    chip: '[data-cy="projectTag"]',
     empty: 'projectsEmpty',
   },
 ];
@@ -87,17 +84,19 @@ describe('Tag filter', () => {
       .should('be.visible')
       .and('contain.text', 'Filter');
     cy.get('[data-cy="filterCount"]').should('not.exist');
-    cy.get('[data-cy="filterActive"]').should('not.exist');
     cy.get('[data-cy="filterPopup"]').should('not.exist');
     assertShown([]);
   });
 
-  it('sits above the Experience section', () => {
+  it('sits above the Experience section, on the right', () => {
     cy.visitHome();
     cy.get('[data-cy="filterButton"]').then(($button) => {
       cy.get('[data-cy="experience"]').then(($experience) => {
-        expect($button[0].getBoundingClientRect().bottom).to.be.at.most(
-          $experience[0].getBoundingClientRect().top
+        const button = $button[0].getBoundingClientRect();
+        const experience = $experience[0].getBoundingClientRect();
+        expect(button.bottom).to.be.at.most(experience.top);
+        expect(button.left).to.be.greaterThan(
+          experience.left + experience.width / 2
         );
       });
     });
@@ -132,6 +131,7 @@ describe('Tag filter', () => {
     );
     assertShown([rareTag.tag]);
     cy.url().should('include', `tags=${rareTag.tag}`);
+    cy.get('[data-cy="filterActive"]').should('not.exist');
     // The close animation takes 400ms, wait past it before asserting
     cy.wait(500);
     cy.get('[data-cy="filterPopup"]').should('be.visible');
@@ -148,6 +148,29 @@ describe('Tag filter', () => {
     cy.get('[data-cy="filterCount"]').should('contain.text', '(2)');
   });
 
+  it('marks selected tags in the popup with an x', () => {
+    const chip = `[data-cy="filterTag"][data-tag="${rareTag.tag}"]`;
+    cy.visitHome();
+    openPopup();
+    cy.get('[data-cy="filterPopup"] [data-cy="tagChipRemove"]').should(
+      'not.exist'
+    );
+
+    clickTag(rareTag.tag);
+    cy.get(chip).find('[data-cy="tagChipRemove"]').should('be.visible');
+    cy.get('[data-cy="filterPopup"] [data-cy="tagChipRemove"]').should(
+      'have.length',
+      1
+    );
+
+    clickTag(rareTag.tag);
+    cy.get(chip)
+      .should('have.attr', 'aria-pressed', 'false')
+      .find('[data-cy="tagChipRemove"]')
+      .should('not.exist');
+    assertShown([]);
+  });
+
   it('highlights the matching tags on the cards', () => {
     const selected = [rareTag.tag];
     cy.visitHome({ path: `/?tags=${rareTag.tag}` });
@@ -156,36 +179,47 @@ describe('Tag filter', () => {
         tagsOf(item, section.field).forEach((tag, tagIndex) => {
           cy.get(`[data-cy="${section.item}"]`)
             .eq(index)
-            .find(`[data-cy="${section.tag}"]`)
+            .find(section.chip)
             .eq(tagIndex)
             .should(
-              selected.includes(tag) ? 'have.class' : 'not.have.class',
-              section.activeClass
+              'have.attr',
+              'aria-pressed',
+              String(selected.includes(tag))
             );
         });
       });
     });
   });
 
-  it('shows the active filters under the button and removes them on click', () => {
-    cy.visitHome();
-    openPopup();
-    clickTag(rareTag.tag);
-    clickTag(extraTag.tag);
-    cy.get('[data-cy="filterPopupClose"]').click();
-    cy.get('[data-cy="filterPopup"]').should('not.exist');
+  sections.forEach((section) => {
+    const [item] = section.items.filter((i) => tagsOf(i, section.field).length);
+    if (!item) return;
+    // The item's rarest tag, so clicking it visibly narrows the results
+    const [tag] = [...tagsOf(item, section.field)].sort(
+      (a, b) => totalMatching([a]) - totalMatching([b])
+    );
+    const index = section.items.indexOf(item);
 
-    cy.get('[data-cy="filterActiveTag"]').should('have.length', 2);
-    cy.get(`[data-cy="filterActiveTag"][data-tag="${rareTag.tag}"]`)
-      .should('be.visible')
-      .and('contain.text', rareTag.title)
-      .click();
+    it(`filters when a tag on one of the ${section.name} is clicked`, () => {
+      cy.visitHome();
+      cy.get(`[data-cy="${section.item}"]`)
+        .eq(index)
+        .find(section.chip)
+        .filter(`[data-tag="${tag}"]`)
+        .first()
+        .scrollIntoView()
+        .click();
 
-    cy.get('[data-cy="filterActiveTag"]').should('have.length', 1);
-    assertShown([extraTag.tag]);
-    cy.get(`[data-cy="filterActiveTag"][data-tag="${extraTag.tag}"]`).click();
-    cy.get('[data-cy="filterActive"]').should('not.exist');
-    assertShown([]);
+      assertShown([tag]);
+      cy.url().should('include', `tags=${tag}`);
+      cy.get('[data-cy="filterCount"]').should('contain.text', '(1)');
+      cy.get('[data-cy="filterPopup"]').should('not.exist');
+      cy.get('[data-cy="popup"]').should('not.exist');
+
+      // Clicking the selected tag again removes the filter
+      cy.get(section.chip).filter(`[data-tag="${tag}"]`).first().click();
+      assertShown([]);
+    });
   });
 
   it('clears every selection with "Clear all"', () => {
@@ -216,8 +250,30 @@ describe('Tag filter', () => {
   it('applies tags from the URL and ignores unknown ones', () => {
     cy.visitHome({ path: `/?tags=${rareTag.tag},not-a-real-tag` });
     assertShown([rareTag.tag]);
-    cy.get('[data-cy="filterActiveTag"]').should('have.length', 1);
     cy.get('[data-cy="filterCount"]').should('contain.text', '(1)');
+  });
+
+  [1280, 1024, 800].forEach((width) => {
+    it(`keeps the column widths when filtering at ${width}px`, () => {
+      const widths = () =>
+        cy.get('[data-cy="hero"]').then(($hero) =>
+          cy
+            .get('[data-cy="tagFilter"]')
+            .parent()
+            .then(($wrapper) => [
+              $hero[0].getBoundingClientRect().width,
+              $wrapper[0].getBoundingClientRect().width,
+            ])
+        );
+
+      cy.viewport(width, 800);
+      cy.visitHome();
+      widths().then((before) => {
+        cy.visitHome({ path: `/?tags=${rareTag.tag}` });
+        assertShown([rareTag.tag]);
+        widths().should('deep.equal', before);
+      });
+    });
   });
 
   describe('closing the popup', () => {

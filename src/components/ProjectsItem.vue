@@ -1,21 +1,18 @@
 <script>
 import ProjectsItemPopup from './ProjectsItemPopup.vue';
-import { useTagFilter } from '@/composables/useTagFilter';
+import TagChip from './TagChip.vue';
 
 export default {
   name: 'ProjectsItem',
   components: {
     ProjectsItemPopup,
+    TagChip,
   },
   props: {
     project: {
       type: Object,
       required: true,
     },
-  },
-  setup() {
-    const { isSelected } = useTagFilter();
-    return { isSelected };
   },
   data() {
     return {
@@ -55,15 +52,13 @@ export default {
         </h3>
         <p class="project-item__description" v-html="project.description"></p>
         <div class="project-item__technologies">
-          <span
+          <TagChip
             v-for="tech in project.technologies"
             :key="tech.tag"
+            :tag="tech"
             class="project-item__tech-tag"
-            :class="{ 'project-item__tech-tag--active': isSelected(tech.tag) }"
             data-cy="projectTag"
-          >
-            {{ tech.title }}
-          </span>
+          />
         </div>
       </div>
     </div>
@@ -122,18 +117,8 @@ export default {
   font-size: 0.9em;
 }
 .project-item__tech-tag {
-  display: inline-block;
-  color: #9393e8;
-  background-color: rgba(147, 147, 232, 0.1);
-  padding: 0.25em 0.75em;
   margin: 0.5em 0.375em 0 0;
-  border-radius: 9999px;
-  box-sizing: border-box;
   font-size: 0.9em;
-}
-.project-item__tech-tag--active {
-  color: white;
-  background-color: rgba(147, 147, 232, 0.45);
 }
 @media screen and (max-width: 750px) {
   .project-item {

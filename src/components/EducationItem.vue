@@ -1,7 +1,5 @@
 <script setup>
-import { useTagFilter } from '@/composables/useTagFilter';
-
-const { isSelected } = useTagFilter();
+import TagChip from './TagChip.vue';
 
 defineProps({
   education: {
@@ -78,12 +76,9 @@ defineProps({
           v-for="(tag, key) in education.tags"
           :key="key"
           class="education-item__list-item"
-          :class="{ 'education-item__list-item--active': isSelected(tag.tag) }"
           data-cy="educationTag"
         >
-          <div class="education-item__tag">
-            {{ tag.title }}
-          </div>
+          <TagChip :tag="tag" />
         </li>
       </ul>
     </div>
@@ -153,19 +148,7 @@ defineProps({
   padding-inline-start: 0;
 }
 .education-item__list-item {
-  color: #9393e8;
-  background-color: rgba(147, 147, 232, 0.1);
   margin: 0.5em 0.375em 0 0;
-  border-radius: 9999px;
-  box-sizing: border-box;
   font-size: 0.8em;
-}
-.education-item__list-item--active {
-  color: white;
-  background-color: rgba(147, 147, 232, 0.45);
-}
-.education-item__tag {
-  padding: 0.25em 0.75em;
-  box-sizing: border-box;
 }
 </style>

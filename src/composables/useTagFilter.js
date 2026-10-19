@@ -50,10 +50,6 @@ function matches(itemTags = []) {
   return !hasFilter.value || itemTags.some(({ tag }) => isSelected(tag));
 }
 
-function tagTitle(tag) {
-  return tagTitles.get(tag) ?? tag;
-}
-
 export function useTagFilter() {
   return {
     allTags,
@@ -63,7 +59,6 @@ export function useTagFilter() {
     toggleTag,
     clearTags,
     matches,
-    tagTitle,
   };
 }
 

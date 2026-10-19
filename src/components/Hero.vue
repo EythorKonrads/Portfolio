@@ -71,9 +71,9 @@ import Social from './Social.vue';
   justify-content: center;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
-  max-width: 450px;
-  min-width: 300px;
+  /* Sized by the viewport only, so filtering the content can't resize it */
+  flex-shrink: 0;
+  width: clamp(300px, 30vw, 450px);
   box-sizing: border-box;
   background-color: var(--color-background-overlay);
   padding: 1.5rem;
@@ -149,11 +149,11 @@ import Social from './Social.vue';
     margin-left: 0.5em;
   }
   @media screen and (max-width: 750px) {
-    min-width: 250px;
+    width: clamp(250px, 30vw, 450px);
   }
   @media screen and (max-width: 600px) {
     height: auto;
-    max-width: none;
+    width: 100vw;
 
     .hero__links {
       flex-direction: column;
