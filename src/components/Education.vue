@@ -1,6 +1,15 @@
 <script setup>
-import ExperienceJob from './EducationItem.vue';
+import { computed } from 'vue';
+import EducationItem from './EducationItem.vue';
 import educations from '@/assets/educations.json';
+import { useTagFilter } from '@/composables/useTagFilter';
+
+const { matches } = useTagFilter();
+const visibleEducations = computed(() =>
+  educations
+    .map((education, index) => ({ education, index }))
+    .filter(({ education }) => matches(education.tags))
+);
 </script>
 
 <template>
@@ -9,12 +18,19 @@ import educations from '@/assets/educations.json';
       <h2>Education</h2>
       <div class="education__line reveal-line"></div>
     </div>
-    <ExperienceJob
-      v-for="(education, key) in educations"
-      :key="key"
+    <EducationItem
+      v-for="{ education, index } in visibleEducations"
+      :key="index"
       v-reveal
       :education="education"
     />
+    <p
+      v-if="!visibleEducations.length"
+      class="education__empty"
+      data-cy="educationEmpty"
+    >
+      No education matches the selected filters.
+    </p>
   </div>
 </template>
 
@@ -36,5 +52,10 @@ import educations from '@/assets/educations.json';
   height: 1px;
   width: 100%;
   background-color: white;
+}
+.education__empty {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(100, 116, 139, 1);
 }
 </style>

@@ -3,12 +3,14 @@ import Hero from '../components/Hero.vue';
 import Experience from '../components/Experience.vue';
 import Education from '../components/Education.vue';
 import Projects from '../components/Projects.vue';
+import TagFilter from '../components/TagFilter.vue';
 </script>
 
 <template>
   <div class="home">
     <Hero class="home__hero" />
     <div class="home__wrapper">
+      <TagFilter class="home__filter" />
       <Experience class="home__experience" />
       <Education class="home__education" />
       <Projects class="home__projects" />
@@ -33,6 +35,9 @@ import Projects from '../components/Projects.vue';
     z-index: 2;
   }
   .home__wrapper {
+    /* Fill the space beside the hero regardless of content width */
+    flex: 1 1 0;
+    min-width: 0;
     max-height: 100vh;
     overflow: auto;
     padding: 2em;
@@ -54,6 +59,8 @@ import Projects from '../components/Projects.vue';
     max-height: none;
 
     .home__wrapper {
+      flex: none;
+      width: 100%;
       max-height: none;
       overflow: visible;
     }

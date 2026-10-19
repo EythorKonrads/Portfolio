@@ -16,6 +16,9 @@ describe('Animations', () => {
     });
 
     it('reveals content that is on screen at load', () => {
+      cy.get('[data-cy="filterButton"]')
+        .should('have.class', 'is-revealed')
+        .and('have.css', 'opacity', '1');
       cy.get('[data-cy="job"]')
         .first()
         .should('have.class', 'is-revealed')
@@ -71,6 +74,12 @@ describe('Animations', () => {
           .should('have.css', 'animation-name', 'none')
           .and('have.css', 'opacity', '1');
       });
+    });
+
+    it('shows the filter button without animating it', () => {
+      cy.get('[data-cy="filterButton"]')
+        .should('have.css', 'opacity', '1')
+        .and('have.css', 'transition-property', 'background-color');
     });
 
     it('shows below-the-fold content without scrolling', () => {

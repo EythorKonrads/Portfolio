@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BasePopup: typeof import('./components/BasePopup.vue')['default']
     Education: typeof import('./components/Education.vue')['default']
     EducationItem: typeof import('./components/EducationItem.vue')['default']
     ElIcon: typeof import('element-plus/es')['ElIcon']
@@ -26,5 +27,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Social: typeof import('./components/Social.vue')['default']
+    TagChip: typeof import('./components/TagChip.vue')['default']
+    TagFilter: typeof import('./components/TagFilter.vue')['default']
   }
 }
