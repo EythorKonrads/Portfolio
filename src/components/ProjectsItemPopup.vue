@@ -69,17 +69,20 @@ export default {
   <div
     v-if="isOpen"
     class="project-item-popup__backdrop"
+    data-cy="popupBackdrop"
     :class="{ 'project-item-popup__backdrop--visible': isAnimating }"
     @click="close"
   >
     <div
       class="project-item-popup"
+      data-cy="popup"
       :class="{ 'project-item-popup--visible': isAnimating }"
       @click.stop
       @scroll="handleScroll"
     >
       <div
         class="project-item-popup__close"
+        data-cy="popupClose"
         :class="{ 'project-item-popup__close--scrolled': isScrolledPastImage }"
         @click="close"
       >
@@ -136,7 +139,7 @@ export default {
         </div>
       </div>
       <div class="project-item-popup__content">
-        <h3 class="project-item-popup__title">
+        <h3 class="project-item-popup__title" data-cy="popupTitle">
           {{ project.title }}
         </h3>
         <p
@@ -152,7 +155,7 @@ export default {
             {{ tech.title }}
           </span>
         </div>
-        <div class="project-item-popup__links">
+        <div class="project-item-popup__links" data-cy="popupLinks">
           <a
             v-if="project.githubUrl"
             :href="project.githubUrl"

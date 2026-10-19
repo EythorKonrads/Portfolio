@@ -4,7 +4,7 @@ import projects from '@/assets/projects.json';
 </script>
 
 <template>
-  <div id="projects" class="projects">
+  <div id="projects" class="projects" data-cy="projects">
     <div v-reveal class="projects__hdln">
       <h2>Projects</h2>
       <div class="projects__line reveal-line"></div>

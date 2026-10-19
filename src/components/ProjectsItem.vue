@@ -30,22 +30,31 @@ export default {
 
 <template>
   <div>
-    <div v-reveal class="project-item" @click="toggleOpen">
+    <div
+      v-reveal
+      class="project-item"
+      data-cy="projectCard"
+      @click="toggleOpen"
+    >
       <div class="project-item__image">
         <img
           :src="project.image"
           :alt="project.title"
           class="project-item__img"
+          data-cy="projectImage"
         />
       </div>
       <div class="project-item__content">
-        <h3 class="project-item__title">{{ project.title }}</h3>
+        <h3 class="project-item__title" data-cy="projectTitle">
+          {{ project.title }}
+        </h3>
         <p class="project-item__description" v-html="project.description"></p>
         <div class="project-item__technologies">
           <span
             v-for="tech in project.technologies"
             :key="tech"
             class="project-item__tech-tag"
+            data-cy="projectTag"
           >
             {{ tech.title }}
           </span>

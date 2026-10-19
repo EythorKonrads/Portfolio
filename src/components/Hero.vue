@@ -12,11 +12,16 @@ import Social from './Social.vue';
           data-cy="heroImage"
         ></div>
         <div class="hero__texts">
-          <h1 class="hero__hdln anim-fade-up" style="--anim-delay: 80ms">
+          <h1
+            class="hero__hdln anim-fade-up"
+            data-cy="heroName"
+            style="--anim-delay: 80ms"
+          >
             Eythor Konradsson
           </h1>
           <h2
             class="hero__secondary-hdln anim-fade-up"
+            data-cy="heroRole"
             style="--anim-delay: 160ms"
           >
             Lead Frontend Developer
@@ -45,7 +50,11 @@ import Social from './Social.vue';
       data-cy="heroLinks"
     >
       <Social />
-      <a href="mailto:kh.krimper@gmail.com" class="hero__mail">
+      <a
+        href="mailto:kh.krimper@gmail.com"
+        class="hero__mail"
+        data-cy="heroMail"
+      >
         Lets talk
         <el-icon class="hero__mail-icon" :size="20">
           <Promotion />
