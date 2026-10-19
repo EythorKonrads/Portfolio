@@ -1,9 +1,11 @@
 <script>
+import BasePopup from './BasePopup.vue';
 import Icon from './Icon.vue';
 
 export default {
   name: 'ProjectsItemPopup',
   components: {
+    BasePopup,
     Icon,
   },
   props: {
@@ -16,44 +18,13 @@ export default {
       default: false,
     },
   },
+  emits: ['close'],
   data() {
     return {
-      isAnimating: false,
       hoveredTooltip: null,
-      isScrolledPastImage: false,
     };
   },
-  watch: {
-    isOpen(newValue) {
-      if (newValue) {
-        document.body.style.overflow = 'hidden';
-        this.$nextTick(() => {
-          setTimeout(() => {
-            this.isAnimating = true;
-          }, 10);
-        });
-      } else {
-        this.isAnimating = false;
-        document.body.style.overflow = '';
-      }
-    },
-  },
-  beforeUnmount() {
-    document.body.style.overflow = '';
-  },
   methods: {
-    close() {
-      this.isAnimating = false;
-      setTimeout(() => {
-        this.$emit('close');
-        document.body.style.overflow = '';
-      }, 400);
-    },
-    handleScroll(event) {
-      const popup = event.target;
-      const imageHeight = 300; // Height of the image section
-      this.isScrolledPastImage = popup.scrollTop > imageHeight - 50; // 50px buffer
-    },
     showTooltip(tooltipKey) {
       this.hoveredTooltip = tooltipKey;
     },
@@ -61,194 +32,108 @@ export default {
       this.hoveredTooltip = null;
     },
   },
-  emits: ['close'],
 };
 </script>
 
 <template>
-  <div
-    v-if="isOpen"
-    class="project-item-popup__backdrop"
-    data-cy="popupBackdrop"
-    :class="{ 'project-item-popup__backdrop--visible': isAnimating }"
-    @click="close"
-  >
-    <div
-      class="project-item-popup"
-      data-cy="popup"
-      :class="{ 'project-item-popup--visible': isAnimating }"
-      @click.stop
-      @scroll="handleScroll"
-    >
-      <div
-        class="project-item-popup__close"
-        data-cy="popupClose"
-        :class="{ 'project-item-popup__close--scrolled': isScrolledPastImage }"
-        @click="close"
-      >
-        <Icon name="close" class="social__icon o-icon" />
-      </div>
-      <div class="project-item-popup__image">
-        <img
-          :src="project.image"
-          :alt="project.title"
-          class="project-item-popup__img"
-        />
-      </div>
-      <div class="project-item-popup__links project-item-popup__links--header">
-        <div class="project-item-popup__tooltip-container">
-          <a
-            v-if="project.githubUrl"
-            :href="project.githubUrl"
-            target="_blank"
-            class="project-item-popup__link"
-            @click.stop
-            @mouseenter="showTooltip('github')"
-            @mouseleave="hideTooltip"
-          >
-            <Icon
-              name="code"
-              class="project-item-popup__link-icon project-item-popup__link-icon--code"
-            />
-          </a>
-          <div
-            v-if="hoveredTooltip === 'github' && project.githubUrl"
-            class="project-item-popup__tooltip"
-          >
-            View GitHub Repository
-          </div>
-        </div>
-        <div class="project-item-popup__tooltip-container">
-          <a
-            v-if="project.liveUrl"
-            :href="project.liveUrl"
-            target="_blank"
-            class="project-item-popup__link"
-            @click.stop
-            @mouseenter="showTooltip('live')"
-            @mouseleave="hideTooltip"
-          >
-            <Icon name="external-link" class="project-item-popup__link-icon" />
-          </a>
-          <div
-            v-if="hoveredTooltip === 'live' && project.liveUrl"
-            class="project-item-popup__tooltip"
-          >
-            View Project
-          </div>
+  <BasePopup :is-open="isOpen" :label="project.title" @close="$emit('close')">
+    <div class="project-item-popup__image">
+      <img
+        :src="project.image"
+        :alt="project.title"
+        class="project-item-popup__img"
+      />
+    </div>
+    <div class="project-item-popup__links project-item-popup__links--header">
+      <div class="project-item-popup__tooltip-container">
+        <a
+          v-if="project.githubUrl"
+          :href="project.githubUrl"
+          target="_blank"
+          class="project-item-popup__link"
+          @click.stop
+          @mouseenter="showTooltip('github')"
+          @mouseleave="hideTooltip"
+        >
+          <Icon
+            name="code"
+            class="project-item-popup__link-icon project-item-popup__link-icon--code"
+          />
+        </a>
+        <div
+          v-if="hoveredTooltip === 'github' && project.githubUrl"
+          class="project-item-popup__tooltip"
+        >
+          View GitHub Repository
         </div>
       </div>
-      <div class="project-item-popup__content">
-        <h3 class="project-item-popup__title" data-cy="popupTitle">
-          {{ project.title }}
-        </h3>
-        <p
-          class="project-item-popup__description"
-          v-html="project.description"
-        ></p>
-        <div class="project-item-popup__technologies">
-          <span
-            v-for="tech in project.technologies"
-            :key="tech"
-            class="project-item-popup__tech-tag"
-          >
-            {{ tech.title }}
-          </span>
-        </div>
-        <div class="project-item-popup__links" data-cy="popupLinks">
-          <a
-            v-if="project.githubUrl"
-            :href="project.githubUrl"
-            target="_blank"
-            class="project-item-popup__link"
-            @click.stop
-          >
-            View GitHub Repository
-            <Icon
-              name="code"
-              class="project-item-popup__link-icon project-item-popup__link-icon--code"
-            />
-          </a>
-          <a
-            v-if="project.liveUrl"
-            :href="project.liveUrl"
-            target="_blank"
-            class="project-item-popup__link"
-            @click.stop
-          >
-            View project
-            <Icon name="external-link" class="project-item-popup__link-icon" />
-          </a>
+      <div class="project-item-popup__tooltip-container">
+        <a
+          v-if="project.liveUrl"
+          :href="project.liveUrl"
+          target="_blank"
+          class="project-item-popup__link"
+          @click.stop
+          @mouseenter="showTooltip('live')"
+          @mouseleave="hideTooltip"
+        >
+          <Icon name="external-link" class="project-item-popup__link-icon" />
+        </a>
+        <div
+          v-if="hoveredTooltip === 'live' && project.liveUrl"
+          class="project-item-popup__tooltip"
+        >
+          View Project
         </div>
       </div>
     </div>
-  </div>
+    <div class="project-item-popup__content">
+      <h3 class="project-item-popup__title" data-cy="popupTitle">
+        {{ project.title }}
+      </h3>
+      <p
+        class="project-item-popup__description"
+        v-html="project.description"
+      ></p>
+      <div class="project-item-popup__technologies">
+        <span
+          v-for="tech in project.technologies"
+          :key="tech"
+          class="project-item-popup__tech-tag"
+        >
+          {{ tech.title }}
+        </span>
+      </div>
+      <div class="project-item-popup__links" data-cy="popupLinks">
+        <a
+          v-if="project.githubUrl"
+          :href="project.githubUrl"
+          target="_blank"
+          class="project-item-popup__link"
+          @click.stop
+        >
+          View GitHub Repository
+          <Icon
+            name="code"
+            class="project-item-popup__link-icon project-item-popup__link-icon--code"
+          />
+        </a>
+        <a
+          v-if="project.liveUrl"
+          :href="project.liveUrl"
+          target="_blank"
+          class="project-item-popup__link"
+          @click.stop
+        >
+          View project
+          <Icon name="external-link" class="project-item-popup__link-icon" />
+        </a>
+      </div>
+    </div>
+  </BasePopup>
 </template>
 
 <style scoped>
-.project-item-popup__backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0);
-  z-index: 998;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
-}
-.project-item-popup__backdrop--visible {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.project-item-popup {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 90vw;
-  max-width: 1200px;
-  height: 90vh;
-  max-height: 800px;
-  background-color: rgb(15, 23, 42);
-  transform: translateY(100vh);
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: 8px;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-  overflow-y: auto;
-  overflow-x: hidden;
-  cursor: default;
-}
-.project-item-popup--visible {
-  transform: translateY(0);
-}
-.project-item-popup__close {
-  position: sticky;
-  top: 1.75rem;
-  align-self: flex-end;
-  margin-right: 1.75rem;
-  background-color: rgb(15, 23, 42);
-  padding: 0.4rem;
-  border-radius: 50%;
-  transition: 0.3s ease;
-  z-index: 1000;
-  cursor: pointer;
-}
-.project-item-popup__close--scrolled {
-  background-color: rgb(29 36 62);
-}
-.project-item-popup__close:hover {
-  background-color: rgb(46 52 86);
-}
-.project-item-popup__close .icon {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-.project-item-popup__close :deep(path) {
-  fill: #9393e8;
-}
 .project-item-popup__image {
   width: 100%;
   height: 300px;

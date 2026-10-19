@@ -44,7 +44,7 @@ describe('Projects', () => {
 
         cy.get('[data-cy="popup"]')
           .should('be.visible')
-          .and('have.class', 'project-item-popup--visible');
+          .and('have.class', 'base-popup--visible');
         cy.get('body').should('have.css', 'overflow', 'hidden');
         cy.get('[data-cy="popupTitle"]').should('contain.text', project.title);
 
