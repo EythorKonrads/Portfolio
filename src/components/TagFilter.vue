@@ -12,7 +12,10 @@ const isOpen = ref(false);
 
 <template>
   <div class="tag-filter" data-cy="tagFilter">
+    <!-- v-reveal on the button, not the root: a transform on the root would
+         break the popup's fixed backdrop while it animates -->
     <button
+      v-reveal
       type="button"
       class="tag-filter__button"
       data-cy="filterButton"
@@ -81,6 +84,18 @@ const isOpen = ref(false);
   color: #9393e8;
   background-color: rgba(147, 147, 232, 0.1);
   transition: background-color 0.3s ease;
+}
+/* Keep the reveal fade from animations.scss alongside the hover transition */
+.tag-filter__button.reveal {
+  transition:
+    opacity var(--anim-duration) var(--anim-ease) var(--reveal-delay, 0ms),
+    transform var(--anim-duration) var(--anim-ease) var(--reveal-delay, 0ms),
+    background-color 0.3s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tag-filter__button.reveal {
+    transition: background-color 0.3s ease;
+  }
 }
 .tag-filter__button:hover,
 .tag-filter__clear:hover:not(:disabled) {
