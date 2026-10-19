@@ -30,7 +30,7 @@ export default {
 
 <template>
   <div>
-    <div class="project-item" @click="toggleOpen">
+    <div v-reveal class="project-item" @click="toggleOpen">
       <div class="project-item__image">
         <img
           :src="project.image"
@@ -67,7 +67,6 @@ export default {
   min-height: 100px;
   padding: 1rem;
   border-radius: 8px;
-  transition: transform 0.3s ease;
 }
 .project-item:hover {
   background-color: rgba(255, 255, 255, 0.05);

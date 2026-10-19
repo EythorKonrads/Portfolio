@@ -5,13 +5,14 @@ import educations from '@/assets/educations.json';
 
 <template>
   <div id="education" class="education">
-    <div class="education__hdln">
+    <div v-reveal class="education__hdln">
       <h2>Education</h2>
-      <div class="education__line"></div>
+      <div class="education__line reveal-line"></div>
     </div>
     <ExperienceJob
       v-for="(education, key) in educations"
       :key="key"
+      v-reveal
       :education="education"
     />
   </div>
