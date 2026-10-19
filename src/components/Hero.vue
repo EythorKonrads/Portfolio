@@ -6,14 +6,29 @@ import Social from './Social.vue';
   <div class="hero" data-cy="hero">
     <div class="hero__wrapper">
       <div class="hero__card">
-        <div class="hero__image" data-cy="heroImage"></div>
+        <div
+          class="hero__image anim-fade-up"
+          style="--anim-delay: 0ms"
+          data-cy="heroImage"
+        ></div>
         <div class="hero__texts">
-          <h1 class="hero__hdln">Eythor Konradsson</h1>
-          <h2 class="hero__secondary-hdln">Lead Frontend Developer</h2>
+          <h1 class="hero__hdln anim-fade-up" style="--anim-delay: 80ms">
+            Eythor Konradsson
+          </h1>
+          <h2
+            class="hero__secondary-hdln anim-fade-up"
+            style="--anim-delay: 160ms"
+          >
+            Lead Frontend Developer
+          </h2>
         </div>
       </div>
       <div class="hero__info">
-        <p class="hero__text" data-cy="heroText">
+        <p
+          class="hero__text anim-fade-up"
+          style="--anim-delay: 240ms"
+          data-cy="heroText"
+        >
           Based in Copenhagen, Denmark, with 7+ years of experience working
           primarily with Vue.js and JavaScript, and additional experience in
           React. Strong focus on front-end architecture, performance, and
@@ -24,7 +39,11 @@ import Social from './Social.vue';
         </p>
       </div>
     </div>
-    <div class="hero__links" data-cy="heroLinks">
+    <div
+      class="hero__links anim-fade-up"
+      style="--anim-delay: 320ms"
+      data-cy="heroLinks"
+    >
       <Social />
       <a href="mailto:kh.krimper@gmail.com" class="hero__mail">
         Lets talk

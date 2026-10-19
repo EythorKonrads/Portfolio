@@ -5,9 +5,9 @@ import projects from '@/assets/projects.json';
 
 <template>
   <div id="projects" class="projects">
-    <div class="projects__hdln">
+    <div v-reveal class="projects__hdln">
       <h2>Projects</h2>
-      <div class="projects__line"></div>
+      <div class="projects__line reveal-line"></div>
     </div>
     <div class="projects__list">
       <ProjectsItem
@@ -16,7 +16,7 @@ import projects from '@/assets/projects.json';
         :project="project"
       />
     </div>
-    <p class="projects__more">More projects to showcase soon...</p>
+    <p v-reveal class="projects__more">More projects to showcase soon...</p>
   </div>
 </template>
 

@@ -5,11 +5,11 @@ import jobs from '@/assets/jobs.json';
 
 <template>
   <div id="experience" class="experience">
-    <div class="experience__hdln">
+    <div v-reveal class="experience__hdln">
       <h2>Experience</h2>
-      <div class="experience__line"></div>
+      <div class="experience__line reveal-line"></div>
     </div>
-    <ExperienceJob v-for="(job, key) in jobs" :key="key" :job="job" />
+    <ExperienceJob v-for="(job, key) in jobs" :key="key" v-reveal :job="job" />
   </div>
 </template>
 

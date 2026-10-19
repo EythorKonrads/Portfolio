@@ -1,0 +1,59 @@
+:root {
+  --anim-duration: 600ms;
+  --anim-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-distance: 10px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--anim-distance));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* One-off entrance on page load, stagger with --anim-delay */
+.anim-fade-up {
+  animation: fade-up var(--anim-duration) var(--anim-ease) both;
+  animation-delay: var(--anim-delay, 0ms);
+}
+
+/* Scroll reveal, toggled by the v-reveal directive */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--anim-distance));
+  transition:
+    opacity var(--anim-duration) var(--anim-ease),
+    transform var(--anim-duration) var(--anim-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Heading underline draws from the left */
+.reveal-line {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 800ms var(--anim-ease);
+  transition-delay: calc(var(--reveal-delay, 0ms) + 150ms);
+}
+.is-revealed .reveal-line {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up {
+    animation: none;
+  }
+  .reveal,
+  .reveal-line {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
