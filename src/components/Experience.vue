@@ -1,6 +1,15 @@
 <script setup>
+import { computed } from 'vue';
 import ExperienceJob from './ExperienceJob.vue';
 import jobs from '@/assets/jobs.json';
+import { useTagFilter } from '@/composables/useTagFilter';
+
+const { matches } = useTagFilter();
+const visibleJobs = computed(() =>
+  jobs
+    .map((job, index) => ({ job, index }))
+    .filter(({ job }) => matches(job.tags))
+);
 </script>
 
 <template>
@@ -9,7 +18,19 @@ import jobs from '@/assets/jobs.json';
       <h2>Experience</h2>
       <div class="experience__line reveal-line"></div>
     </div>
-    <ExperienceJob v-for="(job, key) in jobs" :key="key" v-reveal :job="job" />
+    <ExperienceJob
+      v-for="{ job, index } in visibleJobs"
+      :key="index"
+      v-reveal
+      :job="job"
+    />
+    <p
+      v-if="!visibleJobs.length"
+      class="experience__empty"
+      data-cy="experienceEmpty"
+    >
+      No experience matches the selected filters.
+    </p>
   </div>
 </template>
 
@@ -31,5 +52,10 @@ import jobs from '@/assets/jobs.json';
   height: 1px;
   width: 100%;
   background-color: white;
+}
+.experience__empty {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(100, 116, 139, 1);
 }
 </style>

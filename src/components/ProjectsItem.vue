@@ -1,5 +1,6 @@
 <script>
 import ProjectsItemPopup from './ProjectsItemPopup.vue';
+import { useTagFilter } from '@/composables/useTagFilter';
 
 export default {
   name: 'ProjectsItem',
@@ -11,6 +12,10 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  setup() {
+    const { isSelected } = useTagFilter();
+    return { isSelected };
   },
   data() {
     return {
@@ -52,8 +57,9 @@ export default {
         <div class="project-item__technologies">
           <span
             v-for="tech in project.technologies"
-            :key="tech"
+            :key="tech.tag"
             class="project-item__tech-tag"
+            :class="{ 'project-item__tech-tag--active': isSelected(tech.tag) }"
             data-cy="projectTag"
           >
             {{ tech.title }}
@@ -124,6 +130,10 @@ export default {
   border-radius: 9999px;
   box-sizing: border-box;
   font-size: 0.9em;
+}
+.project-item__tech-tag--active {
+  color: white;
+  background-color: rgba(147, 147, 232, 0.45);
 }
 @media screen and (max-width: 750px) {
   .project-item {

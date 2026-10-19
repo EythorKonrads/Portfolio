@@ -1,6 +1,15 @@
 <script setup>
+import { computed } from 'vue';
 import ProjectsItem from './ProjectsItem.vue';
 import projects from '@/assets/projects.json';
+import { useTagFilter } from '@/composables/useTagFilter';
+
+const { matches, hasFilter } = useTagFilter();
+const visibleProjects = computed(() =>
+  projects
+    .map((project, index) => ({ project, index }))
+    .filter(({ project }) => matches(project.technologies))
+);
 </script>
 
 <template>
@@ -11,12 +20,21 @@ import projects from '@/assets/projects.json';
     </div>
     <div class="projects__list">
       <ProjectsItem
-        v-for="(project, key) in projects"
-        :key="key"
+        v-for="{ project, index } in visibleProjects"
+        :key="index"
         :project="project"
       />
     </div>
-    <p v-reveal class="projects__more">More projects to showcase soon...</p>
+    <p
+      v-if="!visibleProjects.length"
+      class="projects__empty"
+      data-cy="projectsEmpty"
+    >
+      No projects match the selected filters.
+    </p>
+    <p v-if="!hasFilter" v-reveal class="projects__more">
+      More projects to showcase soon...
+    </p>
   </div>
 </template>
 
@@ -51,5 +69,10 @@ import projects from '@/assets/projects.json';
   font-size: 1rem;
   color: rgba(100, 116, 139, 1);
   text-align: center;
+}
+.projects__empty {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(100, 116, 139, 1);
 }
 </style>

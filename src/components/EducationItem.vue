@@ -1,4 +1,8 @@
 <script setup>
+import { useTagFilter } from '@/composables/useTagFilter';
+
+const { isSelected } = useTagFilter();
+
 defineProps({
   education: {
     type: Object,
@@ -74,6 +78,7 @@ defineProps({
           v-for="(tag, key) in education.tags"
           :key="key"
           class="education-item__list-item"
+          :class="{ 'education-item__list-item--active': isSelected(tag.tag) }"
           data-cy="educationTag"
         >
           <div class="education-item__tag">
@@ -154,6 +159,10 @@ defineProps({
   border-radius: 9999px;
   box-sizing: border-box;
   font-size: 0.8em;
+}
+.education-item__list-item--active {
+  color: white;
+  background-color: rgba(147, 147, 232, 0.45);
 }
 .education-item__tag {
   padding: 0.25em 0.75em;

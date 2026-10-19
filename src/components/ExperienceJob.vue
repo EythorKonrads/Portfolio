@@ -1,4 +1,8 @@
 <script setup>
+import { useTagFilter } from '@/composables/useTagFilter';
+
+const { isSelected } = useTagFilter();
+
 defineProps({
   job: {
     type: Object,
@@ -68,6 +72,7 @@ defineProps({
           v-for="(tag, key) in job.tags"
           :key="key"
           class="expirience-job__list-item"
+          :class="{ 'expirience-job__list-item--active': isSelected(tag.tag) }"
           data-cy="jobTag"
         >
           <div class="expirience-job__tag">
@@ -145,6 +150,10 @@ defineProps({
   border-radius: 9999px;
   box-sizing: border-box;
   font-size: 0.8em;
+}
+.expirience-job__list-item--active {
+  color: white;
+  background-color: rgba(147, 147, 232, 0.45);
 }
 .expirience-job__tag {
   padding: 0.25em 0.75em;

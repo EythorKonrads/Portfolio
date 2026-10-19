@@ -3,12 +3,14 @@ import Hero from '../components/Hero.vue';
 import Experience from '../components/Experience.vue';
 import Education from '../components/Education.vue';
 import Projects from '../components/Projects.vue';
+import TagFilter from '../components/TagFilter.vue';
 </script>
 
 <template>
   <div class="home">
     <Hero class="home__hero" />
     <div class="home__wrapper">
+      <TagFilter class="home__filter" />
       <Experience class="home__experience" />
       <Education class="home__education" />
       <Projects class="home__projects" />
