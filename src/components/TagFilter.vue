@@ -148,4 +148,12 @@ const isOpen = ref(false);
   opacity: 0.4;
   cursor: default;
 }
+/* Match the section nav's mobile size; the app's 15px base doesn't scale */
+@media screen and (max-width: 600px) {
+  .tag-filter__button,
+  .tag-filter__clear {
+    font-size: 0.875rem;
+    padding: 0.375em 0.875em;
+  }
+}
 </style>
