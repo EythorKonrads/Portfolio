@@ -49,6 +49,7 @@ describe('Hero', () => {
     cy.get('[data-cy="heroLinks"]').should('be.visible');
     cy.get('[data-cy="heroMail"]')
       .should('be.visible')
-      .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com');
+      .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com')
+      .and('contain.text', "Let's talk");
   });
 });

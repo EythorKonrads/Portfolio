@@ -55,7 +55,7 @@ import Social from './Social.vue';
         class="hero__mail"
         data-cy="heroMail"
       >
-        Lets talk
+        Let's talk
         <el-icon class="hero__mail-icon" :size="20">
           <Promotion />
         </el-icon>
