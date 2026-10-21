@@ -5,26 +5,24 @@ import Icon from './Icon.vue';
 <template>
   <div class="social">
     <ul class="social__wrapper">
-      <el-link
-        class="social__link"
-        underline="never"
+      <a
+        class="social__link text-link"
         href="https://github.com/EythorKonrads"
         data-cy="socialGithub"
         target="_blank"
         rel="noopener noreferrer"
       >
         <Icon name="github" class="social__icon o-icon" />
-      </el-link>
-      <el-link
-        class="social__link"
-        underline="never"
+      </a>
+      <a
+        class="social__link text-link"
         href="https://www.linkedin.com/in/eythork/"
         data-cy="socialLinkedin"
         target="_blank"
         rel="noopener noreferrer"
       >
         <Icon name="linkedin" class="social__icon o-icon" />
-      </el-link>
+      </a>
     </ul>
   </div>
 </template>

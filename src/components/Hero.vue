@@ -1,4 +1,5 @@
 <script setup>
+import Icon from './Icon.vue';
 import Social from './Social.vue';
 </script>
 
@@ -56,9 +57,7 @@ import Social from './Social.vue';
         data-cy="heroMail"
       >
         Lets talk
-        <el-icon class="hero__mail-icon" :size="20">
-          <Promotion />
-        </el-icon>
+        <Icon name="promotion" :icon="false" class="hero__mail-icon" />
       </a>
     </div>
   </div>
@@ -146,7 +145,11 @@ import Social from './Social.vue';
     color: var(--color-link-hover);
   }
   .hero__mail-icon {
-    margin-left: 0.5em;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    /* 0.5em of the 20px icon wrapper this used to sit in */
+    margin-left: 10px;
   }
   @media screen and (max-width: 750px) {
     width: clamp(250px, 30vw, 450px);

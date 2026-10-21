@@ -1,4 +1,5 @@
 <script setup>
+import Icon from './Icon.vue';
 import TagChip from './TagChip.vue';
 
 defineProps({
@@ -18,21 +19,21 @@ defineProps({
     <div class="expirience-job__wrapper">
       <h3 v-if="job?.titles" class="expirience-job__title" data-cy="jobTitle">
         <template v-for="(title, key) in job.titles">
-          <el-link
+          <a
             v-if="title?.url"
             :key="`${key}-link`"
-            class="expirience-job__link"
-            underline="never"
+            class="expirience-job__link text-link"
             :href="title?.url"
             target="_blank"
             rel="noopener noreferrer"
           >
             {{ title?.title }}
-            <Link
-              v-if="title?.url"
+            <Icon
+              name="link"
+              :icon="false"
               style="width: 1.25em; margin-left: 0.25em"
             />
-          </el-link>
+          </a>
           <span v-else :key="key">
             {{ title?.title }}
           </span>
@@ -46,19 +47,22 @@ defineProps({
       ></p>
       <div v-if="job?.projects" class="expirience-job__projects">
         <template v-for="(project, key) in job.projects" :key="key">
-          <el-link
+          <a
             v-if="project?.url"
             :key="key"
-            class="expirience-job__project"
-            underline="never"
+            class="expirience-job__project text-link"
             :href="project.url"
             target="_blank"
             rel="noopener noreferrer"
           >
             <template v-if="key !== 0">| </template>
             {{ project.title }}
-            <Link style="width: 1em; margin-left: 0.25em" />
-          </el-link>
+            <Icon
+              name="link"
+              :icon="false"
+              style="width: 1em; margin-left: 0.25em"
+            />
+          </a>
           <span v-else class="expirience-job__project">
             <template v-if="key !== 0">| </template>
             {{ project.title }}
@@ -99,7 +103,6 @@ defineProps({
 }
 .expirience-job__title {
   font-weight: 700;
-  color: var(--el-link-text-color);
 }
 .expirience-job__link {
   font-size: 1em;
@@ -127,7 +130,6 @@ defineProps({
   color: rgb(100, 116, 139);
 }
 .expirience-job__project {
-  font-size: var(--el-link-font-size);
   margin-right: 0.25em;
 }
 .expirience-job__list {

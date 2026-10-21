@@ -1,4 +1,5 @@
 <script setup>
+import Icon from './Icon.vue';
 import TagChip from './TagChip.vue';
 
 defineProps({
@@ -25,22 +26,22 @@ defineProps({
           v-for="(title, key) in education.titles"
           :key="`${key}-template`"
         >
-          <el-link
+          <a
             v-if="title?.url"
             :key="`${key}-link`"
-            class="education-item__link"
-            underline="never"
+            class="education-item__link text-link"
             :href="title?.url"
             target="_blank"
             rel="noopener noreferrer"
           >
             {{ title?.title }}
-            <Link
-              v-if="title?.url"
+            <Icon
+              name="link"
+              :icon="false"
               style="width: 1.25em; margin-left: 0.25em; margin-right: 0.25em"
             />
             |
-          </el-link>
+          </a>
           <span v-else :key="key">
             {{ title?.title }}
           </span>
@@ -52,19 +53,22 @@ defineProps({
       </p>
       <div v-if="education?.projects" class="education-item__projects">
         <template v-for="(project, key) in education.projects" :key="key">
-          <el-link
+          <a
             v-if="project?.url"
             :key="key"
-            class="education-item__project"
-            underline="never"
+            class="education-item__project text-link"
             :href="project.url"
             target="_blank"
             rel="noopener noreferrer"
           >
             <template v-if="key !== 0">| </template>
-            <Link style="width: 1em; margin-right: 0.25em" />
+            <Icon
+              name="link"
+              :icon="false"
+              style="width: 1em; margin-right: 0.25em"
+            />
             {{ project.title }}
-          </el-link>
+          </a>
           <span v-else class="education-item__project">
             <template v-if="key !== 0">| </template>
             {{ project.title }}
@@ -136,7 +140,6 @@ defineProps({
   color: rgb(100, 116, 139);
 }
 .education-item__project {
-  font-size: var(--el-link-font-size);
   margin-right: 0.25em;
 }
 .education-item__list {

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import BasePopup from './BasePopup.vue';
+import Icon from './Icon.vue';
 import TagChip from './TagChip.vue';
 import { useTagFilter, useTagFilterQuery } from '@/composables/useTagFilter';
 
@@ -22,7 +23,7 @@ const isOpen = ref(false);
       aria-haspopup="dialog"
       @click="isOpen = true"
     >
-      <Filter class="tag-filter__button-icon" />
+      <Icon name="filter" :icon="false" class="tag-filter__button-icon" />
       Filter
       <span v-if="hasFilter" data-cy="filterCount">
         ({{ selectedTags.length }})
