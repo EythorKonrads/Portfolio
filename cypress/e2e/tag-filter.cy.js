@@ -314,4 +314,27 @@ describe('Tag filter content', () => {
   it('has tags that hide at least one item', () => {
     expect(totalMatching([rareTag.tag])).to.be.lessThan(totalItems);
   });
+
+  it('lists each tag at most once per item', () => {
+    sections.forEach(({ items, field }) => {
+      items.forEach((item) => {
+        const tags = tagsOf(item, field);
+        expect(tags, JSON.stringify(item.titles ?? item.title)).to.have.length(
+          new Set(tags).size
+        );
+      });
+    });
+  });
+
+  it('uses the same title for a tag everywhere', () => {
+    const titles = new Map();
+    sections.forEach(({ items, field }) => {
+      items.forEach((item) => {
+        (item[field] ?? []).forEach(({ tag, title }) => {
+          expect(titles.get(tag) ?? title, `title of "${tag}"`).to.eq(title);
+          titles.set(tag, title);
+        });
+      });
+    });
+  });
 });

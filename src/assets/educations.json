@@ -48,16 +48,8 @@
         "tag": "react"
       },
       {
-        "title": "React",
-        "tag": "react"
-      },
-      {
-        "title": "AngularJs",
+        "title": "AngularJS",
         "tag": "angularjs"
-      },
-      {
-        "title": "WordPress",
-        "tag": "wordpress"
       }
     ]
   },
@@ -102,7 +94,7 @@
         "tag": "react"
       },
       {
-        "title": "ReactNative",
+        "title": "React Native",
         "tag": "reactnative"
       },
       {
@@ -110,7 +102,7 @@
         "tag": "git"
       },
       {
-        "title": "AngularJs",
+        "title": "AngularJS",
         "tag": "angularjs"
       }
     ]
