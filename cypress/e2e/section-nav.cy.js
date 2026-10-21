@@ -236,7 +236,10 @@ describe('Section nav', () => {
         const header = rect($header);
         expect(header.top).to.equal(0);
         expect(header.left).to.equal(0);
-        expect(header.width).to.equal(375);
+        // Full width, minus the scrollbar on systems that show one (Linux CI)
+        expect(header.width).to.equal(
+          $header[0].ownerDocument.documentElement.clientWidth
+        );
         cy.get('[data-cy="hero"]').should(($hero) => {
           expect(rect($hero).top).to.be.at.least(header.bottom - 1);
         });
