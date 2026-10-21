@@ -64,5 +64,36 @@ describe('Layout', () => {
       cy.visitHome();
       cy.get('html').should('have.attr', 'data-theme', 'dark');
     });
+
+    it('colors the mobile browser bar like the page', () => {
+      cy.visitHome();
+      cy.get('[data-cy="hero"]')
+        .parent()
+        .then(($home) => {
+          // rgb(15, 23, 42) -> #0f172a
+          const hex = $home
+            .css('background-color')
+            .match(/\d+/g)
+            .slice(0, 3)
+            .map((n) => Number(n).toString(16).padStart(2, '0'))
+            .join('');
+          cy.get('head meta[name="theme-color"]').should(
+            'have.attr',
+            'content',
+            `#${hex}`
+          );
+        });
+    });
+
+    it('uses the page colors and name in the web manifest', () => {
+      cy.request('/site.webmanifest')
+        .its('body')
+        .then((body) => {
+          const manifest = typeof body === 'string' ? JSON.parse(body) : body;
+          expect(manifest.name).to.eq('Eythor Konradsson');
+          expect(manifest.theme_color).to.eq('#0f172a');
+          expect(manifest.background_color).to.eq('#0f172a');
+        });
+    });
   });
 });
