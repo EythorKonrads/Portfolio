@@ -1,6 +1,6 @@
 [
   {
-    "dates": "2024 - present",
+    "dates": "Sept 2024 - Present",
     "titles": [
       {
         "title": "Full-stack developer | Part-time - Norduo",
@@ -50,13 +50,13 @@
     ]
   },
   {
-    "dates": "2020 - 2025",
+    "dates": "Sept 2020 - Oct 2025",
     "titles": [
       {
-        "title": "Lead Front-end developer - Render"
+        "title": "Lead/Senior front-end developer - Render"
       }
     ],
-    "description": "Automated content production platform focused on data-driven content creation across multiple marketing channels.<ul><li>Served as lead developer for several automated content-production tools built with Vue.js  enabling generation of adaptable layouts for a wide range of marketing channels.</li><li>Led development of a dashboard platform, overseeing the full application lifecycle from ticket creation and feature scoping to UX/UI design and front-end implementation.</li><li>Built and maintained automated CI pipelines with GitHub Actions, ensuring consistent testing and reliable releases.</li><li>Responsible for qualifying candidates, onboarding, and technical mentoring of new developers.</li><li>Supported an external client in the blockchain space by building and refining React interfaces while temporarily embedded in their team.</li><li>Implemented comprehensive component and end-to-end testing across all repositories using Cypress.</li><li>Led the refactoring of automated content-production tool, resulting in 60% less CloudFlare cost.</li></ul>",
+    "description": "Automated content production platform focused on data-driven content creation across multiple marketing channels.<ul><li>Led development of automated content-production tools in Vue.js, enabling adaptable layouts across marketing channels.</li><li>Led development of a dashboard platform, overseeing its lifecycle from ticket creation and feature scoping to UX/UI design and front-end implementation.</li><li>Built and maintained automated CI pipelines with GitHub Actions, ensuring consistent testing and reliable releases.</li><li>Qualified candidates, onboarded, and technically mentored new developers.</li><li>Supported an external client in the blockchain space by building and refining React interfaces while temporarily embedded in their team.</li><li>Implemented comprehensive component and end-to-end testing across all repositories using Cypress.</li><li>Led the refactoring of automated content-production tool, resulting in 60% less CloudFlare cost.</li></ul>",
     "tags": [
       {
         "title": "JavaScript",
@@ -97,10 +97,10 @@
     ]
   },
   {
-    "dates": "2018 - 2020",
+    "dates": "Aug 2018 - Aug 2020",
     "titles": [
       {
-        "title": "Senior Front-end developer - MUST Digital ",
+        "title": "Front-end developer - MUST Digital",
         "url": "https://www.mu.st/"
       }
     ],
@@ -163,14 +163,14 @@
     ]
   },
   {
-    "dates": "aug 2017 - oct 2017",
+    "dates": "Aug 2017 - Dec 2017",
     "titles": [
       {
-        "title": "Front-end intern - Kosmos & Kaos (now Júní)",
+        "title": "Front-end intern | Part-time - Júní",
         "url": "https://www.juni.is/"
       }
     ],
-    "description": "A digital service company specializes in developing digital solutions for businesses and institutions, offering comprehensive services in consulting, design, and programming.<ul><li>Delivered specific components for the Tækniskólinn website following atomic design principles.</li><li>Focused on systematically improving the UI through user testing and iteration.</li></ul>",
+    "description": "A digital service company specializes in developing digital solutions for businesses and institutions, offering comprehensive services in consulting, design, and programming.<ul><li>Delivered specific components for the tskoli.is website following atomic design principles.</li><li>Focused on systematically improving the UI through user testing and iteration.</li></ul>",
     "projects": [
       {
         "title": "Tækniskólinn",
