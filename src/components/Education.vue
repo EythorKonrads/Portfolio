@@ -51,11 +51,11 @@ const visibleEducations = computed(() =>
 .education__line {
   height: 1px;
   width: 100%;
-  background-color: white;
+  background-color: var(--color-rule);
 }
 .education__empty {
   margin: 1rem 0 0;
   font-size: 0.9rem;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
 }
 </style>

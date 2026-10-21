@@ -57,7 +57,7 @@ const visibleProjects = computed(() =>
   height: 1px;
   width: 100%;
   margin-bottom: 1rem;
-  background-color: white;
+  background-color: var(--color-rule);
 }
 .projects__list {
   display: flex;
@@ -67,12 +67,12 @@ const visibleProjects = computed(() =>
 .projects__more {
   margin-top: 1.5rem;
   font-size: 1rem;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
   text-align: center;
 }
 .projects__empty {
   margin: 1rem 0 0;
   font-size: 0.9rem;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
 }
 </style>

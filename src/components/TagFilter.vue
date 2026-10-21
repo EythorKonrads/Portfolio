@@ -80,8 +80,8 @@ const isOpen = ref(false);
   cursor: pointer;
   border-radius: 9999px;
   box-sizing: border-box;
-  color: #9393e8;
-  background-color: rgba(147, 147, 232, 0.1);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
   transition: background-color 0.3s ease;
 }
 /* Keep the reveal fade from animations.scss alongside the hover transition */
@@ -98,7 +98,7 @@ const isOpen = ref(false);
 }
 .tag-filter__button:hover,
 .tag-filter__clear:hover:not(:disabled) {
-  background-color: rgba(147, 147, 232, 0.2);
+  background-color: var(--color-accent-soft-hover);
 }
 .tag-filter__button {
   display: inline-flex;
@@ -125,7 +125,7 @@ const isOpen = ref(false);
 .tag-filter__desc {
   margin: 0 0 1.25rem;
   font-size: 0.9rem;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
 }
 .tag-filter__tags {
   display: flex;

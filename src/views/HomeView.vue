@@ -5,6 +5,7 @@ import Education from '../components/Education.vue';
 import Projects from '../components/Projects.vue';
 import TagFilter from '../components/TagFilter.vue';
 import SectionNav from '../components/SectionNav.vue';
+import ThemeToggle from '../components/ThemeToggle.vue';
 </script>
 
 <template>
@@ -13,7 +14,10 @@ import SectionNav from '../components/SectionNav.vue';
     <div class="home__wrapper" data-cy="homeWrapper">
       <header class="home__header" data-cy="homeHeader">
         <SectionNav />
-        <TagFilter class="home__filter" />
+        <div class="home__actions">
+          <ThemeToggle />
+          <TagFilter class="home__filter" />
+        </div>
       </header>
       <Experience class="home__experience" />
       <Education class="home__education" />
@@ -24,7 +28,7 @@ import SectionNav from '../components/SectionNav.vue';
 
 <style lang="scss" scoped>
 .home {
-  background-color: rgba(15, 23, 42, 1);
+  background-color: var(--color-background);
   min-height: 100vh;
   height: 100%;
   width: 100%;
@@ -60,10 +64,13 @@ import SectionNav from '../components/SectionNav.vue';
     padding: 0 2rem;
     margin-bottom: 1.5rem;
     box-sizing: border-box;
-    background-color: rgba(15, 23, 42, 1);
+    background-color: var(--color-background);
   }
-  .home__filter {
+  .home__actions {
+    display: flex;
+    align-items: center;
     flex-shrink: 0;
+    gap: 0.5rem;
   }
   /* Keep a section's heading clear of the header when jumped to */
   .home__experience,
@@ -101,7 +108,17 @@ import SectionNav from '../components/SectionNav.vue';
       left: 0;
       right: 0;
       padding: 0 1rem;
-      box-shadow: 0 1px 0 rgba(147, 147, 232, 0.1);
+      box-shadow: 0 1px 0 var(--color-accent-soft);
+    }
+  }
+  /* Room for the nav, theme toggle and filter on the smallest phones */
+  @media screen and (max-width: 360px) {
+    .home__header {
+      gap: 0.75rem;
+      padding: 0 0.75rem;
+    }
+    .home__actions {
+      gap: 0.375rem;
     }
   }
 }

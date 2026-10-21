@@ -103,16 +103,16 @@ defineProps({
   font-size: 0.6em;
   padding: 0.5em 1em 0 0;
   white-space: nowrap;
-  color: #9393e8;
+  color: var(--color-accent);
   letter-spacing: 0.025em;
   font-weight: 600;
 }
 .education-item__title {
   font-weight: 700;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
 }
 .education-item__title span {
-  color: #9393e8;
+  color: var(--color-accent);
 }
 .education-item__link {
   font-size: 1em;
@@ -120,7 +120,7 @@ defineProps({
 }
 .education-item__title a {
   a {
-    color: white;
+    color: var(--color-hdln);
     transition: 0.25s ease-in;
 
     &:hover {
@@ -137,7 +137,7 @@ defineProps({
   padding: 0.5em 0;
 }
 .education-item__projects span {
-  color: rgb(100, 116, 139);
+  color: var(--color-text-muted);
 }
 .education-item__project {
   margin-right: 0.25em;

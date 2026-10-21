@@ -159,4 +159,11 @@ onBeforeUnmount(() => {
     font-size: 0.875rem;
   }
 }
+/* Room for the theme toggle and filter on the smallest phones */
+@media screen and (max-width: 360px) {
+  .section-nav__list {
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+  }
+}
 </style>

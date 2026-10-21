@@ -47,20 +47,20 @@ const { isSelected, toggleTag } = useTagFilter();
   box-sizing: border-box;
   font: inherit;
   line-height: inherit;
-  color: #9393e8;
-  background-color: rgba(147, 147, 232, 0.1);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
   cursor: pointer;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
 }
 .tag-chip:hover {
-  background-color: rgba(147, 147, 232, 0.2);
+  background-color: var(--color-accent-soft-hover);
 }
 .tag-chip--selected,
 .tag-chip--selected:hover {
-  color: white;
-  background-color: rgba(147, 147, 232, 0.45);
+  color: var(--color-chip-selected-text);
+  background-color: var(--color-chip-selected-bg);
 }
 .tag-chip__remove.icon {
   width: 0.75em;
