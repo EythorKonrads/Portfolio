@@ -24,7 +24,7 @@ import Social from './Social.vue';
             data-cy="heroRole"
             style="--anim-delay: 160ms"
           >
-            Lead Frontend Developer
+            Senior front-end developer
           </h2>
         </div>
       </div>
@@ -34,13 +34,14 @@ import Social from './Social.vue';
           style="--anim-delay: 240ms"
           data-cy="heroText"
         >
-          Based in Copenhagen, Denmark, with 7+ years of experience working
-          primarily with Vue.js and JavaScript, and additional experience in
-          React. Strong focus on front-end architecture, performance, and
-          building well-structured, scalable applications. <br />I also have
-          experience as both a product owner and lead developer, where I have
-          been responsible for planning and delegating tasks to developers and
-          designers.
+          Experienced front-end developer and technical lead with 7+ years of
+          experience working primarily with Vue.js and JavaScript, and
+          additional experience in React. Strong focus on front-end
+          architecture, performance, and building well-structured, scalable
+          applications. <br />My experience also includes product ownership and
+          technical leadership, including planning and prioritizing work,
+          coordinating developers and designers, and delegating tasks to support
+          effective team delivery.
         </p>
       </div>
     </div>
@@ -55,7 +56,7 @@ import Social from './Social.vue';
         class="hero__mail"
         data-cy="heroMail"
       >
-        Lets talk
+        Let's talk
         <el-icon class="hero__mail-icon" :size="20">
           <Promotion />
         </el-icon>

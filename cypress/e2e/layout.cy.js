@@ -59,6 +59,35 @@ describe('Layout', () => {
     });
   });
 
+  context('link previews', () => {
+    const meta = (attr, name) =>
+      cy.get(`head meta[${attr}="${name}"]`).should('have.attr', 'content');
+
+    it('has Open Graph and Twitter tags', () => {
+      cy.visitHome();
+      ['og:type', 'og:title', 'og:description', 'og:url'].forEach((name) =>
+        meta('property', name).should('not.be.empty')
+      );
+      meta('property', 'og:url').should('match', /^https:\/\//);
+      meta('name', 'twitter:card').should('eq', 'summary_large_image');
+    });
+
+    it('points og:image at an absolute URL of an image the site serves', () => {
+      cy.visitHome();
+      meta('property', 'og:image').then((url) => {
+        // Crawlers don't resolve relative paths, so it must be absolute
+        expect(url).to.match(/^https:\/\/.+\.png$/);
+        // Fetch the same path from the local build
+        cy.request(new URL(url).pathname).then(({ status, headers }) => {
+          expect(status).to.eq(200);
+          expect(headers['content-type']).to.include('image/png');
+        });
+      });
+      meta('property', 'og:image:width').should('eq', '1200');
+      meta('property', 'og:image:height').should('eq', '630');
+    });
+  });
+
   context('theme', () => {
     it('defaults to the dark theme', () => {
       cy.visitHome();

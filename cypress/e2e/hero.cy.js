@@ -12,10 +12,10 @@ describe('Hero', () => {
       .and('contain.text', 'Eythor Konradsson');
     cy.get('[data-cy="heroRole"]')
       .should('be.visible')
-      .and('contain.text', 'Lead Frontend Developer');
+      .and('contain.text', 'Senior front-end developer');
     cy.get('[data-cy="heroText"]')
       .should('be.visible')
-      .and('contain.text', 'Copenhagen');
+      .and('contain.text', 'Vue.js');
   });
 
   it('loads the profile image', () => {
@@ -49,6 +49,7 @@ describe('Hero', () => {
     cy.get('[data-cy="heroLinks"]').should('be.visible');
     cy.get('[data-cy="heroMail"]')
       .should('be.visible')
-      .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com');
+      .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com')
+      .and('contain.text', "Let's talk");
   });
 });
