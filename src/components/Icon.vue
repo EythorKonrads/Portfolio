@@ -26,7 +26,12 @@ const dynamicIcon = defineAsyncComponent(() => {
 
 <template>
   <template v-if="dynamicIcon">
-    <component :is="dynamicIcon" :class="{ icon: icon }" />
+    <component
+      :is="dynamicIcon"
+      :class="{ icon: icon }"
+      aria-hidden="true"
+      focusable="false"
+    />
   </template>
 </template>
 
