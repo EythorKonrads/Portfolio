@@ -12,10 +12,10 @@ describe('Hero', () => {
       .and('contain.text', 'Eythor Konradsson');
     cy.get('[data-cy="heroRole"]')
       .should('be.visible')
-      .and('contain.text', 'Lead Frontend Developer');
+      .and('contain.text', 'Senior front-end developer');
     cy.get('[data-cy="heroText"]')
       .should('be.visible')
-      .and('contain.text', 'Copenhagen');
+      .and('contain.text', 'Vue.js');
   });
 
   it('loads the profile image', () => {

@@ -3,11 +3,11 @@
     "dates": "2017 - 2018",
     "titles": [
       {
-        "title": "Københavns Erhvervsakademie (KEA)",
+        "title": "Københavns Erhvervsakademi",
         "url": "https://mit.kea.dk/"
       }
     ],
-    "degree": "Bachelor's in Web Development",
+    "degree": "Web development | Bachelor",
     "description": "Developed practical skills in creating and maintaining dynamic web applications, combining theoretical learning with a hands-on 10-week internship.",
     "projects": [],
     "tags": [
@@ -69,7 +69,7 @@
         "url": "https://en.tskoli.is/"
       }
     ],
-    "degree": "Diploma in Web Development",
+    "degree": "Web development | Diploma",
     "description": "Two year project driven study with close links to the private sector. Main focus on HTML, CSS and JavaScript.",
     "projects": [],
     "tags": [
