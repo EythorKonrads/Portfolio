@@ -256,15 +256,16 @@ describe('Tag filter', () => {
   [1280, 1024, 800].forEach((width) => {
     it(`keeps the column widths when filtering at ${width}px`, () => {
       const widths = () =>
-        cy.get('[data-cy="hero"]').then(($hero) =>
-          cy
-            .get('[data-cy="tagFilter"]')
-            .parent()
-            .then(($wrapper) => [
-              $hero[0].getBoundingClientRect().width,
-              $wrapper[0].getBoundingClientRect().width,
-            ])
-        );
+        cy
+          .get('[data-cy="hero"]')
+          .then(($hero) =>
+            cy
+              .get('[data-cy="homeWrapper"]')
+              .then(($wrapper) => [
+                $hero[0].getBoundingClientRect().width,
+                $wrapper[0].getBoundingClientRect().width,
+              ])
+          );
 
       cy.viewport(width, 800);
       cy.visitHome();

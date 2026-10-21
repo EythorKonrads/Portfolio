@@ -69,8 +69,6 @@ const isOpen = ref(false);
 .tag-filter {
   display: flex;
   justify-content: flex-end;
-  padding: 0 2rem;
-  margin-bottom: 1.5rem;
 }
 .tag-filter__button,
 .tag-filter__clear {
