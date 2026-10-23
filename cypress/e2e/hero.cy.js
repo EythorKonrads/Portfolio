@@ -45,6 +45,25 @@ describe('Hero', () => {
     });
   });
 
+  it('labels the icon-only social links for screen readers', () => {
+    [
+      ['socialGithub', 'GitHub'],
+      ['socialLinkedin', 'LinkedIn'],
+    ].forEach(([name, label]) => {
+      cy.get(`[data-cy="${name}"]`)
+        .should('have.attr', 'aria-label')
+        .and('include', label)
+        .and('include', 'new tab');
+      cy.get(`[data-cy="${name}"] svg`).should(
+        'have.attr',
+        'aria-hidden',
+        'true'
+      );
+      // Each link sits in its own list item
+      cy.get(`[data-cy="${name}"]`).parent('li').parent('ul').should('exist');
+    });
+  });
+
   it('has a mail link', () => {
     cy.get('[data-cy="heroLinks"]').should('be.visible');
     cy.get('[data-cy="heroMail"]')
