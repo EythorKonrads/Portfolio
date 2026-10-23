@@ -27,5 +27,6 @@ declare module 'vue' {
     Social: typeof import('./components/Social.vue')['default']
     TagChip: typeof import('./components/TagChip.vue')['default']
     TagFilter: typeof import('./components/TagFilter.vue')['default']
+    ThemeToggle: typeof import('./components/ThemeToggle.vue')['default']
   }
 }

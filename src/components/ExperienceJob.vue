@@ -97,7 +97,7 @@ defineProps({
   font-size: 0.6em;
   padding: 0.5em 1em 0 0;
   white-space: nowrap;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
   letter-spacing: 0.025em;
   font-weight: 600;
 }
@@ -110,7 +110,7 @@ defineProps({
 }
 .expirience-job__title a {
   a {
-    color: white;
+    color: var(--color-hdln);
     transition: 0.25s ease-in;
 
     &:hover {
@@ -127,7 +127,7 @@ defineProps({
   padding: 0.5em 0;
 }
 .expirience-job__projects span {
-  color: rgb(100, 116, 139);
+  color: var(--color-text-muted);
 }
 .expirience-job__project {
   margin-right: 0.25em;

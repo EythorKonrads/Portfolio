@@ -3,31 +3,65 @@
   --color-black: #000000;
   --color-gray: #94a3b8;
 
-  /* semantic color variables for this project */
-  --color-background: var(--color-white);
-  --color-background-overlay: rgba(255, 255, 255, 0.25);
-  --color-box-shadow: rgba(15, 23, 42, 0.2);
-  // TODO: Un comment when light theme is added
-  // --color-hdln: var(--color-black);
-  // --color-text: #252424;
-
-  // TODO: Remove when light theme is added
-  --color-hdln: var(--color-white);
-  --color-text: #dfe3ea;
-  --color-link: var(--color-text);
-  --color-link-hover: #9393e8;
-  --color-link-muted: #cfd3dc;
-
   /* Height of the sticky section nav / filter row on the home page */
   --header-height: 4rem;
 }
 
+/* Dark is the default theme, used until the visitor picks light */
+:root,
 [data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-background: #0f172a;
+  --color-background-overlay: rgba(255, 255, 255, 0.25);
+  --color-box-shadow: rgba(15, 23, 42, 0.2);
   --color-hdln: var(--color-white);
   --color-text: #dfe3ea;
+  --color-text-muted: #64748b;
+  --color-link: var(--color-text);
+  --color-link-hover: #9393e8;
+  --color-link-muted: #cfd3dc;
+  /* The heading underlines */
+  --color-rule: var(--color-white);
 
-  // TODO: Un comment when light theme is added
-  // --color-background: #0f172a;
-  // --color-background-overlay: rgba(15, 23, 42, .5);
-  // --color-box-shadow: rgba(255, 255, 255, .2);
+  --color-accent: #9393e8;
+  --color-accent-soft: rgba(147, 147, 232, 0.1);
+  --color-accent-soft-hover: rgba(147, 147, 232, 0.2);
+  --color-chip-selected-bg: rgba(147, 147, 232, 0.45);
+  --color-chip-selected-text: var(--color-white);
+
+  /* Popups and their close button */
+  --color-surface: #0f172a;
+  --color-surface-raised: #1d243e;
+  --color-surface-raised-hover: #2e3456;
+  /* Project cards */
+  --color-card: rgba(255, 255, 255, 0.05);
+  --color-card-shadow: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --color-background: #f8fafc;
+  --color-background-overlay: rgba(15, 23, 42, 0.04);
+  --color-box-shadow: rgba(15, 23, 42, 0.2);
+  --color-hdln: #0f172a;
+  --color-text: #334155;
+  --color-text-muted: #64748b;
+  --color-link: var(--color-text);
+  --color-link-hover: #5050c8;
+  --color-link-muted: #1e293b;
+  --color-rule: #0f172a;
+
+  --color-accent: #5050c8;
+  --color-accent-soft: rgba(80, 80, 200, 0.08);
+  --color-accent-soft-hover: rgba(80, 80, 200, 0.15);
+  --color-chip-selected-bg: #5050c8;
+  --color-chip-selected-text: var(--color-white);
+
+  --color-surface: var(--color-white);
+  --color-surface-raised: #eceef9;
+  --color-surface-raised-hover: #dfe2f5;
+  --color-card: var(--color-white);
+  --color-card-shadow: rgba(15, 23, 42, 0.08);
 }
