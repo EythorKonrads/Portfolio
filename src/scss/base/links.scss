@@ -1,0 +1,19 @@
+// Links to external sites (social, job and education links), with an
+// optional trailing icon. Matches the Element Plus link these replaced.
+.text-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  position: relative;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-link-muted);
+  text-decoration: none;
+  cursor: pointer;
+}
+// Wins over the components' own link colors, as Element Plus's did
+#app .text-link:hover {
+  color: var(--color-link-hover);
+}

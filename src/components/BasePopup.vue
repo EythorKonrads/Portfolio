@@ -137,7 +137,7 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 90vw;
-  background-color: rgb(15, 23, 42);
+  background-color: var(--color-surface);
   transform: translateY(100vh);
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border-radius: 8px;
@@ -167,7 +167,7 @@ export default {
   color: inherit;
   font: inherit;
   line-height: 0;
-  background-color: rgb(15, 23, 42);
+  background-color: var(--color-surface);
   padding: 0.4rem;
   border-radius: 50%;
   transition: 0.3s ease;
@@ -175,16 +175,16 @@ export default {
   cursor: pointer;
 }
 .base-popup__close--scrolled {
-  background-color: rgb(29 36 62);
+  background-color: var(--color-surface-raised);
 }
 .base-popup__close:hover {
-  background-color: rgb(46 52 86);
+  background-color: var(--color-surface-raised-hover);
 }
 .base-popup__close .icon {
   width: 1.5rem;
   height: 1.5rem;
 }
 .base-popup__close :deep(path) {
-  fill: #9393e8;
+  fill: var(--color-accent);
 }
 </style>

@@ -6,9 +6,8 @@ import Icon from './Icon.vue';
   <div class="social">
     <ul class="social__wrapper">
       <li class="social__item">
-        <el-link
-          class="social__link"
-          underline="never"
+        <a
+          class="social__link text-link"
           href="https://github.com/EythorKonrads"
           aria-label="GitHub (opens in a new tab)"
           data-cy="socialGithub"
@@ -16,12 +15,11 @@ import Icon from './Icon.vue';
           rel="noopener noreferrer"
         >
           <Icon name="github" class="social__icon o-icon" />
-        </el-link>
+        </a>
       </li>
       <li class="social__item">
-        <el-link
-          class="social__link"
-          underline="never"
+        <a
+          class="social__link text-link"
           href="https://www.linkedin.com/in/eythork/"
           aria-label="LinkedIn (opens in a new tab)"
           data-cy="socialLinkedin"
@@ -29,7 +27,7 @@ import Icon from './Icon.vue';
           rel="noopener noreferrer"
         >
           <Icon name="linkedin" class="social__icon o-icon" />
-        </el-link>
+        </a>
       </li>
     </ul>
   </div>

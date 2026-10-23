@@ -14,8 +14,6 @@ declare module 'vue' {
     BasePopup: typeof import('./components/BasePopup.vue')['default']
     Education: typeof import('./components/Education.vue')['default']
     EducationItem: typeof import('./components/EducationItem.vue')['default']
-    ElIcon: typeof import('element-plus/es')['ElIcon']
-    ElLink: typeof import('element-plus/es')['ElLink']
     Experience: typeof import('./components/Experience.vue')['default']
     ExperienceJob: typeof import('./components/ExperienceJob.vue')['default']
     Hero: typeof import('./components/Hero.vue')['default']
@@ -29,5 +27,6 @@ declare module 'vue' {
     Social: typeof import('./components/Social.vue')['default']
     TagChip: typeof import('./components/TagChip.vue')['default']
     TagFilter: typeof import('./components/TagFilter.vue')['default']
+    ThemeToggle: typeof import('./components/ThemeToggle.vue')['default']
   }
 }

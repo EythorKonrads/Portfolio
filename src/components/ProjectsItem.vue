@@ -79,8 +79,8 @@ export default {
   border-radius: 8px;
 }
 .project-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-card);
+  box-shadow: 0 10px 25px var(--color-card-shadow);
   cursor: pointer;
 }
 .project-item__image {

@@ -149,7 +149,7 @@ export default {
   margin-top: -37px;
   overflow: hidden;
   flex-shrink: 0;
-  background-color: rgba(147, 147, 232, 0.1);
+  background-color: var(--color-accent-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,8 +188,8 @@ export default {
 }
 .project-item-popup__tech-tag {
   display: inline-block;
-  color: #9393e8;
-  background-color: rgba(147, 147, 232, 0.1);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
   padding: 0.25em 0.75em;
   margin: 0.5em 0.375em 0 0;
   border-radius: 9999px;
@@ -284,14 +284,14 @@ export default {
   font-size: 1em;
   box-sizing: border-box;
   transition: background-color 0.3s ease;
-  color: #9393e8;
-  background-color: rgba(147, 147, 232, 0.1);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
 }
 .project-item-popup__links--header .project-item-popup__link {
   padding: 0.25em;
 }
 .project-item-popup__link:hover {
-  background-color: rgba(147, 147, 232, 0.2);
+  background-color: var(--color-accent-soft-hover);
 }
 .project-item-popup__link-icon {
   width: 30px;
@@ -306,6 +306,6 @@ export default {
   margin: 0;
 }
 .project-item-popup__link-icon :deep(path) {
-  fill: #9393e8;
+  fill: var(--color-accent);
 }
 </style>
