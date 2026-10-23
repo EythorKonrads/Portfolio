@@ -12,10 +12,10 @@ describe('Hero', () => {
       .and('contain.text', 'Eythor Konradsson');
     cy.get('[data-cy="heroRole"]')
       .should('be.visible')
-      .and('contain.text', 'Lead Frontend Developer');
+      .and('contain.text', 'Senior front-end developer');
     cy.get('[data-cy="heroText"]')
       .should('be.visible')
-      .and('contain.text', 'Copenhagen');
+      .and('contain.text', 'Vue.js');
   });
 
   it('loads the profile image', () => {
@@ -45,10 +45,30 @@ describe('Hero', () => {
     });
   });
 
+  it('labels the icon-only social links for screen readers', () => {
+    [
+      ['socialGithub', 'GitHub'],
+      ['socialLinkedin', 'LinkedIn'],
+    ].forEach(([name, label]) => {
+      cy.get(`[data-cy="${name}"]`)
+        .should('have.attr', 'aria-label')
+        .and('include', label)
+        .and('include', 'new tab');
+      cy.get(`[data-cy="${name}"] svg`).should(
+        'have.attr',
+        'aria-hidden',
+        'true'
+      );
+      // Each link sits in its own list item
+      cy.get(`[data-cy="${name}"]`).parent('li').parent('ul').should('exist');
+    });
+  });
+
   it('has a mail link', () => {
     cy.get('[data-cy="heroLinks"]').should('be.visible');
     cy.get('[data-cy="heroMail"]')
       .should('be.visible')
-      .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com');
+      .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com')
+      .and('contain.text', "Let's talk");
   });
 });

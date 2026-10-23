@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import EducationItem from './EducationItem.vue';
 import educations from '@/assets/educations.json';
+import languages from '@/assets/languages.json';
 import { useTagFilter } from '@/composables/useTagFilter';
 
 const { matches } = useTagFilter();
@@ -31,6 +32,20 @@ const visibleEducations = computed(() =>
     >
       No education matches the selected filters.
     </p>
+    <div v-reveal class="education__languages" data-cy="languages">
+      <h3 class="education__languages-hdln">Languages</h3>
+      <ul class="education__languages-list">
+        <li
+          v-for="{ language, level } in languages"
+          :key="language"
+          class="education__language"
+          data-cy="language"
+        >
+          <span class="education__language-name">{{ language }}</span>
+          <span class="education__language-level">{{ level }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -57,5 +72,38 @@ const visibleEducations = computed(() =>
   margin: 1rem 0 0;
   font-size: 0.9rem;
   color: var(--color-text-muted);
+}
+/* Sized to match an education entry, with the date-style label */
+.education__languages {
+  padding: 0.625rem 0;
+}
+.education__languages-hdln {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: #9393e8;
+}
+.education__languages-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.375rem 0 0;
+}
+.education__language {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+.education__language-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-hdln);
+}
+.education__language-level {
+  font-size: 0.9rem;
+  color: rgba(100, 116, 139, 1);
 }
 </style>

@@ -54,6 +54,21 @@ describe('Projects', () => {
             .should('be.visible')
             .and('have.attr', 'target', '_blank');
         });
+        // The icon-only links in the popup header are named for screen readers
+        [
+          ['popupLiveIcon', project.liveUrl, 'View project'],
+          ['popupGithubIcon', project.githubUrl, 'GitHub'],
+        ].forEach(([name, url, label]) => {
+          if (!url) {
+            cy.get(`[data-cy="${name}"]`).should('not.exist');
+            return;
+          }
+          cy.get(`[data-cy="${name}"]`)
+            .should('have.attr', 'href', url)
+            .and('have.attr', 'rel', 'noopener noreferrer')
+            .and('have.attr', 'aria-label')
+            .and('include', label);
+        });
       });
 
       it('closes the popup with the close button', () => {

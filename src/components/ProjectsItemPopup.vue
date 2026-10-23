@@ -50,7 +50,10 @@ export default {
           v-if="project.githubUrl"
           :href="project.githubUrl"
           target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View GitHub repository (opens in a new tab)"
           class="project-item-popup__link"
+          data-cy="popupGithubIcon"
           @click.stop
           @mouseenter="showTooltip('github')"
           @mouseleave="hideTooltip"
@@ -72,7 +75,10 @@ export default {
           v-if="project.liveUrl"
           :href="project.liveUrl"
           target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View project (opens in a new tab)"
           class="project-item-popup__link"
+          data-cy="popupLiveIcon"
           @click.stop
           @mouseenter="showTooltip('live')"
           @mouseleave="hideTooltip"
@@ -109,6 +115,7 @@ export default {
           v-if="project.githubUrl"
           :href="project.githubUrl"
           target="_blank"
+          rel="noopener noreferrer"
           class="project-item-popup__link"
           @click.stop
         >
@@ -122,6 +129,7 @@ export default {
           v-if="project.liveUrl"
           :href="project.liveUrl"
           target="_blank"
+          rel="noopener noreferrer"
           class="project-item-popup__link"
           @click.stop
         >
