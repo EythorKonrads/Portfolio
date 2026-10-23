@@ -1,0 +1,50 @@
+name: CI
+
+# Tests run on PRs only; a merge to master was already tested in its PR
+on:
+  pull_request:
+
+# A new push to a PR cancels the run for the push before it
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint and e2e tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # Same as netlify.toml
+          node-version: 24
+          cache: npm
+
+      - name: Cache the Cypress binary
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci
+
+      - name: Lint
+        run: npx eslint .
+
+      # Builds the site, then runs every spec against the preview server
+      - name: e2e tests
+        run: npm run test:e2e
+
+      - name: Upload screenshots of failed tests
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
