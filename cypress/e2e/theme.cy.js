@@ -137,6 +137,10 @@ describe('Theme', () => {
           const toggle = $toggle[0].getBoundingClientRect();
           const button = $button[0].getBoundingClientRect();
           expect(toggle.right).to.be.at.most(button.left);
+          expect(toggle.height, 'same height as filter').to.be.closeTo(
+            button.height,
+            1
+          );
           expect(toggle.top + toggle.height / 2).to.be.closeTo(
             button.top + button.height / 2,
             2
