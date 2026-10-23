@@ -1,5 +1,5 @@
 <script setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, h } from 'vue';
 
 const props = defineProps({
   name: {
@@ -13,14 +13,22 @@ const props = defineProps({
   },
 });
 
-const dynamicIcon = defineAsyncComponent(() => {
-  try {
-    return import(`../assets/icons/${props.name}.svg`);
-  } catch (ex) {
-    const { message } = ex;
-    console.warn(message);
-    return false;
-  }
+// Takes the icon's classes, and so its size, until the SVG loads, so the
+// page doesn't shift (and cut short a smooth scroll) when it arrives
+const IconPlaceholder = () => h('span', { 'aria-hidden': 'true' });
+
+const dynamicIcon = defineAsyncComponent({
+  loader: () => {
+    try {
+      return import(`../assets/icons/${props.name}.svg`);
+    } catch (ex) {
+      const { message } = ex;
+      console.warn(message);
+      return false;
+    }
+  },
+  loadingComponent: IconPlaceholder,
+  delay: 0,
 });
 </script>
 
