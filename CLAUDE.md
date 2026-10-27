@@ -122,6 +122,10 @@ site works. Rely on it instead of checking things by hand in a browser.
   child instead, as `TagFilter.vue` does.
 - Education and Projects are shorter than the screen, so they can't scroll all
   the way up to the sticky header.
+- PRs that only change docs or tooling skip CI (`paths-ignore` in
+  `.github/workflows/ci.yml`) and the Netlify deploy
+  (`scripts/netlify-ignore.sh`). When adding a file that affects the site or
+  the tests, check it isn't covered by either list.
 
 ## Agent skills
 
