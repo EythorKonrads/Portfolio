@@ -37,6 +37,9 @@
   /* Project cards */
   --color-card: rgba(255, 255, 255, 0.05);
   --color-card-shadow: rgba(0, 0, 0, 0.1);
+  /* The Aurora behind the hero, dark theme only */
+  --color-aurora-green: #4ade80;
+  --color-aurora-teal: #2dd4bf;
 }
 
 [data-theme='light'] {

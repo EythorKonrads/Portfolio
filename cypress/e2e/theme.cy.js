@@ -1,22 +1,11 @@
+import { contrast } from '../support/color';
+
 // Dark is the default; the header toggle switches to light and back
 const DARK_BG = 'rgb(15, 23, 42)';
 const LIGHT_BG = 'rgb(248, 250, 252)';
 
 const pageBackground = () =>
   cy.get('[data-cy="hero"]').parent().should('have.css', 'background-color');
-
-// WCAG relative luminance and contrast ratio of two rgb() strings
-const luminance = (rgb) =>
-  rgb
-    .match(/[\d.]+/g)
-    .slice(0, 3)
-    .map((v) => v / 255)
-    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
-    .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
-const contrast = (a, b) => {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-};
 
 describe('Theme', () => {
   it('starts dark with a toggle offering the light theme', () => {
