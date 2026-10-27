@@ -45,6 +45,41 @@ describe('Aurora', () => {
         });
     });
 
+    it('floats its bands around the screen instead of staying put', () => {
+      const centers = () =>
+        cy.get('[data-cy="auroraBand"]').then(($bands) =>
+          [...$bands].map((band) => {
+            const { left, top, width, height } = band.getBoundingClientRect();
+            return { x: left + width / 2, y: top + height / 2 };
+          })
+        );
+      cy.get('[data-cy="auroraPath"]')
+        .should('have.length', 3)
+        .each(($path) => {
+          expect(getComputedStyle($path[0]).animationName).to.match(
+            /^hero-aurora-wander-\d/
+          );
+        });
+      // The paths are slow, so a short wait still shows each band moving
+      centers().then((before) => {
+        cy.wait(1500);
+        centers().then((after) => {
+          after.forEach(({ x, y }, i) => {
+            const moved = Math.hypot(x - before[i].x, y - before[i].y);
+            expect(moved, `band ${i + 1} moved`).to.be.greaterThan(2);
+          });
+        });
+      });
+      // Their paths reach well below the top of the screen. Centres, not
+      // tops: the skew stretches a wide band's box far above its middle.
+      centers().then((now) => {
+        const lowest = Math.max(...now.map(({ y }) => y));
+        expect(lowest, 'a band below the top quarter').to.be.greaterThan(
+          800 * 0.25
+        );
+      });
+    });
+
     it('brightens gently around the cursor', () => {
       cy.get('[data-cy="auroraGlow"]').should('have.css', 'opacity', '0');
       cy.get('[data-cy="hero"]').trigger('pointermove', 50, 120);
@@ -69,7 +104,11 @@ describe('Aurora', () => {
         );
         // Worst case: the lightest aurora color at full strength in the
         // layer, then whatever each area paints over it
-        const sky = ['--color-aurora-green', '--color-aurora-teal']
+        const sky = [
+          '--color-aurora-green',
+          '--color-aurora-teal',
+          '--color-aurora-purple',
+        ]
           .map((variable) =>
             composite(resolveColor(doc, variable), page, layerOpacity)
           )
@@ -144,6 +183,9 @@ describe('Aurora', () => {
     aurora().should('exist');
     bands().each(($band) => {
       expect(getComputedStyle($band[0]).animationName).to.equal('none');
+    });
+    cy.get('[data-cy="auroraPath"]').each(($path) => {
+      expect(getComputedStyle($path[0]).animationName).to.equal('none');
     });
     cy.get('[data-cy="hero"]').trigger('pointermove', 50, 120);
     cy.get('[data-cy="auroraGlow"]').should('not.be.visible');
