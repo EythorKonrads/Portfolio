@@ -17,6 +17,7 @@ declare module 'vue' {
     Experience: typeof import('./components/Experience.vue')['default']
     ExperienceJob: typeof import('./components/ExperienceJob.vue')['default']
     Hero: typeof import('./components/Hero.vue')['default']
+    HeroAurora: typeof import('./components/HeroAurora.vue')['default']
     Icon: typeof import('./components/Icon.vue')['default']
     Projects: typeof import('./components/Projects.vue')['default']
     ProjectsItem: typeof import('./components/ProjectsItem.vue')['default']

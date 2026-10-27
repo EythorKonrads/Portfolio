@@ -37,6 +37,12 @@
   /* Project cards */
   --color-card: rgba(255, 255, 255, 0.05);
   --color-card-shadow: rgba(0, 0, 0, 0.1);
+  /* The sticky header, see-through so the Aurora shows behind it */
+  --color-header-background: rgba(15, 23, 42, 0.6);
+  /* The Aurora behind the page, dark theme only */
+  --color-aurora-green: #4ade80;
+  --color-aurora-teal: #2dd4bf;
+  --color-aurora-purple: #c084fc;
 }
 
 [data-theme='light'] {
@@ -64,4 +70,5 @@
   --color-surface-raised-hover: #dfe2f5;
   --color-card: var(--color-white);
   --color-card-shadow: rgba(15, 23, 42, 0.08);
+  --color-header-background: var(--color-background);
 }

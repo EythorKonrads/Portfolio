@@ -6,10 +6,16 @@ import Projects from '../components/Projects.vue';
 import TagFilter from '../components/TagFilter.vue';
 import SectionNav from '../components/SectionNav.vue';
 import ThemeToggle from '../components/ThemeToggle.vue';
+import HeroAurora from '../components/HeroAurora.vue';
+import { useTheme } from '@/composables/useTheme';
+
+const { theme } = useTheme();
 </script>
 
 <template>
   <div class="home">
+    <!-- Real auroras only show against a dark sky -->
+    <HeroAurora v-if="theme === 'dark'" />
     <Hero class="home__hero" />
     <div class="home__wrapper" data-cy="homeWrapper">
       <header class="home__header" data-cy="homeHeader">
@@ -28,6 +34,9 @@ import ThemeToggle from '../components/ThemeToggle.vue';
 
 <style lang="scss" scoped>
 .home {
+  /* Its own stacking context, so the Aurora's z-index: -1 stays inside it */
+  position: relative;
+  isolation: isolate;
   background-color: var(--color-background);
   min-height: 100vh;
   height: 100%;
@@ -64,7 +73,17 @@ import ThemeToggle from '../components/ThemeToggle.vue';
     padding: 0 2rem;
     margin-bottom: 1.5rem;
     box-sizing: border-box;
-    background-color: var(--color-background);
+  }
+  /* See-through so the Aurora shows, blurred so content scrolling under it
+     doesn't. On a pseudo-element: a backdrop-filter on the header itself
+     would break the filter popup's fixed backdrop. */
+  .home__header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--color-header-background);
+    backdrop-filter: blur(12px);
   }
   .home__actions {
     display: flex;
