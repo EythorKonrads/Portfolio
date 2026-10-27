@@ -11,7 +11,7 @@ The panel that introduces Eythor: profile photo, name, role and the
 _Avoid_: Header, banner, intro
 
 **Aurora**:
-The northern-lights effect behind the Hero, shown only in the dark theme.
+The northern-lights effect behind the whole page, shown only in the dark theme.
 _Avoid_: Background animation, northern lights
 
 ## Game
@@ -48,6 +48,30 @@ _Avoid_: Points
 **Shop**:
 Where Ore is spent on upgrades, between Waves.
 _Avoid_: Store, upgrade menu
+
+**Menu**:
+Opened from the corner of the screen during a Wave; it pauses the game. It
+offers Resume and End game.
+_Avoid_: Pause screen, settings
+
+**End game**:
+Leaving a game from the Menu, straight back to the page with no Score shown.
+_Avoid_: Close, quit, exit
+
+### Starting a game
+
+**Mini Earth**:
+The small Earth orbiting the profile photo in the Hero; it starts the game.
+_Avoid_: Moon, planet, launcher
+
+**Takeover**:
+Mini Earth growing until it covers the profile photo, while the photo or Mini
+Earth is hovered or focused. It shrinks back if the pointer leaves.
+_Avoid_: Hover animation, expand
+
+**Launch**:
+Earth gliding from the Hero to the centre of the screen as the game starts.
+_Avoid_: Transition, zoom
 
 ### Upgrades
 

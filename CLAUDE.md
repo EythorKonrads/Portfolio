@@ -106,6 +106,8 @@ site works. Rely on it instead of checking things by hand in a browser.
   label should say they open in a new tab.
 - Text needs at least 4.5:1 contrast against its background.
 - Use real `<button>` and `<a>` elements so everything works from the keyboard.
+- The game is exempt from these rules inside its own screen; the button that
+  starts it is not (`docs/adr/0002-game-skips-accessibility.md`).
 
 # Dependencies
 - Prefer plain HTML, CSS and Vue over adding a package. Don't add UI component
