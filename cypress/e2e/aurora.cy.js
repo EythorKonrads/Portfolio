@@ -20,13 +20,24 @@ describe('Aurora', () => {
       cy.visitHome();
     });
 
-    it('drifts behind the hero content without catching clicks', () => {
+    it('drifts behind the whole page without catching clicks', () => {
       aurora()
         .should('have.attr', 'aria-hidden', 'true')
         .and('have.css', 'pointer-events', 'none')
         .and('have.css', 'z-index', '-1')
+        .and('have.css', 'position', 'fixed')
+        .should(($aurora) => {
+          const rect = $aurora[0].getBoundingClientRect();
+          expect(rect.width).to.equal(
+            $aurora[0].ownerDocument.documentElement.clientWidth
+          );
+          expect(rect.height).to.be.closeTo(800, 1);
+        });
+      // A sibling of the hero, behind it and the content column alike
+      cy.get('[data-cy="hero"]')
         .parent()
-        .should('have.attr', 'data-cy', 'hero');
+        .children('[data-cy="heroAurora"]')
+        .should('exist');
       bands()
         .should('have.length', 3)
         .each(($band) => {
@@ -47,37 +58,61 @@ describe('Aurora', () => {
       cy.get('[data-cy="auroraGlow"]').should('have.css', 'opacity', '0');
     });
 
-    it('keeps hero text at 4.5:1 over its brightest color', () => {
+    it('keeps text at 4.5:1 over its brightest color', () => {
       aurora().should('exist');
       cy.document().then((doc) => {
         const hero = doc.querySelector('[data-cy="hero"]');
+        const header = doc.querySelector('[data-cy="homeHeader"]');
         const page = getComputedStyle(hero.parentElement).backgroundColor;
-        const heroBg = composite(getComputedStyle(hero).backgroundColor, page);
         const layerOpacity = Number(
           getComputedStyle(doc.querySelector('[data-cy="heroAurora"]')).opacity
         );
-        // Worst case: the lightest aurora color at full strength in the layer
-        const brightest = ['--color-aurora-green', '--color-aurora-teal']
+        // Worst case: the lightest aurora color at full strength in the
+        // layer, then whatever each area paints over it
+        const sky = ['--color-aurora-green', '--color-aurora-teal']
           .map((variable) =>
-            composite(resolveColor(doc, variable), heroBg, layerOpacity)
+            composite(resolveColor(doc, variable), page, layerOpacity)
           )
           .sort((a, b) => luminance(b) - luminance(a))[0];
-
-        const minimums = {
-          heroName: 4.5,
-          heroRole: 4.5,
-          heroText: 4.5,
-          heroMail: 4.5,
-          // Icons are graphics, which WCAG asks 3:1 of, not text
-          socialGithub: 3,
-          socialLinkedin: 3,
+        const backgrounds = {
+          hero: composite(getComputedStyle(hero).backgroundColor, sky),
+          header: composite(
+            getComputedStyle(header, '::before').backgroundColor,
+            sky
+          ),
+          content: sky,
         };
-        Object.entries(minimums).forEach(([id, minimum]) => {
+
+        const checks = [
+          ['heroName', 'hero', 4.5],
+          ['heroRole', 'hero', 4.5],
+          ['heroText', 'hero', 4.5],
+          ['heroMail', 'hero', 4.5],
+          // Icons are graphics, which WCAG asks 3:1 of, not text
+          ['socialGithub', 'hero', 3],
+          ['socialLinkedin', 'hero', 3],
+          ['navLink', 'header', 4.5],
+          ['filterButton', 'header', 4.5],
+          ['jobTitle', 'content', 4.5],
+          ['jobTag', 'content', 4.5],
+        ];
+        checks.forEach(([id, area, minimum]) => {
           const color = getComputedStyle(
             doc.querySelector(`[data-cy="${id}"]`)
           ).color;
-          expect(contrast(color, brightest), id).to.be.at.least(minimum);
+          expect(contrast(color, backgrounds[area]), id).to.be.at.least(
+            minimum
+          );
         });
+      });
+    });
+
+    it('shows through the header, blurred', () => {
+      cy.get('[data-cy="homeHeader"]').should(($header) => {
+        const layer = getComputedStyle($header[0], '::before');
+        expect(layer.backdropFilter).to.contain('blur');
+        const alpha = Number(layer.backgroundColor.match(/[\d.]+/g)[3] ?? 1);
+        expect(alpha, 'see-through').to.be.lessThan(1);
       });
     });
 

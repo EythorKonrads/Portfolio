@@ -1,16 +1,10 @@
 <script setup>
-import HeroAurora from './HeroAurora.vue';
 import Icon from './Icon.vue';
 import Social from './Social.vue';
-import { useTheme } from '@/composables/useTheme';
-
-const { theme } = useTheme();
 </script>
 
 <template>
   <div class="hero" data-cy="hero">
-    <!-- Real auroras only show against a dark sky -->
-    <HeroAurora v-if="theme === 'dark'" />
     <div class="hero__wrapper">
       <div class="hero__card">
         <div
@@ -83,9 +77,6 @@ const { theme } = useTheme();
   box-sizing: border-box;
   background-color: var(--color-background-overlay);
   padding: 1.5rem;
-  /* Its own stacking context, so the Aurora's z-index: -1 stays inside it */
-  position: relative;
-  isolation: isolate;
 
   .hero__wrapper {
     display: flex;

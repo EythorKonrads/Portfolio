@@ -72,26 +72,30 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Sits behind the hero's content (the hero is its stacking context). Its
-   opacity caps how much it lightens the text's background, keeping 4.5:1. */
+/* Fixed behind the whole page (.home is its stacking context), so it stays
+   put whichever element scrolls. Its opacity caps how much it lightens the
+   text's background, keeping 4.5:1. */
 .hero-aurora {
   --aurora-x: 50%;
   --aurora-y: 30%;
   --aurora-lean: 0;
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.16;
+  opacity: 0.12;
 }
 .hero-aurora__band {
   position: absolute;
   left: -30%;
   width: 160%;
-  height: 40%;
+  /* Thin bands in the upper sky only, dimmer than the cursor glow so moving
+     the mouse visibly lights things up */
+  height: 22%;
   border-radius: 50%;
   filter: blur(40px);
+  opacity: 0.65;
   background: linear-gradient(
     90deg,
     transparent,
@@ -103,10 +107,10 @@ onBeforeUnmount(() => {
   transition: translate 1.5s ease-out;
 }
 .hero-aurora__band--1 {
-  top: -8%;
+  top: -5%;
 }
 .hero-aurora__band--2 {
-  top: 14%;
+  top: 10%;
   background: linear-gradient(
     90deg,
     transparent,
@@ -118,7 +122,7 @@ onBeforeUnmount(() => {
   animation-delay: -12s;
 }
 .hero-aurora__band--3 {
-  top: 36%;
+  top: 25%;
   animation-duration: 42s;
   animation-delay: -20s;
   animation-direction: alternate-reverse;
@@ -130,7 +134,7 @@ onBeforeUnmount(() => {
   position: absolute;
   left: var(--aurora-x);
   top: var(--aurora-y);
-  width: 70%;
+  width: min(40vw, 520px);
   aspect-ratio: 1;
   translate: -50% -50%;
   background: radial-gradient(
@@ -145,7 +149,7 @@ onBeforeUnmount(() => {
     top 1.2s ease-out;
 }
 .hero-aurora--following .hero-aurora__glow {
-  opacity: 0.7;
+  opacity: 1;
 }
 @keyframes hero-aurora-drift {
   from {
@@ -158,12 +162,12 @@ onBeforeUnmount(() => {
 /* Lighter on phones: two bands, slower, less blur to paint */
 @media screen and (max-width: 600px) {
   .hero-aurora__band {
-    height: 55%;
+    height: 26%;
     filter: blur(28px);
     animation-duration: 40s;
   }
   .hero-aurora__band--2 {
-    top: 30%;
+    top: 14%;
     animation-duration: 52s;
   }
   .hero-aurora__band--3 {
