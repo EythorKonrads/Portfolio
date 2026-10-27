@@ -1,3 +1,7 @@
+[build]
+  # Skip deploys when only docs, tests or tooling changed
+  ignore = "./scripts/netlify-ignore.sh"
+
 # Overrides variables of the same name set in the Netlify UI.
 [build.environment]
   # Vite 8 needs Node ^20.19 || >=22.12; Cypress 16 needs Node 22+

@@ -3,6 +3,15 @@ name: CI
 # Tests run on PRs only; a merge to master was already tested in its PR
 on:
   pull_request:
+    # Files that can't change what the tests check. A PR touching only these
+    # gets no run, so don't make this workflow a required check.
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.claude/**'
+      - '.vscode/**'
+      - '.github/dependabot.yml'
+      - '.gitignore'
 
 # A new push to a PR cancels the run for the push before it
 concurrency:
