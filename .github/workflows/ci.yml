@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   test:
-    name: Lint and e2e tests
+    name: Lint, e2e and component tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -49,6 +49,11 @@ jobs:
       # Builds the site, then runs every spec against the preview server
       - name: e2e tests
         run: npm run test:e2e
+
+      # Single components and the game's rules, served by Vite
+      - name: Component tests
+        if: ${{ !cancelled() }}
+        run: npm run test:component
 
       - name: Upload screenshots of failed tests
         if: failure()

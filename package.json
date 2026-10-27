@@ -12,6 +12,8 @@
         "preview": "vite preview",
         "test:open": "cypress open --e2e -b electron",
         "test:e2e": "vite build && start-server-and-test 'vite preview --port 4173 --strictPort' http://localhost:4173 'cypress run --e2e -b electron --config baseUrl=http://localhost:4173'",
+        "test:component": "cypress run --component -b electron",
+        "test:component:open": "cypress open --component -b electron",
         "test:e2e:dev": "start-server-and-test 'vite dev --port 5173' http://localhost:5173 'cypress open --e2e -b electron'",
         "lint": "eslint . --fix",
         "format": "prettier --write src/"

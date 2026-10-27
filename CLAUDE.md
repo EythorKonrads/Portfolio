@@ -20,6 +20,8 @@ sticky section nav.
 - One spec, after `npx vite build`:
   `npx start-server-and-test 'vite preview --port 4173 --strictPort' http://localhost:4173 'cypress run --e2e -b electron --spec cypress/e2e/<name>.cy.js --config baseUrl=http://localhost:4173'`
 - `npm run test:e2e:dev`: Cypress's interactive runner against the dev server.
+- `npm run test:component`: Cypress component specs (`cypress/component/`),
+  served by Vite with no build. CI runs these too.
 - `npx eslint .`: lint without fixing (`npm run lint` fixes).
 - `npm run format`: format `src/` with Prettier.
 
@@ -68,8 +70,11 @@ The Cypress e2e suite (`cypress/e2e/`) is the source of truth for whether the
 site works. Rely on it instead of checking things by hand in a browser.
 
 - After any change to `src/`, run `npm run test:e2e` (it builds first, then
-  runs every spec against the preview server) and make sure it passes before
-  committing.
+  runs every spec against the preview server) and `npm run test:component`,
+  and make sure both pass before committing.
+- Component specs (`cypress/component/`) mount one component, or import a
+  plain module such as the game's rules (`src/game/`) and test it directly.
+  Use them for logic and single components; use e2e for flows on the page.
 - When adding or changing a feature, add or update the matching spec in the
   same change. Specs read content from `src/assets/*.json`, so content-only
   edits need no test changes.

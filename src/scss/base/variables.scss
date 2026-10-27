@@ -5,6 +5,25 @@
 
   /* Height of the sticky section nav / filter row on the home page */
   --header-height: 4rem;
+
+  /* The game is always set in dark space, whatever the theme */
+  --color-game-space: #050816;
+  --color-game-star: #e2e8f0;
+  --color-game-ocean: #2563eb;
+  --color-game-land: #4ade80;
+  --color-game-atmosphere: rgba(125, 211, 252, 0.45);
+  --color-game-shade: rgba(2, 6, 23, 0.55);
+  --color-game-ship: #f8fafc;
+  --color-game-flame: #fb923c;
+  --color-game-asteroid: #57534e;
+  --color-game-asteroid-edge: #a8a29e;
+  --color-game-shot: #fde047;
+  --color-game-defence: #c4b5fd;
+  --color-game-text: #f1f5f9;
+  --color-game-panel: rgba(15, 23, 42, 0.88);
+  --color-game-panel-border: rgba(148, 163, 184, 0.3);
+  --color-game-button: #9393e8;
+  --color-game-button-text: #0f172a;
 }
 
 /* Dark is the default theme, used until the visitor picks light */

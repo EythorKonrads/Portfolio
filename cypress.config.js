@@ -8,4 +8,14 @@ export default defineConfig({
     viewportHeight: 800,
     video: false,
   },
+  // Single components and plain modules (the game's rules), served by Vite
+  component: {
+    devServer: { framework: 'vue', bundler: 'vite' },
+    specPattern: 'cypress/component/**/*.cy.js',
+    supportFile: 'cypress/support/component.js',
+    indexHtmlFile: 'cypress/support/component-index.html',
+    viewportWidth: 800,
+    viewportHeight: 600,
+    video: false,
+  },
 });
