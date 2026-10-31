@@ -32,6 +32,9 @@ const byId = computed(() =>
 const iconName = (id) =>
   `game-${id.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
 const isLocked = (id) => byId.value[id]?.blocked === 'needs';
+// The whole card buys. Its button has no click handler of its own: a click
+// or Enter on the button reaches the card, so it never buys twice.
+const canBuy = (id) => !!byId.value[id] && !byId.value[id].blocked;
 
 // One tooltip for the whole Shop, placed on screen over the hovered card.
 // Fixed positioning keeps it from being cut off by the scrolling panel.
@@ -96,8 +99,10 @@ const tipText = computed(() => {
             'game-shop__item--head': id === row.head,
             'game-shop__item--display': !byId[id],
             'game-shop__item--locked': isLocked(id),
+            'game-shop__item--buyable': canBuy(id),
           }"
           :data-cy="`shopItem-${id}`"
+          @click="canBuy(id) && $emit('buy', id)"
           @mouseenter="showTip(id, $event)"
           @mouseleave="hideTip"
           @focusin="showTip(id, $event)"
@@ -121,7 +126,6 @@ const tipText = computed(() => {
               :disabled="!!byId[id].blocked"
               :aria-label="`Buy ${SHOP_ITEMS[id].label}`"
               data-cy="shopBuy"
-              @click="$emit('buy', id)"
             >
               <template v-if="byId[id].blocked === 'max'">Max</template>
               <Icon
@@ -163,7 +167,7 @@ const tipText = computed(() => {
 
 <style lang="scss" scoped>
 .game-shop {
-  width: min(100%, 28rem);
+  width: min(100%, 23rem);
 }
 .game-shop__title {
   text-align: center;
@@ -202,7 +206,18 @@ const tipText = computed(() => {
   padding: 0.6rem 0.3rem 0.4rem;
   border: 1px solid var(--color-game-panel-border);
   border-radius: 0.5rem;
-  cursor: help;
+}
+/* Hovering a card shows its button as hovered, since the card buys too */
+.game-shop__item--buyable {
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-game-button);
+
+    .game-shop__buy {
+      background: var(--color-game-button-hover);
+    }
+  }
 }
 /* Starts a new row, leaving any spare cells in the row before empty */
 .game-shop__item--head {
@@ -210,8 +225,8 @@ const tipText = computed(() => {
   background: var(--color-game-key);
 
   .game-shop__icon {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
   }
 }
 /* The Ship's card has no button, so its icon takes the whole card */
@@ -219,8 +234,8 @@ const tipText = computed(() => {
   justify-content: center;
 
   .game-shop__icon {
-    width: 4rem;
-    height: 4rem;
+    width: 3.25rem;
+    height: 3.25rem;
   }
 }
 .game-shop__item--locked {
@@ -235,8 +250,8 @@ const tipText = computed(() => {
 }
 .game-shop__icon {
   flex: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
   color: var(--color-game-defence);
 }
 .game-shop__owned {

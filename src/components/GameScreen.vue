@@ -436,6 +436,9 @@ onBeforeUnmount(() => {
   text-decoration: none;
   cursor: pointer;
 }
+.game-button:hover:not(:disabled) {
+  background: var(--color-game-button-hover);
+}
 .game-button:disabled {
   opacity: 0.4;
   cursor: default;
@@ -444,6 +447,9 @@ onBeforeUnmount(() => {
   background: transparent;
   border: 1px solid var(--color-game-panel-border);
   color: var(--color-game-text);
+}
+.game-button--quiet:hover:not(:disabled) {
+  background: var(--color-game-key);
 }
 .game-button--small {
   width: auto;
@@ -455,7 +461,6 @@ onBeforeUnmount(() => {
    can't make a panel scroll. */
 .game-hint {
   position: relative;
-  cursor: help;
 }
 .game-hint__tip {
   position: absolute;

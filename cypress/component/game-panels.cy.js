@@ -51,6 +51,12 @@ describe('Game panels', () => {
       .and('be.enabled')
       .click();
     cy.get('@buy').should('have.been.calledOnceWith', 'turret');
+    // The whole card buys too, but only when its item can be bought
+    cy.get('[data-cy="shopItem-turret"]').click('top');
+    cy.get('@buy').should('have.been.calledTwice');
+    cy.get('[data-cy="shopItem-turretRate"]').click('top');
+    cy.get('[data-cy="shopItem-satellite"]').click('top');
+    cy.get('@buy').should('have.been.calledTwice');
     cy.get('[data-cy="shopItem-turretRate"] [data-cy="shopBuy"]').should(
       'be.disabled'
     );
