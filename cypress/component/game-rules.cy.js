@@ -4,11 +4,14 @@ import {
   BURST,
   FIRST_SPAWN,
   IMPACT,
+  PER_LEVEL,
   POPULATION_START,
   PRICE_GROWTH,
+  SATELLITE,
   SHIP,
   SHOP_ITEMS,
   WAVE_BONUS,
+  TURRET,
   WAVE_TITLE,
 } from '../../src/game/config';
 import {
@@ -17,6 +20,7 @@ import {
   nextWave,
   price,
   satellitePositions,
+  shotDamage,
   step,
   waveAsteroids,
 } from '../../src/game/game';
@@ -378,6 +382,129 @@ describe('Game rules', () => {
     game.asteroids.push(asteroid(game, 'small', 400, 150));
     step(game, 0.01);
     expect(game.shots.some((shot) => shot.from === 'turret')).to.be.true;
+  });
+
+  it('fires a quick tap of the fire key as soon as the cooldown ends', () => {
+    const game = emptyGame();
+    keepWaveGoing(game);
+    const shipShots = () => game.shots.filter((s) => s.from === 'ship');
+    step(game, 0.01, { fire: true });
+    step(game, 0.01);
+    // A tap while it's still cooling down, released straight away
+    step(game, 0.01, { fire: true });
+    step(game, 0.01);
+    expect(shipShots()).to.have.length(1);
+    for (let i = 0; i < 30; i++) step(game, 0.01);
+    expect(shipShots()).to.have.length(2);
+  });
+
+  it('steers the Ship towards a touch, firing by itself', () => {
+    const game = emptyGame();
+    keepWaveGoing(game);
+    const { x, y } = game.ship;
+    const target = { x: x + 200, y };
+    for (let i = 0; i < 30; i++) step(game, 0.02, { target });
+    expect(game.ship.x).to.be.greaterThan(x);
+    expect(game.shots.some((s) => s.from === 'ship')).to.be.true;
+  });
+
+  context('upgrades', () => {
+    it('makes every kind of shot stronger with each damage level', () => {
+      const game = emptyGame();
+      for (const [from, id] of [
+        ['ship', 'shipWeapon'],
+        ['turret', 'turretDamage'],
+        ['satellite', 'satelliteDamage'],
+      ]) {
+        expect(shotDamage[from](game), from).to.equal(1);
+        game.owned[id] = 2;
+        expect(shotDamage[from](game), from).to.equal(1 + 2 * PER_LEVEL[id]);
+      }
+    });
+
+    it('fires bigger Ship shots with each weapon level', () => {
+      const shotSize = (weapon) => {
+        const game = emptyGame();
+        keepWaveGoing(game);
+        game.owned.shipWeapon = weapon;
+        step(game, 0.01, { fire: true });
+        return game.shots.find((s) => s.from === 'ship').size;
+      };
+      expect(shotSize(2)).to.be.greaterThan(shotSize(0));
+    });
+
+    it('fires the Ship faster with each fire rate level', () => {
+      const cooldown = (rate) => {
+        const game = emptyGame();
+        keepWaveGoing(game);
+        game.owned.shipRate = rate;
+        step(game, 0.01, { fire: true });
+        return game.ship.cooldown;
+      };
+      expect(cooldown(0)).to.be.closeTo(SHIP.fireDelay, 1e-9);
+      expect(cooldown(2)).to.be.closeTo(
+        SHIP.fireDelay / (1 + 2 * PER_LEVEL.shipRate),
+        1e-9
+      );
+    });
+
+    it('speeds the Ship up with each engine level', () => {
+      const speed = (engine) => {
+        const game = emptyGame();
+        keepWaveGoing(game);
+        game.owned.shipEngine = engine;
+        for (let i = 0; i < 10; i++) step(game, 0.05, { thrust: true });
+        return Math.hypot(game.ship.vx, game.ship.vy);
+      };
+      expect(speed(3)).to.be.greaterThan(speed(0));
+    });
+
+    it('fires Turrets faster with each fire rate level', () => {
+      const cooldown = (rate) => {
+        const game = emptyGame();
+        parkShip(game);
+        game.owned.turret = 1;
+        game.owned.turretRate = rate;
+        game.asteroids.push(asteroid(game, 'small', 400, 150));
+        step(game, 0.01);
+        return game.turretCooldowns[0];
+      };
+      expect(cooldown(0)).to.be.closeTo(TURRET.fireDelay, 1e-9);
+      expect(cooldown(2)).to.be.closeTo(
+        TURRET.fireDelay / (1 + 2 * PER_LEVEL.turretRate),
+        1e-9
+      );
+    });
+
+    it('has Satellites fire at nearby Asteroids, faster with each level', () => {
+      const cooldown = (rate) => {
+        const game = emptyGame();
+        parkShip(game);
+        game.owned.satellite = 1;
+        game.owned.satelliteRate = rate;
+        // Just outside the Satellite, on the side away from Earth
+        const [satellite] = satellitePositions(game);
+        const dx = satellite.x - game.earth.x;
+        const dy = satellite.y - game.earth.y;
+        const out = 40 / Math.hypot(dx, dy);
+        game.asteroids.push(
+          asteroid(
+            game,
+            'small',
+            satellite.x + dx * out,
+            satellite.y + dy * out
+          )
+        );
+        step(game, 0.01);
+        expect(game.shots.some((s) => s.from === 'satellite')).to.be.true;
+        return game.satelliteCooldowns[0];
+      };
+      expect(cooldown(0)).to.be.closeTo(SATELLITE.fireDelay, 1e-9);
+      expect(cooldown(2)).to.be.closeTo(
+        SATELLITE.fireDelay / (1 + 2 * PER_LEVEL.satelliteRate),
+        1e-9
+      );
+    });
   });
 
   context('the Shop', () => {
