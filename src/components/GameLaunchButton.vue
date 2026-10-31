@@ -21,7 +21,8 @@ const preload = () => import('./GameScreen.vue');
     @focus="preload"
     @click="requestLaunch(button)"
   >
-    Mini-game
+    <span class="game-launch-button__full">Mini-game</span>
+    <span class="game-launch-button__short">Game</span>
   </button>
 </template>
 
@@ -32,5 +33,17 @@ const preload = () => import('./GameScreen.vue');
   background: none;
   font: inherit;
   cursor: pointer;
+}
+/* On the narrowest phones the full label doesn't fit beside the other links */
+.game-launch-button__short {
+  display: none;
+}
+@media screen and (max-width: 360px) {
+  .game-launch-button__full {
+    display: none;
+  }
+  .game-launch-button__short {
+    display: inline;
+  }
 }
 </style>
