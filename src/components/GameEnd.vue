@@ -124,6 +124,13 @@ async function save() {
             Couldn't save your score. Try again?
           </p>
         </form>
+        <p v-else-if="!rank" class="game-end__note" data-cy="scoreWhyNot">
+          {{
+            score > 0
+              ? "Your Score didn't make the top 10 this time."
+              : 'Destroy an Asteroid to get a Score onto the board.'
+          }}
+        </p>
         <ol v-if="board.length" class="game-end__list" data-cy="scoreList">
           <li
             v-for="(entry, i) in board"
@@ -139,7 +146,7 @@ async function save() {
             }}</span>
           </li>
         </ol>
-        <p v-else class="game-end__note">No scores yet. Be the first!</p>
+        <p v-else class="game-end__note">No scores yet.</p>
       </template>
     </section>
 

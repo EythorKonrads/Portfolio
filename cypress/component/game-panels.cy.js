@@ -165,6 +165,20 @@ describe('Game panels', () => {
       cy.mount(GameEnd, { props: { score: 50, wave: 2 } });
       cy.get('[data-cy="scoreRow"]').should('have.length', 10);
       cy.get('[data-cy="scoreEntry"]').should('not.exist');
+      cy.get('[data-cy="scoreWhyNot"]').should(
+        'contain.text',
+        "didn't make the top 10"
+      );
+    });
+
+    it('explains that a Score of 0 needs an Asteroid destroyed first', () => {
+      cy.intercept('GET', '/api/scores', { board: [] });
+      cy.mount(GameEnd, { props: { score: 0, wave: 1 } });
+      cy.get('[data-cy="scoreEntry"]').should('not.exist');
+      cy.get('[data-cy="scoreWhyNot"]').should(
+        'contain.text',
+        'Destroy an Asteroid'
+      );
     });
 
     it('says so when a save fails, and lets you try again', () => {
