@@ -7,6 +7,9 @@ import { SHIP } from '../../src/game/config';
 import { clusterSize } from '../../src/game/game';
 
 const withGame = (fn) => cy.window().its('__game').then(fn);
+// Waits on the game's own clock. CI runners sometimes stall for seconds, so
+// these get room; they still finish as soon as the condition is met.
+const GAME_TIME = { timeout: 15000 };
 const key = (type, code) => cy.document().trigger(type, { code });
 
 const mount = () => {
@@ -77,7 +80,7 @@ describe('Game screen', () => {
       });
     });
     cy.get('[data-cy="waveTitle"]')
-      .children()
+      .children(GAME_TIME)
       .should('have.css', 'opacity', '0');
   });
 
@@ -129,7 +132,7 @@ describe('Game screen', () => {
     withGame((game) => {
       game.population = 0;
     });
-    cy.get('[data-cy="gameEnd"]', { timeout: 6000 }).should('be.visible');
+    cy.get('[data-cy="gameEnd"]', GAME_TIME).should('be.visible');
     sameWidth('gameEndTalk', 'gameEndAgain');
   });
 
@@ -166,11 +169,10 @@ describe('Game screen', () => {
     start();
     withGame((game) => {
       const { y } = game.ship;
+      // Held until it moves: it starts pointing up, so thrust moves it up
       key('keydown', 'ArrowUp');
-      cy.wait(300);
+      cy.wrap(game).its('ship.y', GAME_TIME).should('be.lessThan', y);
       key('keyup', 'ArrowUp');
-      // It starts pointing up, so thrust moves it up the screen
-      cy.wrap(null).should(() => expect(game.ship.y).to.be.lessThan(y));
     });
   });
 
@@ -206,7 +208,7 @@ describe('Game screen', () => {
       cy.wrap(game).its('explosion').should('exist');
     });
     cy.get('[data-cy="gameEnd"]').should('not.exist');
-    cy.get('[data-cy="gameEnd"]', { timeout: 6000 }).should('be.visible');
+    cy.get('[data-cy="gameEnd"]', GAME_TIME).should('be.visible');
     cy.get('[data-cy="gameEndAgain"]').click();
     cy.get('[data-cy="gameEnd"]').should('not.exist');
     // Play again skips the help screen
@@ -234,8 +236,8 @@ describe('Game screen', () => {
         expect(game.spawnQueue).to.include('armored');
         // The first cluster arrives together and is drawn; any error
         // drawing it would fail the test
-        cy.wrap(game, { timeout: 6000 })
-          .its('asteroids')
+        cy.wrap(game)
+          .its('asteroids', GAME_TIME)
           .should('have.length.at.least', clusterSize(20));
       });
     });
@@ -250,7 +252,7 @@ describe('Game screen', () => {
       game.score = 30;
       game.population = 0;
     });
-    cy.get('[data-cy="scoreInitials"]', { timeout: 6000 }).type('EK');
+    cy.get('[data-cy="scoreInitials"]', GAME_TIME).type('EK');
     cy.get('[data-cy="scoreSave"]').click();
     withGame((game) => {
       cy.wait('@save').its('request.body').should('deep.equal', {
