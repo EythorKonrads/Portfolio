@@ -22,9 +22,16 @@ A destroyed large Asteroid breaks into medium ones, and a medium one into
 small ones.
 _Avoid_: Rock, meteor, enemy
 
+**Armored Asteroid**:
+A plated Asteroid that joins from Wave 20. Only the Ship's shots can break
+it; Turret and Satellite shots glance off, so they don't aim at it. It
+breaks into medium Asteroids.
+_Avoid_: Metal rock, boss
+
 **Population**:
 How many people are alive on Earth: Earth's health. Asteroid hits reduce it,
-and the game ends when it reaches zero.
+and the game ends when it reaches zero: Earth explodes, then the end screen
+shows.
 _Avoid_: Health, HP, lives
 
 **Ship**:
@@ -45,13 +52,18 @@ _Avoid_: Credits, coins, money, points
 The tally shown when the game ends. It is separate from Ore, which is spent.
 _Avoid_: Points
 
+**Scoreboard**:
+The shared top 10 of all time, shown when the game ends. A Score that makes
+it goes on with the player's initials: 2 or 3 letters, A–Z.
+_Avoid_: Leaderboard, high score list, hall of fame
+
 **Shop**:
 Where Ore is spent on upgrades, between Waves.
 _Avoid_: Store, upgrade menu
 
 **Menu**:
-Opened from the corner of the screen during a Wave; it pauses the game. It
-offers Resume and End game.
+Opened from the corner of the screen during a Wave or in the Shop; it
+pauses the game. It offers Resume, the Scoreboard and End game.
 _Avoid_: Pause screen, settings
 
 **End game**:
@@ -86,7 +98,8 @@ be upgraded.
 _Avoid_: Tower, cannon
 
 **Satellite**:
-An armed craft orbiting Earth. Each one bought joins the Constellation.
+An armed craft orbiting Earth. Each one bought joins the Constellation. Its
+fire rate and damage can be upgraded.
 _Avoid_: Drone, moon
 
 **Constellation**:

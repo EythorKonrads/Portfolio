@@ -1,17 +1,16 @@
 <script setup>
 import Icon from './Icon.vue';
 import Social from './Social.vue';
+import MiniEarth from './MiniEarth.vue';
 </script>
 
 <template>
   <div class="hero" data-cy="hero">
     <div class="hero__wrapper">
       <div class="hero__card">
-        <div
-          class="hero__image anim-fade-up"
-          style="--anim-delay: 0ms"
-          data-cy="heroImage"
-        ></div>
+        <MiniEarth class="anim-fade-up" style="--anim-delay: 0ms">
+          <div class="hero__image" data-cy="heroImage"></div>
+        </MiniEarth>
         <div class="hero__texts">
           <h1
             class="hero__hdln anim-fade-up"

@@ -1,5 +1,6 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import GameLaunchButton from './GameLaunchButton.vue';
 
 // Each entry matches the id on the section component's root element
 const sections = [
@@ -97,6 +98,9 @@ onBeforeUnmount(() => {
         >
           {{ title }}
         </a>
+      </li>
+      <li>
+        <GameLaunchButton class="section-nav__link" />
       </li>
     </ul>
   </nav>

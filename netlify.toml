@@ -8,3 +8,8 @@
   NODE_VERSION = "24"
   # Netlify only builds the site; skip Cypress's test-runner download
   CYPRESS_INSTALL_BINARY = "0"
+
+[functions]
+  # esbuild resolves the game's extensionless imports (src/game/), which the
+  # scoreboard function shares with the site
+  node_bundler = "esbuild"
