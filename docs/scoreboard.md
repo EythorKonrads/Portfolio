@@ -23,7 +23,11 @@ available. To try it locally, run the site with the Netlify CLI
 
 ## The data
 
-Everything is in the Netlify Blobs store `scores`:
+Everything is in the Netlify Blobs store `scores`. Deploy Previews and branch
+deploys use a separate store, `scores-preview`, so testing there doesn't put
+scores on the real board.
+
+In each store:
 
 - `entries/<date>-<id>`: one per Score that made the board, kept for good
   even after it drops off:
