@@ -83,6 +83,18 @@ describe('Game', () => {
       });
     });
 
+    it('launches from the header too, and returns focus there', () => {
+      cy.get('[data-cy="headerPlay"]')
+        .should('have.attr', 'aria-label')
+        .and('match', /play/i);
+      cy.get('[data-cy="headerPlay"]').click();
+      cy.get('[data-cy="launch"]').should('exist');
+      gameScreen().should('be.visible');
+      cy.get('body').trigger('keydown', { code: 'Escape' });
+      gameScreen().should('not.exist');
+      cy.get('[data-cy="headerPlay"]').should('have.focus');
+    });
+
     it('returns to the page from the help screen with Esc', () => {
       miniEarth().click();
       cy.get('[data-cy="gameIntro"]').should('be.visible');

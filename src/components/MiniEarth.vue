@@ -2,6 +2,7 @@
 import { defineAsyncComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { GLOW, earthRadius, paintEarthCanvas } from '@/game/earth';
 import { useTheme } from '@/composables/useTheme';
+import { useGameLaunch } from '@/composables/useGameLaunch';
 
 // The game's code only downloads once someone shows interest
 let gameModule = null;
@@ -22,12 +23,23 @@ const isTakingOver = ref(false);
 const isLaunching = ref(false);
 const isPlaying = ref(false);
 const launchStyle = ref({});
+// Where focus goes back to when the game closes: this button, or whichever
+// one asked for the Launch
+let returnFocus = null;
 
 // On the page it takes the theme's muted colors, so repaint when that changes
 const { theme } = useTheme();
 const paintGlobe = () => paintEarthCanvas(globe.value, PHOTO_SIZE * GLOW);
 onMounted(paintGlobe);
 watch(theme, () => nextTick(paintGlobe));
+
+// Another button (in the header) can ask for the Launch, still from here
+const { request } = useGameLaunch();
+watch(request, (asked) => {
+  if (!asked) return;
+  request.value = null;
+  launch(asked.from);
+});
 
 function startTakeover() {
   isTakingOver.value = true;
@@ -51,8 +63,10 @@ function hidePage(hidden) {
 
 // The Launch: Earth glides from wherever it is now to the middle of the
 // screen, at exactly the size the game draws it, while the game loads
-async function launch() {
+async function launch(opener = button.value) {
   if (isLaunching.value || isPlaying.value) return;
+  returnFocus = opener;
+  loadGame();
   const from = globe.value.getBoundingClientRect();
   const { innerWidth: width, innerHeight: height } = window;
   const size = earthRadius(width, height) * 2 * GLOW;
@@ -104,7 +118,7 @@ function onGameClose() {
   isLaunching.value = false;
   isTakingOver.value = false;
   lockPage(false);
-  button.value?.focus({ preventScroll: true });
+  returnFocus?.focus({ preventScroll: true });
   // Focusing starts a Takeover; a closed game shouldn't greet you with one
   isTakingOver.value = false;
 }
@@ -126,7 +140,7 @@ function onGameClose() {
     @pointerleave="stopTakeover"
     @focus="startTakeover"
     @blur="stopTakeover"
-    @click="launch"
+    @click="launch()"
   >
     <slot></slot>
     <span class="mini-earth__orbit" aria-hidden="true">
