@@ -70,6 +70,14 @@ describe('Game rules', () => {
     expect(waveAsteroids(6).length).to.be.greaterThan(waveAsteroids(1).length);
   });
 
+  it('pays enough Ore for a first upgrade when all of Wave 1 is shot', () => {
+    const ore = waveAsteroids(1).reduce((sum, s) => sum + ASTEROIDS[s].ore, 0);
+    const cheapest = Math.min(
+      ...Object.values(SHOP_ITEMS).map((item) => item.price)
+    );
+    expect(ore).to.be.at.least(cheapest);
+  });
+
   it('holds back the first Asteroid until the Wave title has gone', () => {
     const game = createGame({ ...SIZE, seed: 1 });
     parkShip(game);

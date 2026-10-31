@@ -80,7 +80,8 @@ function newShip(game) {
 
 // Smalls only at first, mediums from Wave 3, larges from Wave 5
 export function waveAsteroids(wave) {
-  const count = 4 + wave * 2;
+  // Wave 1 gets one extra rock, so clearing it pays for a first upgrade
+  const count = 4 + wave * 2 + (wave === 1 ? 1 : 0);
   const mix =
     wave <= 2
       ? { small: 1 }
