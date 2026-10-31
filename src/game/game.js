@@ -400,6 +400,18 @@ function stepDefences(game, dt) {
   }
 }
 
+// Fully off screen and still heading away, so it can never come back.
+// New Asteroids start off screen too, but heading in.
+function hasLeft(game, asteroid) {
+  const { x, y, vx, vy, radius } = asteroid;
+  return (
+    (x < -radius && vx <= 0) ||
+    (x > game.width + radius && vx >= 0) ||
+    (y < -radius && vy <= 0) ||
+    (y > game.height + radius && vy >= 0)
+  );
+}
+
 function destroyAsteroid(game, asteroid) {
   const spec = ASTEROIDS[asteroid.size];
   game.ore += spec.ore;
@@ -497,8 +509,7 @@ export function step(game, dt, input = {}) {
   }
 
   // Clear out what's gone: spent shots, destroyed Asteroids, and any that
-  // drifted far off screen after missing
-  const far = Math.max(game.width, game.height);
+  // left the screen after missing
   game.shots = game.shots.filter(
     (s) =>
       s.life > 0 &&
@@ -508,7 +519,7 @@ export function step(game, dt, input = {}) {
       s.y < game.height + 20
   );
   game.asteroids = game.asteroids
-    .filter((a) => a.hp > 0 && Math.hypot(a.x - earth.x, a.y - earth.y) < far)
+    .filter((a) => a.hp > 0 && !hasLeft(game, a))
     .concat(pieces);
 
   if (game.population <= 0) {

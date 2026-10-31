@@ -67,6 +67,29 @@ describe('Game rules', () => {
     expect(waveAsteroids(6).length).to.be.greaterThan(waveAsteroids(1).length);
   });
 
+  it('ends the Wave as soon as the last Asteroid leaves the screen', () => {
+    const game = emptyGame();
+    parkShip(game);
+    // Just past the right edge, heading further out
+    const leaving = asteroid(game, 'small', 790, 300, 200, 0);
+    game.asteroids.push(leaving);
+    step(game, 0.01);
+    expect(game.status).to.equal('wave');
+    while (leaving.x < SIZE.width + leaving.radius) step(game, 0.01);
+    step(game, 0.01);
+    expect(game.asteroids).to.have.length(0);
+    expect(game.status).to.equal('shop');
+  });
+
+  it('keeps Asteroids that are off screen but heading in', () => {
+    const game = emptyGame();
+    parkShip(game);
+    game.asteroids.push(asteroid(game, 'small', -30, 300, 50, 0));
+    step(game, 0.01);
+    expect(game.asteroids).to.have.length(1);
+    expect(game.status).to.equal('wave');
+  });
+
   it('breaks a large Asteroid into mediums and a medium into smalls', () => {
     const game = emptyGame();
     parkShip(game);
