@@ -9,7 +9,7 @@ const props = defineProps({
   wave: { type: Number, required: true },
   items: { type: Array, required: true },
 });
-defineEmits(['buy', 'next']);
+const emit = defineEmits(['buy', 'next']);
 
 // A row per thing being improved. Its first, bigger card is the thing itself:
 // the Ship, which can't be bought, or a Turret or Satellite, which can.
@@ -64,6 +64,24 @@ function showTip(id, event) {
 }
 const hideTip = () => (tip.value = null);
 
+// Touch has no hover, so the first tap on a card shows its tip and the next
+// tap on that card buys it (and keeps buying more levels). A mouse click or
+// the keyboard buys straight away.
+let pointer = null;
+const tapped = ref(null);
+const onPointerDown = (event) => (pointer = event.pointerType);
+
+function onCardClick(id, event) {
+  const isTouch = pointer === 'touch';
+  pointer = null;
+  if (isTouch && tapped.value !== id) {
+    tapped.value = id;
+    showTip(id, event);
+    return;
+  }
+  if (canBuy(id)) emit('buy', id);
+}
+
 // Read from the items each time, so buying a Turret unlocks its upgrades
 // (and the tip under the pointer) straight away
 const tipText = computed(() => {
@@ -102,7 +120,8 @@ const tipText = computed(() => {
             'game-shop__item--buyable': canBuy(id),
           }"
           :data-cy="`shopItem-${id}`"
-          @click="canBuy(id) && $emit('buy', id)"
+          @pointerdown="onPointerDown"
+          @click="onCardClick(id, $event)"
           @mouseenter="showTip(id, $event)"
           @mouseleave="hideTip"
           @focusin="showTip(id, $event)"

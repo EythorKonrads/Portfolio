@@ -79,6 +79,39 @@ describe('Game panels', () => {
     cy.get('@next').should('have.been.calledOnce');
   });
 
+  it('shows what a card is on the first tap, and buys on the next', () => {
+    const onBuy = cy.spy().as('buy');
+    cy.mount(GameShop, {
+      props: {
+        ore: 100,
+        wave: 1,
+        items: [
+          { id: 'turret', owned: 0, price: 30, blocked: null },
+          { id: 'turretRate', owned: 0, price: 25, blocked: 'needs' },
+        ],
+        onBuy,
+      },
+    });
+    // trigger('click') rather than click(), which would add a mouse pointerdown
+    const tap = (id) =>
+      cy
+        .get(`[data-cy="shopItem-${id}"]`)
+        .trigger('pointerdown', { pointerType: 'touch' })
+        .trigger('click');
+    tap('turret');
+    cy.get('[data-cy="shopInfo"]').should('contain.text', 'Turret');
+    cy.get('@buy').should('not.have.been.called');
+    tap('turret');
+    cy.get('@buy').should('have.been.calledOnceWith', 'turret');
+    tap('turret');
+    cy.get('@buy').should('have.been.calledTwice');
+    // A locked card only ever explains itself
+    tap('turretRate');
+    cy.get('[data-cy="shopInfo"]').should('contain.text', 'Buy a Turret first');
+    tap('turretRate');
+    cy.get('@buy').should('have.been.calledTwice');
+  });
+
   it('offers Resume and End game in the Menu', () => {
     const onResume = cy.spy().as('resume');
     const onEnd = cy.spy().as('end');
