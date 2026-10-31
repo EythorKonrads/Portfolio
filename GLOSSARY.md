@@ -30,7 +30,8 @@ _Avoid_: Metal rock, boss
 
 **Population**:
 How many people are alive on Earth: Earth's health. Asteroid hits reduce it,
-and the game ends when it reaches zero.
+and the game ends when it reaches zero: Earth explodes, then the end screen
+shows.
 _Avoid_: Health, HP, lives
 
 **Ship**:

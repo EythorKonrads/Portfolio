@@ -162,7 +162,12 @@ describe('Game screen', () => {
     withGame((game) => {
       game.population = 0;
     });
-    cy.get('[data-cy="gameEnd"]').should('be.visible');
+    // Earth explodes first, then the end screen shows
+    withGame((game) => {
+      cy.wrap(game).its('explosion').should('exist');
+    });
+    cy.get('[data-cy="gameEnd"]').should('not.exist');
+    cy.get('[data-cy="gameEnd"]', { timeout: 6000 }).should('be.visible');
     cy.get('[data-cy="gameEndAgain"]').click();
     cy.get('[data-cy="gameEnd"]').should('not.exist');
     // Play again skips the help screen

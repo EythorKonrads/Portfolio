@@ -3,6 +3,7 @@ import {
   ARMORED,
   ASTEROIDS,
   BURST,
+  EXPLOSION,
   FIRST_SPAWN,
   IMPACT,
   LATE,
@@ -21,6 +22,8 @@ import {
   buy,
   clusterSize,
   createGame,
+  isEnded,
+  isEnding,
   nextWave,
   price,
   satellitePositions,
@@ -254,6 +257,28 @@ describe('Game rules', () => {
     expect(game.status).to.equal('wave');
     step(game, BURST.rock);
     expect(game.status).to.equal('shop');
+  });
+
+  it('explodes Earth when the last people die, and only then ends', () => {
+    const game = emptyGame();
+    parkShip(game);
+    game.population = 0.2;
+    game.asteroids.push(asteroid(game, 'small', 400, 300));
+    const drifting = asteroid(game, 'small', 100, 100, 50, 0);
+    game.asteroids.push(drifting);
+    step(game, 0.01);
+    expect(game.status).to.equal('over');
+    expect(game.explosion).to.deep.equal({ age: 0 });
+    expect(isEnded(game), 'still exploding').to.be.false;
+    expect(isEnding(game)).to.be.true;
+    // The other rocks drift on past
+    const { x } = drifting;
+    step(game, EXPLOSION.time / 2);
+    expect(drifting.x).to.be.greaterThan(x);
+    expect(isEnded(game)).to.be.false;
+    step(game, EXPLOSION.time / 2);
+    expect(isEnded(game)).to.be.true;
+    expect(isEnding(game)).to.be.false;
   });
 
   it('ends the game when the Population reaches zero', () => {

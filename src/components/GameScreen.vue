@@ -5,6 +5,8 @@ import {
   blockedReason,
   buy,
   createGame,
+  isEnded,
+  isEnding,
   nextWave,
   price,
   resize,
@@ -56,7 +58,7 @@ function newGame() {
 
 function syncHud() {
   const { status, wave, population, ore, score } = game;
-  const next = { status, wave, population, ore, score };
+  const next = { status, wave, population, ore, score, ended: isEnded(game) };
   if (Object.keys(next).some((key) => next[key] !== hud.value[key])) {
     hud.value = next;
   }
@@ -93,10 +95,8 @@ function loop(time) {
   elapsed += dt;
   const starAlpha = Math.min(1, elapsed / 0.8);
   // Paused, or in the Shop, nothing moves: skip drawing an identical frame.
-  // After game over, the last blast or wreck still plays out.
-  const isBlastEnding =
-    game.status === 'over' && game.impacts.length + game.bursts.length > 0;
-  if (isFlying() || isBlastEnding) {
+  // After game over, Earth's explosion and the last blasts still play out.
+  if (isFlying() || isEnding(game)) {
     step(game, dt, input());
   } else if (!needsDraw && starAlpha === 1) {
     return;
@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
     </button>
 
     <div
-      v-if="isIntro || isMenuOpen || hud.status !== 'wave'"
+      v-if="isIntro || isMenuOpen || hud.status === 'shop' || hud.ended"
       class="game-screen__overlay"
     >
       <GameIntro v-if="isIntro" :touch="isTouch" @start="startGame" />
@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
         @next="onNext"
       />
       <GameEnd
-        v-else-if="hud.status === 'over'"
+        v-else-if="hud.ended"
         :score="hud.score"
         :wave="hud.wave"
         @again="newGame"

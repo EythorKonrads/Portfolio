@@ -24,6 +24,9 @@ export const ASTEROIDS = {
 export const IMPACT = { time: 0.8, reach: 2.4 };
 // How long, in seconds, a shattered Asteroid and a wrecked Ship take to clear
 export const BURST = { rock: 0.6, ship: 1.2 };
+// When the last people die, Earth explodes before the end screen shows:
+// seconds in all, and the share of that spent shaking and cracking open
+export const EXPLOSION = { time: 2.6, crack: 0.35 };
 // How far past its radius a shot still hits an Asteroid
 export const ASTEROID_HIT = 1.25;
 // What a destroyed Asteroid breaks into

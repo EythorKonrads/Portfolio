@@ -1,7 +1,7 @@
 // Drawing (src/game/draw.js) on a real canvas. How it looks is for a person
 // to judge; this checks that everything draws, at every stage, without
 // throwing, and that the effects actually put pixels on the canvas.
-import { BURST, IMPACT } from '../../src/game/config';
+import { BURST, EXPLOSION, IMPACT } from '../../src/game/config';
 import { createGame } from '../../src/game/game';
 import { draw, makeStars, pixelRatio, readColors } from '../../src/game/draw';
 
@@ -68,6 +68,21 @@ describe('Game drawing', () => {
     for (const [name, value] of Object.entries({ ...rest, ...earth })) {
       expect(value, name).to.not.equal('');
     }
+  });
+
+  it("draws Earth's explosion at every stage, and nothing of Earth after", () => {
+    const { ctx, colors, game, stars } = setup();
+    const { x, y } = game.earth;
+    game.status = 'over';
+    for (const t of [0, 0.2, 0.36, 0.6, 0.9]) {
+      game.explosion = { age: t * EXPLOSION.time };
+      expect(() => draw(ctx, game, colors, stars, 0)).not.to.throw();
+      expect(inkNear(ctx, x, y, 10), `at ${t}`).to.be.greaterThan(0);
+    }
+    game.explosion = { age: EXPLOSION.time * 1.5 };
+    game.ship.alive = false;
+    draw(ctx, game, colors, stars, 0);
+    expect(inkNear(ctx, x, y, 10), 'gone').to.equal(0);
   });
 
   it('draws blasts, shattered rocks and the wrecked Ship at every stage', () => {

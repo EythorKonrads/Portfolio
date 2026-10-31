@@ -5,6 +5,7 @@ import {
   ASTEROIDS,
   ASTEROID_HIT,
   BURST,
+  EXPLOSION,
   FIRST_SPAWN,
   IMPACT,
   LATE,
@@ -478,7 +479,9 @@ function hasLeft(game, asteroid) {
 }
 
 function stepEffects(game, dt) {
-  for (const effect of [...game.impacts, ...game.bursts]) effect.age += dt;
+  const effects = [...game.impacts, ...game.bursts];
+  if (game.explosion) effects.push(game.explosion);
+  for (const effect of effects) effect.age += dt;
   game.impacts = game.impacts.filter((impact) => impact.age < IMPACT.time);
   game.bursts = game.bursts.filter((burst) => burst.age < BURST[burst.kind]);
 }
@@ -519,9 +522,33 @@ function destroyAsteroid(game, asteroid) {
   );
 }
 
+// Once the game is lost, Earth's explosion plays out before the end screen
+export function isEnded(game) {
+  return (
+    game.status === 'over' &&
+    (!game.explosion || game.explosion.age >= EXPLOSION.time)
+  );
+}
+
+// Something is still moving after game over: the explosion, a blast or a wreck
+export function isEnding(game) {
+  return (
+    game.status === 'over' &&
+    (!isEnded(game) || game.impacts.length + game.bursts.length > 0)
+  );
+}
+
 export function step(game, dt, input = {}) {
-  // After the last hit, its blast still plays out behind the end screen
-  if (game.status === 'over') stepEffects(game, dt);
+  // After game over the effects play out, and the rocks drift on past
+  if (game.status === 'over') {
+    stepEffects(game, dt);
+    for (const asteroid of game.asteroids) {
+      asteroid.x += asteroid.vx * dt;
+      asteroid.y += asteroid.vy * dt;
+      asteroid.rotation += asteroid.spin * dt;
+    }
+    return;
+  }
   if (game.status !== 'wave') return;
   game.time += dt;
   stepEffects(game, dt);
@@ -624,6 +651,8 @@ export function step(game, dt, input = {}) {
 
   if (game.population <= 0) {
     game.status = 'over';
+    game.explosion = { age: 0 };
+    game.shots = [];
   } else if (
     !game.spawnQueue.length &&
     !game.asteroids.length &&

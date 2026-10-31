@@ -1,7 +1,7 @@
 // Draws a game onto the play field's canvas. Reads the game, never changes it.
 // Anything that doesn't move (the stars, Earth, each rock's outline) is drawn
 // once and reused, so a frame is mostly copying images.
-import { BURST, IMPACT, SATELLITE, SHIP, SHOT } from './config';
+import { BURST, EXPLOSION, IMPACT, SATELLITE, SHIP, SHOT } from './config';
 import { GLOW, drawEarth, readEarthColors } from './earth';
 import { createRandom } from './random';
 import { satellitePositions, turretPositions } from './game';
@@ -413,6 +413,168 @@ function drawBursts(ctx, game, colors) {
   ctx.restore();
 }
 
+// Earth from its sprite. While it cracks open it shakes harder and harder.
+function drawEarthImage(ctx, game, colors, progress) {
+  const { earth } = game;
+  const shake = earth.radius * 0.06 * (progress / EXPLOSION.crack);
+  const size = earth.radius * 2 * GLOW;
+  ctx.drawImage(
+    earthImage(earth.radius, colors),
+    earth.x - size / 2 + (Math.random() - 0.5) * shake,
+    earth.y - size / 2 + (Math.random() - 0.5) * shake,
+    size,
+    size
+  );
+}
+
+// Earth's end. First fire glows through cracks that spread across it. Then
+// it bursts: a flash, a fireball and a shock wave, with chunks of Earth and
+// embers flying apart. (Unlike a rock in space, Earth has air to burn.)
+function drawEarthExplosion(ctx, game, colors, progress) {
+  const { earth } = game;
+  const R = earth.radius;
+  // The same cracks and chunks every frame
+  const random = createRandom(2024);
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  if (progress < EXPLOSION.crack) {
+    const c = progress / EXPLOSION.crack;
+    const heat = ctx.createRadialGradient(
+      earth.x,
+      earth.y,
+      0,
+      earth.x,
+      earth.y,
+      R
+    );
+    heat.addColorStop(0, colors.blastCore);
+    heat.addColorStop(0.5, colors.blast);
+    heat.addColorStop(1, colors.blastEdge);
+    ctx.globalAlpha = c * 0.7;
+    ctx.fillStyle = heat;
+    ctx.beginPath();
+    ctx.arc(earth.x, earth.y, R, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalAlpha = Math.min(1, c * 1.5);
+    ctx.strokeStyle = colors.blastCore;
+    ctx.lineWidth = Math.max(1, R * 0.05 * c);
+    ctx.beginPath();
+    for (let i = 0; i < 7; i++) {
+      let angle = (i / 7) * Math.PI * 2 + random();
+      let x = earth.x;
+      let y = earth.y;
+      ctx.moveTo(x, y);
+      for (let step = 1; step <= 4; step++) {
+        angle += (random() - 0.5) * 0.9;
+        const reach = (R * step) / 4;
+        if (reach > R * c) break;
+        x = earth.x + Math.cos(angle) * reach;
+        y = earth.y + Math.sin(angle) * reach;
+        ctx.lineTo(x, y);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+
+  const b = (progress - EXPLOSION.crack) / (1 - EXPLOSION.crack);
+  const fade = 1 - b;
+  const grow = 1 - fade ** 3;
+
+  if (b < 0.2) {
+    ctx.globalAlpha = 1 - b / 0.2;
+    ctx.fillStyle = colors.flash;
+    ctx.beginPath();
+    ctx.arc(earth.x, earth.y, R * (1.1 + b * 5), 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const fireball = R * (1 + 1.6 * grow);
+  const fire = ctx.createRadialGradient(
+    earth.x,
+    earth.y,
+    0,
+    earth.x,
+    earth.y,
+    fireball
+  );
+  fire.addColorStop(0, colors.blastCore);
+  fire.addColorStop(0.4, colors.blast);
+  fire.addColorStop(1, colors.blastEdge);
+  ctx.globalAlpha = fade;
+  ctx.fillStyle = fire;
+  ctx.beginPath();
+  ctx.arc(earth.x, earth.y, fireball, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.globalAlpha = fade * 0.7;
+  ctx.strokeStyle = colors.blast;
+  ctx.lineWidth = Math.max(1, R * 0.1 * fade);
+  ctx.beginPath();
+  ctx.arc(earth.x, earth.y, R * (1 + 7 * grow), 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.globalAlpha = fade;
+  ctx.fillStyle = colors.flame;
+  ctx.beginPath();
+  for (let i = 0; i < 36; i++) {
+    const angle = random() * Math.PI * 2;
+    const distance = R * (1 + random() * 5) * grow;
+    const size = R * (0.03 + random() * 0.05) * fade;
+    const x = earth.x + Math.cos(angle) * distance;
+    const y = earth.y + Math.sin(angle) * distance;
+    ctx.moveTo(x + size, y);
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  ctx.restore();
+
+  // Wedge-shaped chunks of Earth, tumbling outward, fading at the end
+  ctx.save();
+  ctx.fillStyle = colors.earth.surface;
+  ctx.strokeStyle = colors.earth.outline;
+  ctx.lineWidth = Math.max(1, R * 0.05);
+  ctx.lineJoin = 'round';
+  ctx.globalAlpha = Math.min(1, fade * 2.5);
+  const chunks = 12;
+  for (let i = 0; i < chunks; i++) {
+    const from = (i / chunks) * Math.PI * 2;
+    const to = ((i + 1) / chunks) * Math.PI * 2;
+    const mid = (from + to) / 2;
+    const inner = R * (0.1 + random() * 0.3);
+    const distance = R * (0.2 + (2 + random() * 2.5) * grow);
+    const spin = (random() - 0.5) * 6 * b;
+    ctx.save();
+    ctx.translate(
+      earth.x + Math.cos(mid) * distance,
+      earth.y + Math.sin(mid) * distance
+    );
+    ctx.rotate(spin);
+    // Corners relative to the chunk's middle, so it spins about itself
+    const cx = Math.cos(mid) * R * 0.6;
+    const cy = Math.sin(mid) * R * 0.6;
+    const corner = (angle, r) => [
+      Math.cos(angle) * r - cx,
+      Math.sin(angle) * r - cy,
+    ];
+    ctx.beginPath();
+    ctx.moveTo(...corner(mid, inner));
+    ctx.lineTo(...corner(from, R * (0.85 + random() * 0.15)));
+    ctx.lineTo(...corner(mid, R));
+    ctx.lineTo(...corner(to, R * (0.85 + random() * 0.15)));
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
 // starAlpha fades the stars in after the Launch, so the hand-over isn't a jump
 export function draw(ctx, game, colors, stars, starAlpha = 1) {
   const { width, height, earth } = game;
@@ -424,16 +586,15 @@ export function draw(ctx, game, colors, stars, starAlpha = 1) {
   ctx.drawImage(stars, 0, 0, width, height);
   ctx.globalAlpha = 1;
 
-  const size = earth.radius * 2 * GLOW;
-  ctx.drawImage(
-    earthImage(earth.radius, colors),
-    earth.x - size / 2,
-    earth.y - size / 2,
-    size,
-    size
-  );
-
-  drawDefences(ctx, game, colors);
+  // Earth, and what sits on and around it, until it bursts apart
+  const progress = game.explosion ? game.explosion.age / EXPLOSION.time : null;
+  if (progress === null || progress < EXPLOSION.crack) {
+    drawEarthImage(ctx, game, colors, progress === null ? 0 : progress);
+    drawDefences(ctx, game, colors);
+  }
+  if (progress !== null && progress < 1) {
+    drawEarthExplosion(ctx, game, colors, progress);
+  }
   drawAsteroids(ctx, game, colors);
   drawImpacts(ctx, game, colors);
   drawBursts(ctx, game, colors);
