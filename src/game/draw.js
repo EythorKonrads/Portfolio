@@ -1,7 +1,7 @@
 // Draws a game onto the play field's canvas. Reads the game, never changes it.
 // Anything that doesn't move (the stars, Earth, each rock's outline) is drawn
 // once and reused, so a frame is mostly copying images.
-import { SATELLITE, SHIP, SHOT } from './config';
+import { IMPACT, SATELLITE, SHIP, SHOT } from './config';
 import { GLOW, drawEarth, readEarthColors } from './earth';
 import { createRandom } from './random';
 import { satellitePositions, turretPositions } from './game';
@@ -14,6 +14,9 @@ export function readColors(element) {
     star: read('--color-game-star'),
     ship: read('--color-game-ship'),
     flame: read('--color-game-flame'),
+    blastCore: read('--color-game-blast-core'),
+    blast: read('--color-game-blast'),
+    blastEdge: read('--color-game-blast-edge'),
     asteroid: read('--color-game-asteroid'),
     asteroidEdge: read('--color-game-asteroid-edge'),
     shot: read('--color-game-shot'),
@@ -193,6 +196,60 @@ function drawShots(ctx, game, colors) {
   }
 }
 
+// A fire blast where an Asteroid hit Earth: a fireball that swells and fades,
+// a shock ring, and embers thrown out away from Earth. All of it scales with
+// the rock that hit.
+function drawImpacts(ctx, game, colors) {
+  const { earth } = game;
+  ctx.save();
+  // Overlapping fire adds up to brighter fire
+  ctx.globalCompositeOperation = 'lighter';
+  for (const impact of game.impacts) {
+    const t = impact.age / IMPACT.time;
+    const fade = 1 - t;
+    const grow = 1 - fade ** 3; // fast at first, then slowing
+    const x = earth.x + Math.cos(impact.angle) * earth.radius;
+    const y = earth.y + Math.sin(impact.angle) * earth.radius;
+    const reach = impact.radius * IMPACT.reach;
+
+    const r = reach * (0.35 + 0.65 * grow);
+    const fire = ctx.createRadialGradient(x, y, 0, x, y, r);
+    fire.addColorStop(0, colors.blastCore);
+    fire.addColorStop(0.35, colors.blast);
+    fire.addColorStop(1, colors.blastEdge);
+    ctx.globalAlpha = fade;
+    ctx.fillStyle = fire;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalAlpha = fade * 0.6;
+    ctx.strokeStyle = colors.blast;
+    ctx.lineWidth = Math.max(1, impact.radius * 0.15 * fade);
+    ctx.beginPath();
+    ctx.arc(x, y, reach * 1.3 * grow, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // The same embers every frame for a given hit; more for bigger rocks
+    const random = createRandom(Math.floor(impact.seed * 1e9));
+    const embers = Math.round(impact.radius / game.scale / 3) + 5;
+    ctx.globalAlpha = fade;
+    ctx.fillStyle = colors.flame;
+    ctx.beginPath();
+    for (let i = 0; i < embers; i++) {
+      const angle = impact.angle + (random() - 0.5) * 2.4;
+      const distance = reach * (0.6 + random() * 0.9) * grow;
+      const size = impact.radius * (0.05 + random() * 0.07) * fade;
+      const ex = x + Math.cos(angle) * distance;
+      const ey = y + Math.sin(angle) * distance;
+      ctx.moveTo(ex + size, ey);
+      ctx.arc(ex, ey, size, 0, Math.PI * 2);
+    }
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 // starAlpha fades the stars in after the Launch, so the hand-over isn't a jump
 export function draw(ctx, game, colors, stars, starAlpha = 1) {
   const { width, height, earth } = game;
@@ -215,6 +272,7 @@ export function draw(ctx, game, colors, stars, starAlpha = 1) {
 
   drawDefences(ctx, game, colors);
   drawAsteroids(ctx, game, colors);
+  drawImpacts(ctx, game, colors);
   drawShots(ctx, game, colors);
   drawShip(ctx, game, colors);
 }

@@ -2,6 +2,7 @@
 import {
   ASTEROIDS,
   FIRST_SPAWN,
+  IMPACT,
   POPULATION_START,
   PRICE_GROWTH,
   SHIP,
@@ -152,6 +153,50 @@ describe('Game rules', () => {
         1e-9
       );
     });
+  });
+
+  it('leaves a fire blast where an Asteroid hits Earth, bigger for bigger rocks', () => {
+    const game = emptyGame();
+    parkShip(game);
+    keepWaveGoing(game);
+    const { earth } = game;
+    // One just above Earth, one just below
+    game.asteroids.push(
+      asteroid(game, 'small', earth.x, earth.y - earth.radius)
+    );
+    game.asteroids.push(
+      asteroid(game, 'large', earth.x, earth.y + earth.radius)
+    );
+    step(game, 0.01);
+    const [small, large] = game.impacts;
+    expect(small.angle).to.be.closeTo(-Math.PI / 2, 1e-9);
+    expect(large.angle).to.be.closeTo(Math.PI / 2, 1e-9);
+    expect(large.radius).to.be.greaterThan(small.radius);
+    step(game, IMPACT.time);
+    expect(game.impacts).to.have.length(0);
+  });
+
+  it('lets the last blast finish before opening the Shop', () => {
+    const game = emptyGame();
+    parkShip(game);
+    game.asteroids.push(asteroid(game, 'small', 400, 260));
+    step(game, 0.01);
+    expect(game.asteroids).to.have.length(0);
+    expect(game.status).to.equal('wave');
+    step(game, IMPACT.time);
+    expect(game.status).to.equal('shop');
+  });
+
+  it('plays out the last blast after the game is over', () => {
+    const game = emptyGame();
+    parkShip(game);
+    game.population = 0.2;
+    game.asteroids.push(asteroid(game, 'small', 400, 300));
+    step(game, 0.01);
+    expect(game.status).to.equal('over');
+    expect(game.impacts).to.have.length(1);
+    step(game, IMPACT.time);
+    expect(game.impacts).to.have.length(0);
   });
 
   it('ends the game when the Population reaches zero', () => {

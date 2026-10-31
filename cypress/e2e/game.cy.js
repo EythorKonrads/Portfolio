@@ -203,6 +203,29 @@ describe('Game', () => {
       cy.get('[data-cy="waveTitle"]').should('contain.text', 'Wave 2');
     });
 
+    it('blasts fire where an Asteroid hits Earth, then clears it', () => {
+      launch();
+      withGame((game) => {
+        const { earth } = game;
+        game.asteroids.push({
+          size: 'large',
+          x: earth.x,
+          y: earth.y - earth.radius,
+          vx: 0,
+          vy: 0,
+          radius: 34 * game.scale,
+          hp: 6,
+          spin: 0,
+          rotation: 0,
+          seed: 0.5,
+        });
+        // Drawn for a few frames; any error drawing it fails the test
+        cy.wrap(game).its('impacts').should('have.length', 1);
+        cy.wrap(game).its('impacts', { timeout: 3000 }).should('be.empty');
+      });
+      cy.get('[data-cy="hudPopulation"]').should('contain.text', '5.5 billion');
+    });
+
     it('ends when the Population reaches zero, and can start again', () => {
       launch();
       withGame((game) => {

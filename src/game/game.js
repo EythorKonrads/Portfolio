@@ -4,6 +4,7 @@ import {
   ASTEROIDS,
   ASTEROID_HIT,
   FIRST_SPAWN,
+  IMPACT,
   PER_LEVEL,
   POPULATION_START,
   PRICE_GROWTH,
@@ -46,6 +47,9 @@ export function createGame({ width, height, seed } = {}) {
     ship: null,
     asteroids: [],
     shots: [],
+    // Fire blasts where Asteroids hit Earth, kept as an angle around Earth
+    // so they stay put if the window is resized
+    impacts: [],
     owned: Object.fromEntries(Object.keys(SHOP_ITEMS).map((id) => [id, 0])),
     turretCooldowns: [],
     // Where each Turret's barrel points, for drawing
@@ -413,6 +417,11 @@ function hasLeft(game, asteroid) {
   );
 }
 
+function stepImpacts(game, dt) {
+  for (const impact of game.impacts) impact.age += dt;
+  game.impacts = game.impacts.filter((impact) => impact.age < IMPACT.time);
+}
+
 function destroyAsteroid(game, asteroid) {
   const spec = ASTEROIDS[asteroid.size];
   game.ore += spec.ore;
@@ -433,8 +442,11 @@ function destroyAsteroid(game, asteroid) {
 }
 
 export function step(game, dt, input = {}) {
+  // After the last hit, its blast still plays out behind the end screen
+  if (game.status === 'over') stepImpacts(game, dt);
   if (game.status !== 'wave') return;
   game.time += dt;
+  stepImpacts(game, dt);
 
   // Spawning
   if (game.spawnQueue.length) {
@@ -496,6 +508,12 @@ export function step(game, dt, input = {}) {
         game.population - ASTEROIDS[asteroid.size].damage
       );
       asteroid.hp = 0;
+      game.impacts.push({
+        angle: Math.atan2(asteroid.y - earth.y, asteroid.x - earth.x),
+        radius: asteroid.radius,
+        seed: asteroid.seed,
+        age: 0,
+      });
       continue;
     }
     if (
@@ -525,7 +543,12 @@ export function step(game, dt, input = {}) {
 
   if (game.population <= 0) {
     game.status = 'over';
-  } else if (!game.spawnQueue.length && !game.asteroids.length) {
+  } else if (
+    !game.spawnQueue.length &&
+    !game.asteroids.length &&
+    // Let the last blast finish before the Shop covers it
+    !game.impacts.length
+  ) {
     game.score += WAVE_BONUS * game.wave;
     game.status = 'shop';
   }

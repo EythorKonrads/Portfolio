@@ -92,8 +92,10 @@ function loop(time) {
   lastTime = time;
   elapsed += dt;
   const starAlpha = Math.min(1, elapsed / 0.8);
-  // Paused, or in the Shop, nothing moves: skip drawing an identical frame
-  if (isFlying()) {
+  // Paused, or in the Shop, nothing moves: skip drawing an identical frame.
+  // After game over, the last blast still plays out.
+  const isBlastEnding = game.status === 'over' && game.impacts.length > 0;
+  if (isFlying() || isBlastEnding) {
     step(game, dt, input());
   } else if (!needsDraw && starAlpha === 1) {
     return;
