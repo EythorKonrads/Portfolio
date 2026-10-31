@@ -528,6 +528,9 @@ onBeforeUnmount(() => {
 }
 .game-button {
   display: block;
+  /* Links get no border-box by default, unlike buttons, so their padding
+     would push them past 100% */
+  box-sizing: border-box;
   width: 100%;
   padding: 0.65rem 1rem;
   border: 0;

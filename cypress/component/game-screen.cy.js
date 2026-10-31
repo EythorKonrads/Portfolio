@@ -113,6 +113,26 @@ describe('Game screen', () => {
     cy.get('[data-cy="gameMenu"]').should('be.visible');
   });
 
+  it('sizes links like the buttons beside them, inside the panel', () => {
+    const width = ($el) => $el[0].getBoundingClientRect().width;
+    const sameWidth = (link, button) =>
+      cy.get(`[data-cy="${button}"]`).then(($button) => {
+        cy.get(`[data-cy="${link}"]`).should(($link) => {
+          expect(width($link)).to.be.closeTo(width($button), 0.5);
+        });
+      });
+    cy.intercept('GET', '/api/scores', { board: [] });
+    start();
+    cy.get('[data-cy="gameMenuButton"]').click();
+    sameWidth('menuBugReport', 'menuResume');
+    cy.get('[data-cy="menuResume"]').click();
+    withGame((game) => {
+      game.population = 0;
+    });
+    cy.get('[data-cy="gameEnd"]', { timeout: 6000 }).should('be.visible');
+    sameWidth('gameEndTalk', 'gameEndAgain');
+  });
+
   it('closes the game from End game in the Menu', () => {
     start();
     cy.get('[data-cy="gameMenuButton"]').click();
