@@ -52,27 +52,66 @@ export const PER_LEVEL = {
   satelliteDamage: 0.5,
 };
 
-// The Shop. `max` caps units bought or levels reached.
+// The Shop. `max` caps units bought or levels reached; `info` is the tooltip.
 export const SHOP_ITEMS = {
-  turret: { label: 'Turret', price: 30, max: 4 },
-  turretRate: { label: 'Turret fire rate', price: 25, max: 3, needs: 'turret' },
-  turretDamage: { label: 'Turret damage', price: 25, max: 3, needs: 'turret' },
+  turret: {
+    label: 'Turret',
+    price: 30,
+    max: 4,
+    info: 'Sits on Earth and fires at Asteroids that come close.',
+  },
+  turretRate: {
+    label: 'Turret fire rate',
+    price: 25,
+    max: 3,
+    needs: 'turret',
+    info: 'Every Turret fires 40% faster a level.',
+  },
+  turretDamage: {
+    label: 'Turret damage',
+    price: 25,
+    max: 3,
+    needs: 'turret',
+    info: 'Turret shots do 50% more damage a level.',
+  },
   // Satellites cover all of Earth, not one side, so they cost more
-  satellite: { label: 'Satellite', price: 45, max: 6 },
+  satellite: {
+    label: 'Satellite',
+    price: 45,
+    max: 6,
+    info: 'Orbits Earth and fires at Asteroids nearby. Asteroids pass straight through it.',
+  },
   satelliteRate: {
     label: 'Satellite fire rate',
     price: 35,
     max: 3,
     needs: 'satellite',
+    info: 'Every Satellite fires 40% faster a level.',
   },
   satelliteDamage: {
     label: 'Satellite damage',
     price: 35,
     max: 3,
     needs: 'satellite',
+    info: 'Satellite shots do 50% more damage a level.',
   },
-  shipRate: { label: 'Ship fire rate', price: 20, max: 3 },
-  shipWeapon: { label: 'Ship weapon', price: 30, max: 3 },
-  shipEngine: { label: 'Ship engine', price: 20, max: 3 },
+  shipRate: {
+    label: 'Ship fire rate',
+    price: 20,
+    max: 3,
+    info: 'The Ship fires 35% faster a level.',
+  },
+  shipWeapon: {
+    label: 'Ship weapon',
+    price: 30,
+    max: 3,
+    info: 'Bigger Ship shots that do 50% more damage a level, so tough Asteroids break sooner.',
+  },
+  shipEngine: {
+    label: 'Ship engine',
+    price: 20,
+    max: 3,
+    info: 'More thrust and a higher top speed.',
+  },
 };
 export const PRICE_GROWTH = 1.8;

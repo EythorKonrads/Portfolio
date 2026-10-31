@@ -20,19 +20,31 @@ describe('Game panels', () => {
         onNext,
       },
     });
-    cy.get('[data-cy="gameShopOre"]').should('contain.text', '40 Ore');
+    cy.get('[data-cy="gameShopOre"]').should('contain.text', '40');
     cy.get('[data-cy="shopItem-turret"] [data-cy="shopBuy"]')
-      .should('contain.text', '30 Ore')
+      .should('contain.text', '30')
+      .and('have.attr', 'aria-label', 'Buy Turret')
       .and('be.enabled')
       .click();
     cy.get('@buy').should('have.been.calledOnceWith', 'turret');
-    cy.get('[data-cy="shopItem-turretRate"] [data-cy="shopBuy"]')
-      .should('be.disabled')
-      .and('contain.text', 'Needs a Turret');
+    cy.get('[data-cy="shopItem-turretRate"] [data-cy="shopBuy"]').should(
+      'be.disabled'
+    );
+    // A locked upgrade's tooltip says what unlocks it
+    cy.get('[data-cy="shopItem-turretRate"]').trigger('mouseenter');
+    cy.get('[data-cy="shopInfo"]')
+      .should('contain.text', 'Locked')
+      .and('contain.text', 'Buy a Turret first');
+    cy.get('[data-cy="shopItem-turretRate"]').trigger('mouseleave');
+    cy.get('[data-cy="shopInfo"]').should('not.exist');
     cy.get('[data-cy="shopItem-satellite"]')
       .should('contain.text', '6/6')
       .find('[data-cy="shopBuy"]')
-      .should('contain.text', 'Maxed out');
+      .should('contain.text', 'Max');
+    // The Ship's card shows the Ship itself, with nothing to buy
+    cy.get('[data-cy="shopItem-ship"]')
+      .find('[data-cy="shopBuy"]')
+      .should('not.exist');
     cy.get('[data-cy="shopNext"]').should('contain.text', 'Wave 3').click();
     cy.get('@next').should('have.been.calledOnce');
   });

@@ -142,7 +142,10 @@ describe('Game', () => {
       cy.get('[data-cy="gameShop"]').should('be.visible');
       cy.get('[data-cy="gameMenuButton"]').should('not.exist');
       cy.get('[data-cy="shopItem-turret"] [data-cy="shopBuy"]').click();
-      cy.get('[data-cy="gameShopOre"]').should('contain.text', '0 Ore');
+      cy.get('[data-cy="gameShopOre"]')
+        .invoke('text')
+        .invoke('trim')
+        .should('equal', '0');
       cy.get('[data-cy="shopItem-turret"]').should('contain.text', '1/4');
       cy.get('[data-cy="shopNext"]').click();
       cy.get('[data-cy="gameShop"]').should('not.exist');
