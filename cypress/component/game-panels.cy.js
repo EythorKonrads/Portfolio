@@ -122,6 +122,69 @@ describe('Game panels', () => {
     cy.get('@end').should('have.been.calledOnce');
   });
 
+  context('the end screen scoreboard', () => {
+    const row = (initials, score) => ({
+      initials,
+      score,
+      wave: 4,
+      time: 80,
+      date: `2026-01-0${score % 9}T00:00:00.000Z`,
+    });
+
+    it('takes initials for a Score that makes the top 10, then shows it', () => {
+      cy.intercept('GET', '/api/scores', {
+        board: [row('TOP', 900), row('LOW', 100)],
+      });
+      const saved = [row('TOP', 900), row('ABC', 250), row('LOW', 100)];
+      cy.intercept('POST', '/api/scores', { board: saved, rank: 2 }).as('save');
+      cy.mount(GameEnd, { props: { score: 250, wave: 3, time: 61.5 } });
+
+      cy.get('[data-cy="scoreRow"]').should('have.length', 2);
+      cy.get('[data-cy="scoreSave"]').should('be.disabled');
+      // Only capital letters, three at most
+      cy.get('[data-cy="scoreInitials"]').type('a1bcd');
+      cy.get('[data-cy="scoreInitials"]').should('have.value', 'ABC');
+      cy.get('[data-cy="scoreSave"]').click();
+      cy.wait('@save').its('request.body').should('deep.equal', {
+        initials: 'ABC',
+        score: 250,
+        wave: 3,
+        time: 61.5,
+      });
+      cy.get('[data-cy="scoreEntry"]').should('not.exist');
+      cy.get('[data-cy="scoreRow"]')
+        .should('have.length', 3)
+        .eq(1)
+        .should('contain.text', 'ABC')
+        .and('have.class', 'game-end__row--you');
+    });
+
+    it("doesn't ask for initials when the Score misses the top 10", () => {
+      const board = Array.from({ length: 10 }, (_, i) => row('AAA', 1000 - i));
+      cy.intercept('GET', '/api/scores', { board });
+      cy.mount(GameEnd, { props: { score: 50, wave: 2 } });
+      cy.get('[data-cy="scoreRow"]').should('have.length', 10);
+      cy.get('[data-cy="scoreEntry"]').should('not.exist');
+    });
+
+    it('says so when a save fails, and lets you try again', () => {
+      cy.intercept('GET', '/api/scores', { board: [] });
+      cy.intercept('POST', '/api/scores', { statusCode: 500 });
+      cy.mount(GameEnd, { props: { score: 50, wave: 1, time: 20 } });
+      cy.get('[data-cy="scoreInitials"]').type('ABC');
+      cy.get('[data-cy="scoreSave"]').click();
+      cy.get('[data-cy="scoreSaveFailed"]').should('be.visible');
+      cy.get('[data-cy="scoreSave"]').should('be.enabled');
+    });
+
+    it("says when the scoreboard isn't available", () => {
+      cy.intercept('GET', '/api/scores', { statusCode: 500 });
+      cy.mount(GameEnd, { props: { score: 50, wave: 1 } });
+      cy.get('[data-cy="scoreboardOffline"]').should('be.visible');
+      cy.get('[data-cy="scoreEntry"]').should('not.exist');
+    });
+  });
+
   it('shows the Score with a way to get in touch or play again', () => {
     const onAgain = cy.spy().as('again');
     cy.mount(GameEnd, { props: { score: 12340, wave: 7, onAgain } });

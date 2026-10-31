@@ -52,6 +52,11 @@ _Avoid_: Credits, coins, money, points
 The tally shown when the game ends. It is separate from Ore, which is spent.
 _Avoid_: Points
 
+**Scoreboard**:
+The shared top 10 of all time, shown when the game ends. A Score that makes
+it goes on with the player's three initials (A–Z).
+_Avoid_: Leaderboard, high score list, hall of fame
+
 **Shop**:
 Where Ore is spent on upgrades, between Waves.
 _Avoid_: Store, upgrade menu

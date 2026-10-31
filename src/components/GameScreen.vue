@@ -303,6 +303,7 @@ onBeforeUnmount(() => {
         v-else-if="hud.ended"
         :score="hud.score"
         :wave="hud.wave"
+        :time="game.time"
         @again="newGame"
         @close="emit('close')"
       />
