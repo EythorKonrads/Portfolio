@@ -50,8 +50,8 @@ Where Ore is spent on upgrades, between Waves.
 _Avoid_: Store, upgrade menu
 
 **Menu**:
-Opened from the corner of the screen during a Wave; it pauses the game. It
-offers Resume and End game.
+Opened from the corner of the screen during a Wave or in the Shop; it
+pauses the game. It offers Resume and End game.
 _Avoid_: Pause screen, settings
 
 **End game**:

@@ -111,8 +111,11 @@ function fitCanvas() {
 
 const isFlying = () => game.status === 'wave' && !isMenuOpen.value;
 
+// During a Wave and in the Shop; not on the end screen
+const canOpenMenu = () => game.status === 'wave' || game.status === 'shop';
+
 function openMenu() {
-  if (game.status === 'wave') isMenuOpen.value = true;
+  if (canOpenMenu()) isMenuOpen.value = true;
 }
 
 function onKeyDown(event) {
@@ -128,7 +131,8 @@ function onKeyDown(event) {
 }
 const onKeyUp = (event) => keys.delete(event.code);
 // Nobody loses Population while looking at another tab
-const onVisibility = () => document.hidden && openMenu();
+const onVisibility = () =>
+  document.hidden && game.status === 'wave' && openMenu();
 
 // Touch steers the Ship towards the finger; a mouse uses the keyboard
 function onPointer(event) {
@@ -229,7 +233,7 @@ onBeforeUnmount(() => {
     </div>
 
     <button
-      v-if="hud.status === 'wave'"
+      v-if="hud.status === 'wave' || hud.status === 'shop'"
       type="button"
       class="game-screen__menu-button"
       aria-label="Menu"
@@ -358,6 +362,8 @@ onBeforeUnmount(() => {
 }
 .game-screen__menu-button {
   position: absolute;
+  /* Above the Shop's overlay, which covers the whole screen */
+  z-index: 1;
   top: 0.75rem;
   right: 0.75rem;
   display: grid;

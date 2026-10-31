@@ -140,7 +140,11 @@ describe('Game', () => {
         game.ore = 30;
       });
       cy.get('[data-cy="gameShop"]').should('be.visible');
-      cy.get('[data-cy="gameMenuButton"]').should('not.exist');
+      // The Menu is there between Waves too
+      cy.get('[data-cy="gameMenuButton"]').click();
+      cy.get('[data-cy="gameMenu"]').should('be.visible');
+      cy.get('[data-cy="menuResume"]').click();
+      cy.get('[data-cy="gameShop"]').should('be.visible');
       cy.get('[data-cy="shopItem-turret"] [data-cy="shopBuy"]').click();
       cy.get('[data-cy="gameShopOre"]')
         .invoke('text')
