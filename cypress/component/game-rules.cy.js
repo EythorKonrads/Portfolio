@@ -1,11 +1,13 @@
 // The game's rules (src/game/game.js), driven directly with no drawing
 import {
   ASTEROIDS,
+  FIRST_SPAWN,
   POPULATION_START,
   PRICE_GROWTH,
   SHIP,
   SHOP_ITEMS,
   WAVE_BONUS,
+  WAVE_TITLE,
 } from '../../src/game/config';
 import {
   buy,
@@ -65,6 +67,15 @@ describe('Game rules', () => {
     expect(sizes(4).has('large')).to.be.false;
     expect(sizes(5).has('large')).to.be.true;
     expect(waveAsteroids(6).length).to.be.greaterThan(waveAsteroids(1).length);
+  });
+
+  it('holds back the first Asteroid until the Wave title has gone', () => {
+    const game = createGame({ ...SIZE, seed: 1 });
+    parkShip(game);
+    while (game.time < WAVE_TITLE) step(game, 0.05);
+    expect(game.asteroids).to.have.length(0);
+    while (game.time < FIRST_SPAWN + 0.05) step(game, 0.05);
+    expect(game.asteroids).to.have.length(1);
   });
 
   it('ends the Wave as soon as the last Asteroid leaves the screen', () => {

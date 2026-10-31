@@ -10,7 +10,7 @@ import {
   resize,
   step,
 } from '@/game/game';
-import { POPULATION_START } from '@/game/config';
+import { POPULATION_START, WAVE_TITLE } from '@/game/config';
 import { draw, makeStars, pixelRatio, readColors } from '@/game/draw';
 import Icon from './Icon.vue';
 import GameShop from './GameShop.vue';
@@ -185,6 +185,9 @@ onMounted(() => {
   // The help screen focuses its Start button itself
   if (!isIntro.value) root.value.focus();
   draw(ctx, game, colors, stars, 0);
+  // Fetch the Wave title's font while the help screen is up, so the title
+  // doesn't first show in the fallback font
+  document.fonts?.load('700 1em Orbitron');
   emit('ready');
   frame = requestAnimationFrame((time) => {
     lastTime = time;
@@ -217,10 +220,19 @@ onBeforeUnmount(() => {
       @pointercancel="onPointer"
     ></canvas>
 
+    <!-- Keyed by Wave, so each new Wave plays the animation again -->
+    <div
+      v-if="hud.status === 'wave' && !isIntro"
+      :key="hud.wave"
+      class="game-screen__wave"
+      :class="{ 'game-screen__wave--paused': isMenuOpen }"
+      :style="{ '--wave-title-time': `${WAVE_TITLE}s` }"
+      data-cy="waveTitle"
+    >
+      <span class="game-screen__wave-text">Wave {{ hud.wave }}</span>
+    </div>
+
     <div class="game-screen__hud">
-      <span class="game-screen__wave" data-cy="hudWave">
-        Wave {{ hud.wave }}
-      </span>
       <div
         class="game-screen__population"
         :class="`game-screen__population--${populationLevel}`"
@@ -319,8 +331,61 @@ onBeforeUnmount(() => {
   font-weight: 600;
   pointer-events: none;
 }
+/* "Wave N" in big letters just above Earth (whose radius is 7.5% of the
+   screen's shorter side), gone before the first Asteroid arrives */
 .game-screen__wave {
-  line-height: 1.75rem;
+  position: absolute;
+  top: calc(50% - min(7.5vw, 7.5vh) - 1.5rem);
+  left: 50%;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+.game-screen__wave-text {
+  display: block;
+  /* Letter spacing also trails the last letter; this keeps it centred */
+  padding-left: 0.35em;
+  color: var(--color-game-text);
+  font-family: Orbitron, var(--font-body);
+  font-size: clamp(2rem, 7vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  line-height: 1;
+  text-shadow: 0 0 1.5rem var(--color-game-title-glow);
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: game-screen-wave var(--wave-title-time) ease-out both;
+}
+.game-screen__wave--paused .game-screen__wave-text {
+  animation-play-state: paused;
+}
+/* The letters close in out of a blur, hold, then drift up and fade */
+@keyframes game-screen-wave {
+  0% {
+    opacity: 0;
+    filter: blur(0.5rem);
+    letter-spacing: 0.9em;
+  }
+  25% {
+    opacity: 1;
+    filter: blur(0);
+    letter-spacing: 0.35em;
+  }
+  75% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-1.5rem) scale(1.08);
+  }
+}
+@font-face {
+  font-family: Orbitron;
+  font-weight: 500 800;
+  font-display: swap;
+  /* Latin subset, self-hosted (SIL Open Font License, see orbitron-OFL.txt).
+     It only downloads with the game. */
+  src: url('../assets/fonts/orbitron.woff2') format('woff2');
 }
 /* Population as a health bar, with the number inside */
 .game-screen__population {

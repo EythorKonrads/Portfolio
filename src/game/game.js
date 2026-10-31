@@ -3,6 +3,7 @@
 import {
   ASTEROIDS,
   ASTEROID_HIT,
+  FIRST_SPAWN,
   PER_LEVEL,
   POPULATION_START,
   PRICE_GROWTH,
@@ -99,7 +100,7 @@ export function startWave(game) {
     [sizes[i], sizes[j]] = [sizes[j], sizes[i]];
   }
   game.spawnQueue = sizes;
-  game.spawnTimer = 0.6;
+  game.spawnTimer = FIRST_SPAWN;
 }
 
 function spawnInterval(wave) {

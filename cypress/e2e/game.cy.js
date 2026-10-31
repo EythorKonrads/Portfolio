@@ -14,7 +14,7 @@ const launch = () => {
   gameScreen().should('be.visible');
   cy.get('[data-cy="gameIntroStart"]').click();
   cy.get('[data-cy="gameIntro"]').should('not.exist');
-  cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 1');
+  cy.get('[data-cy="waveTitle"]').should('contain.text', 'Wave 1');
 };
 
 describe('Game', () => {
@@ -70,7 +70,6 @@ describe('Game', () => {
       cy.get('[data-cy="launch"]').should('exist');
       gameScreen().should('be.visible');
       cy.get('[data-cy="launch"]').should('not.exist');
-      cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 1');
       cy.get('[data-cy="hudPopulation"]').should('contain.text', '8.0 billion');
       cy.get('[data-cy="hudOre"]').should('contain.text', '0');
       cy.get('[data-cy="hudPopulationBar"]').should('be.visible');
@@ -81,6 +80,17 @@ describe('Game', () => {
         expect(game.earth.x).to.equal(1280 / 2);
         expect(game.earth.y).to.equal(800 / 2);
       });
+    });
+
+    it('shows the Wave title above Earth, then fades it away', () => {
+      launch();
+      cy.get('[data-cy="waveTitle"]').should(($title) => {
+        const bottom = $title[0].getBoundingClientRect().bottom;
+        expect(bottom).to.be.lessThan(800 / 2);
+      });
+      cy.get('[data-cy="waveTitle"]')
+        .children()
+        .should('have.css', 'opacity', '0');
     });
 
     it('explains the controls before the first Wave', () => {
@@ -186,7 +196,7 @@ describe('Game', () => {
       cy.get('[data-cy="shopItem-turret"]').should('contain.text', '1/4');
       cy.get('[data-cy="shopNext"]').click();
       cy.get('[data-cy="gameShop"]').should('not.exist');
-      cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 2');
+      cy.get('[data-cy="waveTitle"]').should('contain.text', 'Wave 2');
     });
 
     it('ends when the Population reaches zero, and can start again', () => {
@@ -204,7 +214,7 @@ describe('Game', () => {
       cy.get('[data-cy="gameEnd"]').should('not.exist');
       cy.get('[data-cy="gameIntro"]').should('not.exist');
       cy.get('[data-cy="hudPopulation"]').should('contain.text', '8.0 billion');
-      cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 1');
+      cy.get('[data-cy="waveTitle"]').should('contain.text', 'Wave 1');
     });
   });
 

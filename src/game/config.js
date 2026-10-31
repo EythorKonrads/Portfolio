@@ -18,6 +18,10 @@ export const SPLIT_COUNT = 2;
 export const WAVE_BONUS = 100; // Score per Wave survived, times the Wave
 export const WAVE_SPEEDUP = 0.08; // Extra Asteroid speed per Wave
 export const SPAWN_INTERVAL = { first: 1.4, min: 0.45, perWave: 0.1 };
+// Seconds the "Wave N" title shows at the start of a Wave. The first
+// Asteroid only appears once it has gone.
+export const WAVE_TITLE = 2;
+export const FIRST_SPAWN = WAVE_TITLE + 0.3;
 
 export const SHIP = {
   radius: 10,
