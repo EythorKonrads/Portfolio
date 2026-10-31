@@ -1,3 +1,5 @@
+# Working principles
+
 ## 1. Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
@@ -5,9 +7,9 @@
 Before implementing:
 
 - State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+- If my request is ambiguous or has several readings, stop and ask one
+  clarifying question, naming what's unclear, before doing anything.
 
 ## 2. Simplicity First
 
@@ -59,6 +61,12 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Reporting
+
+- In chat replies to me, be extremely concise; sacrifice grammar for
+  concision. This doesn't apply to commit messages, PR descriptions or docs,
+  which are written in full sentences.
+
 # Project overview
 
 Personal portfolio site for Eythor Konradsson (ekonrads.com): a single page
@@ -102,6 +110,8 @@ Don't edit these by hand:
 - Before making any changes, check the current branch. If it is `master`,
   create a new branch named `claude/<type>/<short-description>` and switch to it.
 - Leave merging into `master` to me (via pull request).
+- Committing on a `claude/*` branch is fine without asking. Ask me before
+  pushing or opening a pull request, every time.
 - `.claude/settings.json` pre-approves routine commands (tests, lint, git on
   `claude/*` branches, opening PRs) and blocks pushing to `master`, force
   pushes and merging PRs. Keep commands simple (no `cd … &&` chains) so they
@@ -113,7 +123,7 @@ Don't edit these by hand:
   another branch when it can't be done without it, and say so at the top.
 - Description sections: **Summary** (what changed and why), **Tests** (specs
   added or changed, and the `npm run test:e2e` result), and **Check by eye**
-  (anything Cypress can't judge).
+  (anything Cypress can't judge). These override the `pr` skill's template.
 - If PRs will conflict with each other, say which and in which files.
 
 # Conventional Commits
