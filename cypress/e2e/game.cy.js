@@ -1,5 +1,6 @@
 // The game from the page: Mini Earth, the Takeover, the Launch, and back.
 // The rules themselves are covered by cypress/component/game-rules.cy.js.
+import { SHIP } from '../../src/game/config';
 
 const miniEarth = () => cy.get('[data-cy="miniEarth"]');
 const globe = () => cy.get('[data-cy="miniEarthGlobe"]');
@@ -82,11 +83,14 @@ describe('Game', () => {
       });
     });
 
-    it('shows the Wave title above Earth, then fades it away', () => {
+    it('shows the Wave title above the Ship, then fades it away', () => {
       launch();
-      cy.get('[data-cy="waveTitle"]').should(($title) => {
-        const bottom = $title[0].getBoundingClientRect().bottom;
-        expect(bottom).to.be.lessThan(800 / 2);
+      withGame((game) => {
+        const shipTop = game.ship.y - SHIP.radius * game.scale;
+        cy.get('[data-cy="waveTitle"]').should(($title) => {
+          const bottom = $title[0].getBoundingClientRect().bottom;
+          expect(bottom).to.be.lessThan(shipTop);
+        });
       });
       cy.get('[data-cy="waveTitle"]')
         .children()

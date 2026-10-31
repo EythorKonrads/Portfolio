@@ -331,11 +331,15 @@ onBeforeUnmount(() => {
   font-weight: 600;
   pointer-events: none;
 }
-/* "Wave N" in big letters just above Earth (whose radius is 7.5% of the
-   screen's shorter side), gone before the first Asteroid arrives */
+/* "Wave N" in big letters above the Ship, which starts 1.8 Earth radii
+   (7.5% of the screen's shorter side each) above Earth's centre. On a short
+   screen it stops below the HUD instead. Gone before the first Asteroid. */
 .game-screen__wave {
   position: absolute;
-  top: calc(50% - min(7.5vw, 7.5vh) - 1.5rem);
+  top: max(
+    calc(3.5rem + clamp(2rem, 7vw, 4.5rem)),
+    calc(50% - min(13.5vw, 13.5vh) - 12px - 1.5rem)
+  );
   left: 50%;
   transform: translate(-50%, -100%);
   pointer-events: none;
