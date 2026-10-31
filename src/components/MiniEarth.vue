@@ -1,6 +1,7 @@
 <script setup>
-import { defineAsyncComponent, nextTick, onMounted, ref } from 'vue';
+import { defineAsyncComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { GLOW, earthRadius, paintEarthCanvas } from '@/game/earth';
+import { useTheme } from '@/composables/useTheme';
 
 // The game's code only downloads once someone shows interest
 let gameModule = null;
@@ -16,12 +17,17 @@ const LAUNCH_MS = 900;
 const button = ref(null);
 const globe = ref(null);
 const launchGlobe = ref(null);
+const launchGlobeMuted = ref(null);
 const isTakingOver = ref(false);
 const isLaunching = ref(false);
 const isPlaying = ref(false);
 const launchStyle = ref({});
 
-onMounted(() => paintEarthCanvas(globe.value, PHOTO_SIZE * GLOW));
+// On the page it takes the theme's muted colors, so repaint when that changes
+const { theme } = useTheme();
+const paintGlobe = () => paintEarthCanvas(globe.value, PHOTO_SIZE * GLOW);
+onMounted(paintGlobe);
+watch(theme, () => nextTick(paintGlobe));
 
 function startTakeover() {
   isTakingOver.value = true;
@@ -61,6 +67,8 @@ async function launch() {
   };
   await nextTick();
   paintEarthCanvas(launchGlobe.value, size);
+  // The muted page Earth fades into the game's colors on the way
+  paintEarthCanvas(launchGlobeMuted.value, size);
   // Let the browser lay out the start before gliding away from it
   launchGlobe.value.getBoundingClientRect();
   launchStyle.value = {
@@ -134,19 +142,37 @@ function onGameClose() {
         class="mini-earth__launch-globe"
         :style="launchStyle"
       ></canvas>
+      <canvas
+        ref="launchGlobeMuted"
+        class="mini-earth__launch-globe mini-earth__launch-globe--muted"
+        :style="launchStyle"
+      ></canvas>
     </div>
     <GameScreen v-if="isPlaying" @ready="onGameReady" @close="onGameClose" />
   </Teleport>
 </template>
 
 <style lang="scss" scoped>
+/* Quieter colors on the page, from the current theme; the game's own
+   colors take over during the Launch */
+.mini-earth,
+.mini-earth__launch-globe--muted {
+  --color-game-earth: var(--color-background);
+  --color-game-earth-outline: var(--color-text-muted);
+  --color-game-land: var(--color-gray);
+  --color-game-atmosphere: var(--color-accent-soft);
+}
 .mini-earth {
   /* The globe's resting size (a share of the photo's) and its distance from
      the photo's centre */
   --mini-earth-scale: 0.22;
   --mini-earth-orbit: 64px;
   position: relative;
+  z-index: 1;
   display: block;
+  /* Room for the orbit, which reaches past the photo, so Mini Earth never
+     passes behind the name below it */
+  margin: 1.75rem 0;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -233,6 +259,14 @@ function onGameClose() {
 .mini-earth__launch-globe {
   position: absolute;
   transform-origin: 0 0;
+}
+.mini-earth__launch-globe--muted {
+  animation: mini-earth-fade-out 0.9s ease both;
+}
+@keyframes mini-earth-fade-out {
+  to {
+    opacity: 0;
+  }
 }
 @keyframes mini-earth-fade-in {
   from {
