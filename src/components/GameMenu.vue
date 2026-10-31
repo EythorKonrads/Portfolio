@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import Icon from './Icon.vue';
 
 const props = defineProps({
   // Where the game is, filled into a bug report
@@ -56,12 +55,11 @@ const bugReportUrl = computed(() => {
         :href="bugReportUrl"
         target="_blank"
         rel="noopener noreferrer"
-        class="game-button game-button--quiet game-menu__link"
+        class="game-button game-button--quiet"
         aria-label="Report a bug on GitHub (opens in a new tab)"
         data-cy="menuBugReport"
       >
         Report a bug
-        <Icon name="external-link" :icon="false" class="game-menu__link-icon" />
       </a>
       <button
         type="button"
@@ -79,15 +77,5 @@ const bugReportUrl = computed(() => {
 .game-menu__actions {
   display: grid;
   gap: 0.5rem;
-}
-.game-menu__link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-.game-menu__link-icon {
-  width: 0.9em;
-  height: 0.9em;
 }
 </style>
