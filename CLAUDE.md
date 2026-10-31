@@ -1,4 +1,66 @@
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
 # Project overview
+
 Personal portfolio site for Eythor Konradsson (ekonrads.com): a single page
 with a hero, Experience, Education and Projects, plus a tag filter and a
 sticky section nav.
@@ -14,6 +76,7 @@ sticky section nav.
 - `public/`: files served as-is (favicons, manifest, link preview image).
 
 # Commands
+
 - `npm run dev`: dev server at http://localhost:5173.
 - `npm run test:e2e`: build, then run every Cypress spec against the preview
   server. CI runs the same thing on every PR.
@@ -26,13 +89,16 @@ sticky section nav.
 - `npm run format`: format `src/` with Prettier.
 
 # Generated files
+
 Don't edit these by hand:
+
 - `src/components.d.ts`: written by `unplugin-vue-components` on every build.
   Commit the regenerated file when components are added or removed.
 - `package-lock.json`: change it only through `npm install` / `npm uninstall`
   / `npm audit fix`.
 
 # Git rules
+
 - This repo's main branch is `master`.
 - Never commit to, merge into, or push to `master`.
 - Before making any changes, check the current branch. If it is `master`,
@@ -44,6 +110,7 @@ Don't edit these by hand:
   match those rules.
 
 # Pull requests
+
 - One PR per change, each on its own branch from `master`. Only stack a PR on
   another branch when it can't be done without it, and say so at the top.
 - Description sections: **Summary** (what changed and why), **Tests** (specs
@@ -52,6 +119,7 @@ Don't edit these by hand:
 - If PRs will conflict with each other, say which and in which files.
 
 # Conventional Commits
+
 Follow the [Conventional Commits](https://www.conventionalcommits.org/)
 specification when naming branches, writing commit messages and titling pull requests.
 
@@ -66,6 +134,7 @@ specification when naming branches, writing commit messages and titling pull req
   e.g. `claude/feat/project-filters`.
 
 # Testing
+
 The Cypress e2e suite (`cypress/e2e/`) is the source of truth for whether the
 site works. Rely on it instead of checking things by hand in a browser.
 
@@ -95,6 +164,7 @@ site works. Rely on it instead of checking things by hand in a browser.
   `cy.env()`.
 
 # Code style
+
 - Prettier (`.prettierrc`) and ESLint must pass before committing.
 - Components use `<script setup>` and `<style scoped>`; match the file you're
   editing.
@@ -105,6 +175,7 @@ site works. Rely on it instead of checking things by hand in a browser.
 - Comments explain why, not what, and are kept short.
 
 # Accessibility
+
 - Icon-only links and buttons need an `aria-label`; the icon itself is
   decorative (`aria-hidden="true"`).
 - Links with `target="_blank"` need `rel="noopener noreferrer"`, and their
@@ -115,12 +186,14 @@ site works. Rely on it instead of checking things by hand in a browser.
   starts it is not (`docs/adr/0002-game-skips-accessibility.md`).
 
 # Dependencies
+
 - Prefer plain HTML, CSS and Vue over adding a package. Don't add UI component
   libraries; a whole library was once pulled in for one link and three icons.
 - New icons go in `src/assets/icons/` as SVG files.
 - Explain in the PR why any new dependency is needed.
 
 # Gotchas
+
 - On desktop the content column (`.home__wrapper`) scrolls and the page
   doesn't; below 600px the whole page scrolls. Scroll code and tests must
   handle both.
