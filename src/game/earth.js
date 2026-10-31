@@ -8,67 +8,99 @@ export function earthRadius(width, height) {
   return Math.round(Math.min(width, height) * 0.075);
 }
 
-// Rough continents in unit coordinates (Earth's radius is 1), seen from
-// over the Atlantic: the Americas on the left, Europe and Africa on the right
-const CONTINENTS = [
-  [
-    [-0.75, -0.55],
-    [-0.45, -0.75],
-    [-0.15, -0.7],
-    [-0.1, -0.5],
-    [-0.3, -0.35],
-    [-0.35, -0.15],
-    [-0.5, -0.05],
-    [-0.65, -0.25],
+// Rough coastlines as [longitude, latitude] in degrees: few points and
+// straight edges, so they read as real continents, not smooth blobs
+// prettier-ignore
+const COASTLINES = {
+  northAmerica: [
+    [-168, 66], [-162, 70], [-156, 71], [-140, 70], [-128, 70], [-115, 68],
+    [-95, 72], [-85, 70], [-80, 63], [-90, 57], [-82, 52], [-78, 59],
+    [-70, 61], [-64, 59], [-56, 52], [-60, 47], [-66, 44], [-70, 42],
+    [-74, 40], [-76, 35], [-81, 31], [-80, 25], [-83, 29], [-89, 30],
+    [-94, 29], [-97, 26], [-97, 21], [-95, 18], [-90, 21], [-87, 21],
+    [-88, 16], [-84, 15], [-83, 10], [-79, 9], [-80, 7], [-85, 10], [-87, 13],
+    [-92, 15], [-97, 16], [-105, 20], [-106, 23], [-112, 29], [-110, 23],
+    [-115, 30], [-117, 33], [-121, 35], [-124, 40], [-124, 46], [-127, 51],
+    [-134, 58], [-146, 61], [-152, 59], [-158, 57], [-165, 61],
   ],
-  [
-    [-0.4, 0.05],
-    [-0.15, 0.15],
-    [-0.1, 0.35],
-    [-0.25, 0.7],
-    [-0.35, 0.8],
-    [-0.4, 0.45],
+  southAmerica: [
+    [-77, 8], [-72, 12], [-64, 10], [-60, 8], [-52, 5], [-50, 0], [-44, -2],
+    [-35, -5], [-35, -9], [-39, -13], [-39, -18], [-41, -22], [-45, -23],
+    [-48, -26], [-49, -29], [-53, -34], [-58, -35], [-57, -38], [-62, -39],
+    [-65, -42], [-64, -47], [-68, -50], [-69, -52], [-68, -55], [-71, -54],
+    [-74, -50], [-74, -44], [-73, -37], [-71, -30], [-70, -18], [-76, -14],
+    [-81, -6], [-80, -2], [-80, 1], [-77, 4],
   ],
-  [
-    [-0.2, -0.9],
-    [0, -0.88],
-    [-0.05, -0.75],
-    [-0.2, -0.78],
+  greenland: [
+    [-73, 78], [-60, 82], [-35, 83], [-20, 82], [-18, 77], [-22, 70],
+    [-32, 68], [-42, 60], [-48, 61], [-52, 65], [-54, 70], [-58, 75],
+    [-66, 76],
   ],
-  [
-    [0.15, -0.7],
-    [0.45, -0.75],
-    [0.55, -0.5],
-    [0.3, -0.4],
-    [0.15, -0.5],
+  iceland: [
+    [-24, 65], [-14, 65], [-14, 66.5], [-22, 66.5],
   ],
-  [
-    [0.15, -0.3],
-    [0.5, -0.32],
-    [0.65, 0],
-    [0.5, 0.35],
-    [0.4, 0.6],
-    [0.3, 0.45],
-    [0.2, 0.1],
-    [0.08, -0.05],
+  cuba: [
+    [-85, 22], [-80, 23], [-74, 20], [-78, 20],
   ],
-];
+  europe: [
+    [-9, 43], [-9, 37], [-6, 36], [-1, 37], [3, 42], [7, 43.5], [9, 44],
+    [12, 42], [15.5, 38], [16.5, 39], [18.5, 40], [15, 42], [13, 45.5],
+    [19, 42], [23, 37], [26, 40], [29, 41], [28, 44], [30, 46], [35, 45],
+    [40, 47], [40, 60], [32, 70], [28, 71], [20, 70], [14, 67], [5, 62],
+    [5, 58], [8, 58], [11, 59], [12, 56], [10, 57], [8, 55], [8, 54], [4, 52],
+    [2, 51], [-2, 48], [-5, 48], [-1, 46], [-2, 43.5],
+  ],
+  britain: [
+    [-5, 50], [1, 51], [2, 53], [-1, 55], [-3, 58.5], [-6, 58], [-5, 55],
+    [-3, 54], [-4.5, 52],
+  ],
+  ireland: [
+    [-10, 52], [-6, 52], [-6, 55], [-8, 55.3], [-10, 54],
+  ],
+  africa: [
+    [-17, 21], [-13, 27], [-10, 30], [-9, 33], [-6, 36], [0, 36], [10, 37],
+    [11, 33], [20, 31], [25, 32], [32, 31], [35, 28], [39, 22], [43, 12],
+    [51, 12], [51, 10], [48, 5], [41, -2], [40, -10], [40, -16], [35, -24],
+    [33, -28], [28, -33], [20, -35], [18, -32], [15, -27], [12, -17],
+    [13, -11], [9, -1], [9, 4], [5, 6], [-1, 5], [-8, 4], [-13, 8], [-17, 14],
+  ],
+  madagascar: [
+    [44, -25], [47, -25], [50, -15], [49, -12], [44, -17],
+  ],
+};
 
-// A smooth closed outline through the midpoints between the corners
+// Seen from over the Atlantic: the Americas on the left, Europe and Africa
+// on the right
+const VIEW = { longitude: -35, latitude: 15 };
+
+// Orthographic projection to unit coordinates (Earth's radius is 1, y down).
+// Points round the back are pulled onto the rim, which the clip then hides.
+function project([longitude, latitude]) {
+  const rad = Math.PI / 180;
+  const lambda = (longitude - VIEW.longitude) * rad;
+  const phi = latitude * rad;
+  const phi0 = VIEW.latitude * rad;
+  let x = Math.cos(phi) * Math.sin(lambda);
+  let y =
+    Math.cos(phi0) * Math.sin(phi) -
+    Math.sin(phi0) * Math.cos(phi) * Math.cos(lambda);
+  const facing =
+    Math.sin(phi0) * Math.sin(phi) +
+    Math.cos(phi0) * Math.cos(phi) * Math.cos(lambda);
+  if (facing < 0) {
+    const length = Math.hypot(x, y) || 1;
+    x /= length;
+    y /= length;
+  }
+  return [x, -y];
+}
+
+const CONTINENTS = Object.values(COASTLINES).map((coast) => coast.map(project));
+
 function traceShape(ctx, shape, radius) {
-  const point = (i) => shape[(i + shape.length) % shape.length];
-  const mid = (a, b) => [
-    ((a[0] + b[0]) / 2) * radius,
-    ((a[1] + b[1]) / 2) * radius,
-  ];
   ctx.beginPath();
-  ctx.moveTo(...mid(point(-1), point(0)));
-  shape.forEach((corner, i) =>
-    ctx.quadraticCurveTo(
-      corner[0] * radius,
-      corner[1] * radius,
-      ...mid(corner, point(i + 1))
-    )
+  shape.forEach(([x, y], i) =>
+    i ? ctx.lineTo(x * radius, y * radius) : ctx.moveTo(x * radius, y * radius)
   );
   ctx.closePath();
 }
