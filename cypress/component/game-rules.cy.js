@@ -180,6 +180,71 @@ describe('Game rules', () => {
     expect(game.owned.satellite).to.equal(1);
   });
 
+  it("stops shots at Earth's surface", () => {
+    const game = emptyGame();
+    parkShip(game);
+    keepWaveGoing(game);
+    // Fired from the left, straight at Earth, with a rock on the far side
+    game.asteroids.push(asteroid(game, 'small', 700, 300));
+    game.shots.push({ from: 'ship', x: 300, y: 300, vx: 600, vy: 0, life: 9 });
+    for (let i = 0; i < 60; i++) step(game, 0.01);
+    expect(game.shots).to.have.length(0);
+    expect(game.asteroids.find((a) => a.x > 600).hp).to.equal(1);
+  });
+
+  it('hits a small Asteroid even when a shot would skip past it in one step', () => {
+    const game = emptyGame();
+    parkShip(game);
+    keepWaveGoing(game);
+    game.asteroids.push(asteroid(game, 'small', 100, 100));
+    // 50px in one step, from one side of the rock clean to the other
+    game.shots.push({ from: 'ship', x: 75, y: 100, vx: 1000, vy: 0, life: 1 });
+    step(game, 0.05);
+    expect(game.asteroids).to.have.length(1);
+    expect(game.ore).to.equal(ASTEROIDS.small.ore);
+  });
+
+  it('hits an Asteroid slightly outside its drawn edge', () => {
+    const game = emptyGame();
+    parkShip(game);
+    keepWaveGoing(game);
+    const rock = asteroid(game, 'small', 100, 100);
+    game.asteroids.push(rock);
+    game.shots.push({
+      from: 'ship',
+      x: 100,
+      y: 100 + rock.radius * 1.15,
+      vx: 0,
+      vy: 0,
+      life: 1,
+    });
+    step(game, 0.01);
+    expect(game.asteroids).to.have.length(1);
+  });
+
+  it("keeps the Ship off Earth's surface", () => {
+    const game = emptyGame();
+    keepWaveGoing(game);
+    Object.assign(game.ship, { x: 400, y: 200, vx: 0, vy: 400 });
+    for (let i = 0; i < 40; i++) step(game, 0.02);
+    const distance = Math.hypot(
+      game.ship.x - game.earth.x,
+      game.ship.y - game.earth.y
+    );
+    expect(distance).to.be.at.least(
+      game.earth.radius + SHIP.radius * game.scale - 1e-6
+    );
+  });
+
+  it("doesn't have Turrets aim through Earth", () => {
+    const game = emptyGame();
+    parkShip(game);
+    game.owned.turret = 1; // sits on top of Earth
+    game.asteroids.push(asteroid(game, 'small', 400, 420)); // below Earth
+    step(game, 0.01);
+    expect(game.shots.some((shot) => shot.from === 'turret')).to.be.false;
+  });
+
   it('has Turrets fire at Asteroids in range', () => {
     const game = emptyGame();
     parkShip(game);

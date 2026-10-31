@@ -8,6 +8,8 @@ export const ASTEROIDS = {
   medium: { radius: 20, hp: 3, speed: 55, damage: 1, ore: 8, score: 30 },
   large: { radius: 34, hp: 6, speed: 42, damage: 2.5, ore: 20, score: 80 },
 };
+// How far past its radius a shot still hits an Asteroid
+export const ASTEROID_HIT = 1.25;
 // What a destroyed Asteroid breaks into
 export const SPLITS_INTO = { large: 'medium', medium: 'small', small: null };
 export const SPLIT_COUNT = 2;

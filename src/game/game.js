@@ -2,6 +2,7 @@
 // step() advances by a slice of time. Tests drive it directly.
 import {
   ASTEROIDS,
+  ASTEROID_HIT,
   PER_LEVEL,
   POPULATION_START,
   PRICE_GROWTH,
@@ -189,7 +190,12 @@ function stepShip(game, dt, input) {
   const engine = 1 + PER_LEVEL.shipEngine * level(game, 'shipEngine');
   let turn = input.turn ?? 0;
   let thrust = !!input.thrust;
-  let firing = !!input.fire;
+  // Holding the fire key keeps firing at the Ship's rate. A tap during the
+  // cooldown waits for it, so a quick tap is never lost.
+  const pressed = !!input.fire && !game.fireHeld;
+  game.fireHeld = !!input.fire;
+  if (pressed) ship.queuedShot = true;
+  let firing = !!input.fire || ship.queuedShot;
   if (input.target) {
     const dx = input.target.x - ship.x;
     const dy = input.target.y - ship.y;
@@ -222,8 +228,10 @@ function stepShip(game, dt, input) {
   ship.x += ship.vx * dt;
   ship.y += ship.vy * dt;
   keepInside(game, ship);
+  keepOffEarth(game, ship);
 
   if (firing && ship.cooldown === 0) {
+    ship.queuedShot = false;
     const rate = 1 + PER_LEVEL.shipRate * level(game, 'shipRate');
     ship.cooldown = SHIP.fireDelay / rate;
     const nose = SHIP.radius * game.scale;
@@ -251,10 +259,58 @@ export function keepInside(game, ship) {
   }
 }
 
+// Earth is solid too: the Ship stops on its surface and slides around it,
+// so it can never fire from inside it
+export function keepOffEarth(game, ship) {
+  const { earth } = game;
+  const dx = ship.x - earth.x;
+  const dy = ship.y - earth.y;
+  const distance = Math.hypot(dx, dy) || 1;
+  const surface = earth.radius + SHIP.radius * game.scale;
+  if (distance >= surface) return;
+  const nx = dx / distance;
+  const ny = dy / distance;
+  ship.x = earth.x + nx * surface;
+  ship.y = earth.y + ny * surface;
+  const inward = ship.vx * nx + ship.vy * ny;
+  if (inward < 0) {
+    ship.vx -= inward * nx;
+    ship.vy -= inward * ny;
+  }
+}
+
+// How close a shot came to a point on its way from where it was last step.
+// Shots move several pixels a step, so checking only where they end up
+// lets them skip clean through small Asteroids.
+function closestApproach(shot, x, y) {
+  const sx = shot.x - shot.px;
+  const sy = shot.y - shot.py;
+  const lengthSquared = sx * sx + sy * sy;
+  const t = lengthSquared
+    ? Math.max(
+        0,
+        Math.min(1, ((x - shot.px) * sx + (y - shot.py) * sy) / lengthSquared)
+      )
+    : 1;
+  return Math.hypot(shot.px + sx * t - x, shot.py + sy * t - y);
+}
+
+// Defences only aim at what's on their side of Earth, since shots can't
+// pass through it
+function inSight(game, x, y, asteroid) {
+  const { earth } = game;
+  const facing =
+    (asteroid.x - x) * (x - earth.x) + (asteroid.y - y) * (y - earth.y);
+  return (
+    facing > 0 || Math.hypot(x - earth.x, y - earth.y) > earth.radius * 1.5
+  );
+}
+
 function nearestAsteroid(game, x, y, range) {
   let best = null;
   let bestDistance = range;
   for (const asteroid of game.asteroids) {
+    if (!inSight(game, x, y, asteroid)) continue;
     const distance = Math.hypot(asteroid.x - x, asteroid.y - y);
     if (distance < bestDistance) {
       best = asteroid;
@@ -370,10 +426,20 @@ export function step(game, dt, input = {}) {
   stepShip(game, dt, input);
   stepDefences(game, dt);
 
+  // Earth is solid: shots stop at its surface. Turrets fire from right on
+  // it, so a shot only counts as inside once it's clearly past the edge.
   for (const shot of game.shots) {
+    shot.px = shot.x;
+    shot.py = shot.y;
     shot.x += shot.vx * dt;
     shot.y += shot.vy * dt;
     shot.life -= dt;
+    if (
+      closestApproach(shot, game.earth.x, game.earth.y) <
+      game.earth.radius - 2
+    ) {
+      shot.life = 0;
+    }
   }
   for (const asteroid of game.asteroids) {
     asteroid.x += asteroid.vx * dt;
@@ -387,11 +453,9 @@ export function step(game, dt, input = {}) {
     if (shot.life <= 0) continue;
     for (const asteroid of game.asteroids) {
       if (asteroid.hp <= 0) continue;
-      if (
-        Math.hypot(shot.x - asteroid.x, shot.y - asteroid.y) > asteroid.radius
-      ) {
-        continue;
-      }
+      // A little more generous than the drawn rock, which is lumpy
+      const reach = asteroid.radius * ASTEROID_HIT + SHOT.radius * game.scale;
+      if (closestApproach(shot, asteroid.x, asteroid.y) > reach) continue;
       shot.life = 0;
       asteroid.hp -= shotDamage[shot.from](game);
       if (asteroid.hp <= 0) pieces.push(...destroyAsteroid(game, asteroid));
