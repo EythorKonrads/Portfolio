@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { entryProblem, qualifies } from '@/game/scoreboard';
 import { fetchBoard, submitScore } from '@/game/scoreboardApi';
+import ScoreboardList from './ScoreboardList.vue';
 
 const props = defineProps({
   score: { type: Number, required: true },
@@ -149,22 +150,7 @@ async function save() {
         <p v-else-if="!rank" class="game-end__note" data-cy="scoreWhyNot">
           {{ whyNot }}
         </p>
-        <ol v-if="board.length" class="game-end__list" data-cy="scoreList">
-          <li
-            v-for="(entry, i) in board"
-            :key="`${entry.date}-${entry.initials}`"
-            class="game-end__row"
-            :class="{ 'game-end__row--you': i + 1 === rank }"
-            data-cy="scoreRow"
-          >
-            <span class="game-end__place">{{ i + 1 }}</span>
-            <span class="game-end__who">{{ entry.initials }}</span>
-            <span class="game-end__points">{{
-              entry.score.toLocaleString()
-            }}</span>
-          </li>
-        </ol>
-        <p v-else class="game-end__note">No scores yet.</p>
+        <ScoreboardList :board="board" :rank="rank" />
       </template>
     </section>
 
@@ -284,31 +270,6 @@ async function save() {
   letter-spacing: 0.3em;
   text-align: center;
   text-transform: uppercase;
-}
-.game-end__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.game-end__row {
-  display: grid;
-  grid-template-columns: 2rem 1fr auto;
-  gap: 0.5rem;
-  padding: 0.15rem 0.6rem;
-  border-radius: 0.3rem;
-  font-variant-numeric: tabular-nums;
-}
-.game-end__row--you {
-  background: var(--color-game-key);
-  color: var(--color-game-button);
-  font-weight: 700;
-}
-.game-end__place {
-  opacity: 0.6;
-}
-.game-end__who {
-  font-family: Orbitron, var(--font-body);
-  letter-spacing: 0.15em;
 }
 .game-end__actions {
   display: grid;

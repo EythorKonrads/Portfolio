@@ -1,5 +1,12 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue';
 import { SHOP_ITEMS } from '@/game/config';
 import {
   blockedReason,
@@ -18,6 +25,7 @@ import { applyDevStart } from '@/game/devStart';
 import Icon from './Icon.vue';
 import GameShop from './GameShop.vue';
 import GameMenu from './GameMenu.vue';
+import GameScoreboard from './GameScoreboard.vue';
 import GameEnd from './GameEnd.vue';
 import GameIntro from './GameIntro.vue';
 
@@ -26,6 +34,9 @@ const emit = defineEmits(['ready', 'close']);
 const root = ref(null);
 const canvas = ref(null);
 const isMenuOpen = ref(false);
+// The Menu can show the Scoreboard in its place; the game stays paused
+const isScoreboardOpen = ref(false);
+watch(isMenuOpen, () => (isScoreboardOpen.value = false));
 // The controls are explained before the first Wave; Play again skips them
 const isIntro = ref(true);
 const isTouch = window.matchMedia('(pointer: coarse)').matches;
@@ -138,6 +149,7 @@ function startGame() {
 function onKeyDown(event) {
   if (event.code === 'Escape') {
     if (game.status === 'over' || isIntro.value) emit('close');
+    else if (isScoreboardOpen.value) isScoreboardOpen.value = false;
     else if (isMenuOpen.value) isMenuOpen.value = false;
     else openMenu();
     return;
@@ -289,9 +301,14 @@ onBeforeUnmount(() => {
       class="game-screen__overlay"
     >
       <GameIntro v-if="isIntro" :touch="isTouch" @start="startGame" />
+      <GameScoreboard
+        v-else-if="isMenuOpen && isScoreboardOpen"
+        @back="isScoreboardOpen = false"
+      />
       <GameMenu
         v-else-if="isMenuOpen"
         @resume="isMenuOpen = false"
+        @scoreboard="isScoreboardOpen = true"
         @end="emit('close')"
       />
       <GameShop

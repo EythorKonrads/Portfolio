@@ -94,6 +94,24 @@ describe('Game screen', () => {
     cy.get('[data-cy="gameMenu"]').should('not.exist');
   });
 
+  it('shows the Scoreboard from the Menu, still paused, and goes back', () => {
+    cy.intercept('GET', '/api/scores', { board: [] });
+    start();
+    cy.get('[data-cy="gameMenuButton"]').click();
+    cy.get('[data-cy="menuScoreboard"]').click();
+    cy.get('[data-cy="gameScoreboard"]').should('be.visible');
+    cy.get('[data-cy="gameMenu"]').should('not.exist');
+    expectPaused();
+    // Esc goes back to the Menu, then closes it
+    key('keydown', 'Escape');
+    cy.get('[data-cy="gameMenu"]').should('be.visible');
+    key('keydown', 'Escape');
+    cy.get('[data-cy="gameMenu"]').should('not.exist');
+    // Opening the Menu again starts on the Menu, not the Scoreboard
+    cy.get('[data-cy="gameMenuButton"]').click();
+    cy.get('[data-cy="gameMenu"]').should('be.visible');
+  });
+
   it('closes the game from End game in the Menu', () => {
     start();
     cy.get('[data-cy="gameMenuButton"]').click();

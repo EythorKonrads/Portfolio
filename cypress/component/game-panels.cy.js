@@ -3,6 +3,7 @@ import GameShop from '../../src/components/GameShop.vue';
 import GameMenu from '../../src/components/GameMenu.vue';
 import GameEnd from '../../src/components/GameEnd.vue';
 import GameIntro from '../../src/components/GameIntro.vue';
+import GameScoreboard from '../../src/components/GameScoreboard.vue';
 
 describe('Game panels', () => {
   it('shows the keys on the help screen, and starts from it', () => {
@@ -112,14 +113,42 @@ describe('Game panels', () => {
     cy.get('@buy').should('have.been.calledTwice');
   });
 
-  it('offers Resume and End game in the Menu', () => {
+  it('offers Resume, the Scoreboard and End game in the Menu', () => {
     const onResume = cy.spy().as('resume');
+    const onScoreboard = cy.spy().as('scoreboard');
     const onEnd = cy.spy().as('end');
-    cy.mount(GameMenu, { props: { onResume, onEnd } });
+    cy.mount(GameMenu, { props: { onResume, onScoreboard, onEnd } });
     cy.get('[data-cy="menuResume"]').click();
     cy.get('@resume').should('have.been.calledOnce');
+    cy.get('[data-cy="menuScoreboard"]').click();
+    cy.get('@scoreboard').should('have.been.calledOnce');
     cy.get('[data-cy="menuEnd"]').should('contain.text', 'End game').click();
     cy.get('@end').should('have.been.calledOnce');
+  });
+
+  context("the Menu's Scoreboard", () => {
+    it('shows the top 10, and goes back', () => {
+      const board = [
+        { initials: 'TOP', score: 900, wave: 5, time: 90, date: '2026-01-01' },
+        { initials: 'EK', score: 400, wave: 3, time: 50, date: '2026-01-02' },
+      ];
+      cy.intercept('GET', '/api/scores', { board });
+      const onBack = cy.spy().as('back');
+      cy.mount(GameScoreboard, { props: { onBack } });
+      cy.get('[data-cy="scoreRow"]')
+        .should('have.length', 2)
+        .first()
+        .should('contain.text', 'TOP')
+        .and('contain.text', '900');
+      cy.get('[data-cy="scoreboardBack"]').should('have.focus').click();
+      cy.get('@back').should('have.been.calledOnce');
+    });
+
+    it("says when the scoreboard isn't available", () => {
+      cy.intercept('GET', '/api/scores', { statusCode: 500 });
+      cy.mount(GameScoreboard);
+      cy.get('[data-cy="scoreboardOffline"]').should('be.visible');
+    });
   });
 
   context('the end screen scoreboard', () => {
@@ -156,7 +185,7 @@ describe('Game panels', () => {
         .should('have.length', 3)
         .eq(1)
         .should('contain.text', 'ABC')
-        .and('have.class', 'game-end__row--you');
+        .and('have.class', 'scoreboard-list__row--you');
     });
 
     it("doesn't ask for initials when the Score misses the top 10", () => {

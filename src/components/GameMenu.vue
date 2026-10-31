@@ -1,5 +1,5 @@
 <script setup>
-defineEmits(['resume', 'end']);
+defineEmits(['resume', 'scoreboard', 'end']);
 </script>
 
 <template>
@@ -13,6 +13,14 @@ defineEmits(['resume', 'end']);
         @click="$emit('resume')"
       >
         Resume
+      </button>
+      <button
+        type="button"
+        class="game-button game-button--quiet"
+        data-cy="menuScoreboard"
+        @click="$emit('scoreboard')"
+      >
+        Scoreboard
       </button>
       <button
         type="button"
