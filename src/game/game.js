@@ -47,6 +47,8 @@ export function createGame({ width, height, seed } = {}) {
     shots: [],
     owned: Object.fromEntries(Object.keys(SHOP_ITEMS).map((id) => [id, 0])),
     turretCooldowns: [],
+    // Where each Turret's barrel points, for drawing
+    turretAims: [],
     satelliteCooldowns: [],
     spawnQueue: [],
     spawnTimer: 0,
@@ -380,7 +382,7 @@ function stepDefences(game, dt) {
   for (const [positions, cooldowns, from, spec, speedup] of groups) {
     positions.forEach((position, i) => {
       cooldowns[i] = Math.max(0, (cooldowns[i] ?? 0) - dt);
-      if (cooldowns[i] > 0) return;
+      // Aim every step, not only when firing, so the barrel tracks its target
       const target = nearestAsteroid(
         game,
         position.x,
@@ -389,14 +391,10 @@ function stepDefences(game, dt) {
       );
       if (!target) return;
       const speed = spec.shotSpeed * game.scale;
-      fire(
-        game,
-        from,
-        position.x,
-        position.y,
-        leadAngle(position.x, position.y, target, speed),
-        speed
-      );
+      const angle = leadAngle(position.x, position.y, target, speed);
+      if (from === 'turret') game.turretAims[i] = angle;
+      if (cooldowns[i] > 0) return;
+      fire(game, from, position.x, position.y, angle, speed);
       cooldowns[i] = spec.fireDelay / speedup;
     });
   }

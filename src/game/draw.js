@@ -17,6 +17,7 @@ export function readColors(element) {
     asteroid: read('--color-game-asteroid'),
     asteroidEdge: read('--color-game-asteroid-edge'),
     shot: read('--color-game-shot'),
+    shotGlow: read('--color-game-shot-glow'),
     defence: read('--color-game-defence'),
   };
 }
@@ -133,19 +134,61 @@ function drawShip(ctx, game, colors) {
   ctx.restore();
 }
 
-function drawDefences(ctx, game, colors) {
-  ctx.fillStyle = colors.defence;
-  const turret = 4 * game.scale;
-  for (const { x, y } of turretPositions(game)) {
-    ctx.beginPath();
-    ctx.arc(x, y, turret, 0, Math.PI * 2);
-    ctx.fill();
+// Turrets look like their Shop icon: a dome on Earth's surface, with a
+// barrel that turns to whatever it's aiming at
+function drawTurrets(ctx, game, colors) {
+  const { earth } = game;
+  const dome = 6 * game.scale;
+  const barrel = 10 * game.scale;
+  const turrets = turretPositions(game).map(({ x, y }, i) => {
+    const outward = Math.atan2(y - earth.y, x - earth.x);
+    return { x, y, outward, aim: game.turretAims[i] ?? outward };
+  });
+  ctx.strokeStyle = colors.defence;
+  ctx.lineWidth = 2.5 * game.scale;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  for (const { x, y, aim } of turrets) {
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.cos(aim) * barrel, y + Math.sin(aim) * barrel);
   }
+  ctx.stroke();
+  ctx.fillStyle = colors.defence;
+  ctx.beginPath();
+  for (const { x, y, outward } of turrets) {
+    ctx.moveTo(x, y);
+    ctx.arc(x, y, dome, outward - Math.PI / 2, outward + Math.PI / 2);
+  }
+  ctx.fill();
+}
+
+function drawDefences(ctx, game, colors) {
+  drawTurrets(ctx, game, colors);
+  ctx.fillStyle = colors.defence;
   const satellite = SATELLITE.radius * game.scale;
+  ctx.beginPath();
   for (const { x, y } of satellitePositions(game)) {
-    ctx.fillRect(x - satellite * 2, y - 1, satellite * 4, 2); // solar panels
-    ctx.beginPath();
+    ctx.rect(x - satellite * 2, y - 1, satellite * 4, 2); // solar panels
+    ctx.moveTo(x + satellite * 0.7, y);
     ctx.arc(x, y, satellite * 0.7, 0, Math.PI * 2);
+  }
+  ctx.fill();
+}
+
+// One bright ball with a soft halo, so a fast shot reads as a single shot
+function drawShots(ctx, game, colors) {
+  const r = SHOT.radius * game.scale;
+  for (const [color, base] of [
+    [colors.shotGlow, r * 2.2],
+    [colors.shot, r],
+  ]) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    for (const shot of game.shots) {
+      const radius = base * (shot.size ?? 1);
+      ctx.moveTo(shot.x + radius, shot.y);
+      ctx.arc(shot.x, shot.y, radius, 0, Math.PI * 2);
+    }
     ctx.fill();
   }
 }
@@ -172,13 +215,6 @@ export function draw(ctx, game, colors, stars, starAlpha = 1) {
 
   drawDefences(ctx, game, colors);
   drawAsteroids(ctx, game, colors);
-
-  ctx.fillStyle = colors.shot;
-  for (const shot of game.shots) {
-    ctx.beginPath();
-    ctx.arc(shot.x, shot.y, SHOT.radius * game.scale, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
+  drawShots(ctx, game, colors);
   drawShip(ctx, game, colors);
 }
