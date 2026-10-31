@@ -69,7 +69,8 @@ describe('Game', () => {
       cy.get('[data-cy="launch"]').should('not.exist');
       cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 1');
       cy.get('[data-cy="hudPopulation"]').should('contain.text', '8.0 billion');
-      cy.get('[data-cy="hudOre"]').should('contain.text', '0 Ore');
+      cy.get('[data-cy="hudOre"]').should('contain.text', '0');
+      cy.get('[data-cy="hudPopulationBar"]').should('be.visible');
       cy.get('#app').should('have.attr', 'inert');
       cy.get('html').should('have.css', 'overflow', 'hidden');
       // Earth sits in the middle of the screen

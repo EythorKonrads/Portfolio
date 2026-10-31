@@ -10,7 +10,9 @@ import {
   resize,
   step,
 } from '@/game/game';
+import { POPULATION_START } from '@/game/config';
 import { draw, makeStars, pixelRatio, readColors } from '@/game/draw';
+import Icon from './Icon.vue';
 import GameShop from './GameShop.vue';
 import GameMenu from './GameMenu.vue';
 import GameEnd from './GameEnd.vue';
@@ -148,6 +150,18 @@ function onNext() {
   root.value.focus();
 }
 
+// The Population bar goes from green to orange to red as people are lost
+const populationShare = computed(
+  () => (hud.value.population ?? POPULATION_START) / POPULATION_START
+);
+const populationLevel = computed(() =>
+  populationShare.value > 0.6
+    ? 'good'
+    : populationShare.value > 0.3
+      ? 'warn'
+      : 'bad'
+);
+
 onMounted(() => {
   ctx = canvas.value.getContext('2d');
   colors = readColors(root.value);
@@ -188,11 +202,30 @@ onBeforeUnmount(() => {
     ></canvas>
 
     <div class="game-screen__hud">
-      <span data-cy="hudWave">Wave {{ hud.wave }}</span>
-      <span data-cy="hudPopulation">
-        {{ hud.population?.toFixed(1) }} billion people
+      <span class="game-screen__wave" data-cy="hudWave">
+        Wave {{ hud.wave }}
       </span>
-      <span data-cy="hudOre">{{ hud.ore }} Ore</span>
+      <div
+        class="game-screen__population"
+        :class="`game-screen__population--${populationLevel}`"
+        data-cy="hudPopulationBar"
+      >
+        <span
+          class="game-screen__population-fill"
+          :style="{ width: `${populationShare * 100}%` }"
+        ></span>
+        <span class="game-screen__population-text" data-cy="hudPopulation">
+          {{ hud.population?.toFixed(1) }} billion people
+        </span>
+      </div>
+      <span class="game-screen__ore game-hint" data-cy="hudOre">
+        <Icon name="ore" :icon="false" class="game-screen__ore-icon" />
+        {{ hud.ore }}
+        <span class="game-hint__tip" role="tooltip">
+          <strong>Ore</strong>, mined from destroyed Asteroids. Spend it in the
+          Shop between Waves.
+        </span>
+      </span>
     </div>
 
     <button
@@ -264,9 +297,64 @@ onBeforeUnmount(() => {
   right: 4.5rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
   font-weight: 600;
   pointer-events: none;
+}
+.game-screen__wave {
+  line-height: 1.75rem;
+}
+/* Population as a health bar, with the number inside */
+.game-screen__population {
+  position: relative;
+  width: min(16rem, 45vw);
+  height: 1.75rem;
+  overflow: hidden;
+  border: 1px solid var(--color-game-panel-border);
+  border-radius: 0.4rem;
+  background: var(--color-game-panel);
+}
+.game-screen__population-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--population-color);
+  transition:
+    width 0.4s ease,
+    background-color 0.4s ease;
+}
+.game-screen__population--good {
+  --population-color: var(--color-game-health-good);
+}
+.game-screen__population--warn {
+  --population-color: var(--color-game-health-warn);
+}
+.game-screen__population--bad {
+  --population-color: var(--color-game-health-bad);
+}
+.game-screen__population-text {
+  position: relative;
+  display: block;
+  padding: 0 0.6rem;
+  color: var(--color-game-health-text);
+  text-shadow: 0 1px 2px var(--color-game-space);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+  white-space: nowrap;
+}
+.game-screen__ore {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.75rem;
+  /* The rest of the HUD lets clicks through; this one has a tooltip */
+  pointer-events: auto;
+}
+.game-screen__ore-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  color: var(--color-game-ore);
 }
 .game-screen__menu-button {
   position: absolute;
@@ -343,5 +431,31 @@ onBeforeUnmount(() => {
   min-width: 6.5rem;
   padding: 0.4rem 0.75rem;
   font-size: 0.9em;
+}
+/* Hover for a tooltip. Hidden with display, not visibility, so a hidden tip
+   can't make a panel scroll. */
+.game-hint {
+  position: relative;
+  cursor: help;
+}
+.game-hint__tip {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  z-index: 2;
+  display: none;
+  width: 14rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-game-panel-border);
+  border-radius: 0.4rem;
+  background: var(--color-game-panel);
+  color: var(--color-game-text);
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+}
+.game-hint:hover .game-hint__tip {
+  display: block;
 }
 </style>
