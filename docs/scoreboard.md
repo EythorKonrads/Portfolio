@@ -1,7 +1,8 @@
 # Scoreboard
 
-The game's shared, arcade-style top 10: three initials (A–Z) and a Score.
-Designed in issue #37; why it runs on Netlify Blobs for now is in
+The game's shared, arcade-style top 10: initials (2 or 3 letters, A–Z) and a Score.
+Designed in issue #37, which had exactly three initials; 2 or 3 are allowed
+so two-letter initials fit. Why it runs on Netlify Blobs for now is in
 `docs/adr/0003-scoreboard-on-netlify-blobs-for-now.md`.
 
 ## Where things are

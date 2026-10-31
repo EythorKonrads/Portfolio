@@ -1,4 +1,4 @@
-// The shared scoreboard's rules: an arcade-style top 10 of three initials.
+// The shared scoreboard's rules: an arcade-style top 10 of 2–3 initials.
 // Used by both the end screen and the function that stores the board
 // (netlify/functions/scores/), so the two always agree.
 import {
@@ -12,7 +12,7 @@ import { waveAsteroids } from './game';
 
 export const BOARD_SIZE = 10;
 // A–Z only, so there's nothing to moderate
-export const INITIALS = /^[A-Z]{3}$/;
+export const INITIALS = /^[A-Z]{2,3}$/;
 const MAX_WAVE = 1000;
 
 // The most Score one Asteroid can give: its own, plus all its pieces'

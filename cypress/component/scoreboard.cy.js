@@ -51,7 +51,9 @@ describe('Scoreboard', () => {
       const ok = { initials: 'ABC', score: 50, wave: 1, time: 20 };
       expect(entryProblem(ok)).to.be.null;
       expect(entryProblem({ ...ok, initials: 'abc' })).to.equal('initials');
-      expect(entryProblem({ ...ok, initials: 'AB' })).to.equal('initials');
+      expect(entryProblem({ ...ok, initials: 'AB' })).to.be.null;
+      expect(entryProblem({ ...ok, initials: 'A' })).to.equal('initials');
+      expect(entryProblem({ ...ok, initials: 'ABCD' })).to.equal('initials');
       expect(entryProblem({ ...ok, initials: 'A1C' })).to.equal('initials');
       expect(entryProblem({ ...ok, wave: 0 })).to.equal('wave');
       expect(entryProblem({ ...ok, wave: 1.5 })).to.equal('wave');

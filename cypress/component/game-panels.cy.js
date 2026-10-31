@@ -162,13 +162,35 @@ describe('Game panels', () => {
     it("doesn't ask for initials when the Score misses the top 10", () => {
       const board = Array.from({ length: 10 }, (_, i) => row('AAA', 1000 - i));
       cy.intercept('GET', '/api/scores', { board });
-      cy.mount(GameEnd, { props: { score: 50, wave: 2 } });
+      cy.mount(GameEnd, { props: { score: 50, wave: 2, time: 60 } });
       cy.get('[data-cy="scoreRow"]').should('have.length', 10);
       cy.get('[data-cy="scoreEntry"]').should('not.exist');
       cy.get('[data-cy="scoreWhyNot"]').should(
         'contain.text',
         "didn't make the top 10"
       );
+    });
+
+    it("doesn't offer the board to a game reached faster than possible", () => {
+      cy.intercept('GET', '/api/scores', { board: [] });
+      // Wave 5 in 1 second, as a dev shortcut can do
+      cy.mount(GameEnd, { props: { score: 100, wave: 5, time: 1 } });
+      cy.get('[data-cy="scoreEntry"]').should('not.exist');
+      cy.get('[data-cy="scoreWhyNot"]').should('contain.text', 'faster');
+    });
+
+    it('takes two-letter initials too', () => {
+      cy.intercept('GET', '/api/scores', { board: [] });
+      cy.intercept('POST', '/api/scores', {
+        board: [row('EK', 50)],
+        rank: 1,
+      }).as('save');
+      cy.mount(GameEnd, { props: { score: 50, wave: 1, time: 20 } });
+      cy.get('[data-cy="scoreInitials"]').type('E');
+      cy.get('[data-cy="scoreSave"]').should('be.disabled');
+      cy.get('[data-cy="scoreInitials"]').type('k');
+      cy.get('[data-cy="scoreSave"]').should('be.enabled').click();
+      cy.wait('@save').its('request.body.initials').should('equal', 'EK');
     });
 
     it('explains that a Score of 0 needs an Asteroid destroyed first', () => {

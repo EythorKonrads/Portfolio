@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { qualifies } from '@/game/scoreboard';
+import { entryProblem, qualifies } from '@/game/scoreboard';
 import { fetchBoard, submitScore } from '@/game/scoreboardApi';
 
 const props = defineProps({
@@ -29,12 +29,34 @@ onMounted(async () => {
   state.value = 'ready';
 });
 
+// The server's own check, so the form is never offered for a game it would
+// turn away, such as one started on a late Wave with a dev shortcut
+const isPossible = computed(
+  () =>
+    !entryProblem({
+      initials: 'AAA',
+      score: props.score,
+      wave: props.wave,
+      time: props.time,
+    })
+);
 const canEnter = computed(
   () =>
     state.value === 'ready' &&
     !rank.value &&
+    isPossible.value &&
     qualifies(board.value, props.score)
 );
+// Why there's no form, when there isn't
+const whyNot = computed(() => {
+  if (props.score <= 0) {
+    return 'Destroy an Asteroid to get a Score onto the board.';
+  }
+  if (!isPossible.value) {
+    return "This game can't go on the board: it reached its Wave faster than the game allows.";
+  }
+  return "Your Score didn't make the top 10 this time.";
+});
 
 // Arcade style: A–Z only, always capitals
 function onInitials(event) {
@@ -43,7 +65,7 @@ function onInitials(event) {
 }
 
 async function save() {
-  if (initials.value.length !== 3 || isSaving.value) return;
+  if (initials.value.length < 2 || isSaving.value) return;
   isSaving.value = true;
   saveFailed.value = false;
   const data = await submitScore({
@@ -97,7 +119,7 @@ async function save() {
           @submit.prevent="save"
         >
           <label for="game-end-initials" class="game-end__entry-label">
-            You made the top 10! Your initials:
+            You made the top 10! Your initials (2 or 3 letters):
           </label>
           <div class="game-end__entry-row">
             <input
@@ -114,7 +136,7 @@ async function save() {
             <button
               type="submit"
               class="game-button game-button--small"
-              :disabled="initials.length !== 3 || isSaving"
+              :disabled="initials.length < 2 || isSaving"
               data-cy="scoreSave"
             >
               Save
@@ -125,11 +147,7 @@ async function save() {
           </p>
         </form>
         <p v-else-if="!rank" class="game-end__note" data-cy="scoreWhyNot">
-          {{
-            score > 0
-              ? "Your Score didn't make the top 10 this time."
-              : 'Destroy an Asteroid to get a Score onto the board.'
-          }}
+          {{ whyNot }}
         </p>
         <ol v-if="board.length" class="game-end__list" data-cy="scoreList">
           <li

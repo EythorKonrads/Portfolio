@@ -54,7 +54,7 @@ _Avoid_: Points
 
 **Scoreboard**:
 The shared top 10 of all time, shown when the game ends. A Score that makes
-it goes on with the player's three initials (A–Z).
+it goes on with the player's initials: 2 or 3 letters, A–Z.
 _Avoid_: Leaderboard, high score list, hall of fame
 
 **Shop**:
