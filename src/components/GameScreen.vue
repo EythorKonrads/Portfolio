@@ -14,6 +14,7 @@ import {
 } from '@/game/game';
 import { POPULATION_START, WAVE_TITLE } from '@/game/config';
 import { draw, makeStars, pixelRatio, readColors } from '@/game/draw';
+import { applyDevStart } from '@/game/devStart';
 import Icon from './Icon.vue';
 import GameShop from './GameShop.vue';
 import GameMenu from './GameMenu.vue';
@@ -50,6 +51,8 @@ function newGame() {
     // Tests replay the same game every time
     seed: window.Cypress ? 1 : undefined,
   });
+  // Playtesting shortcuts such as ?wave=20; see devStart.js
+  if (import.meta.env.DEV) applyDevStart(game, window.location.search);
   if (window.Cypress) window.__game = game;
   isMenuOpen.value = false;
   needsDraw = true;
