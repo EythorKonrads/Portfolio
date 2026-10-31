@@ -1,7 +1,7 @@
 // Draws a game onto the play field's canvas. Reads the game, never changes it.
 // Anything that doesn't move (the stars, Earth, each rock's outline) is drawn
 // once and reused, so a frame is mostly copying images.
-import { IMPACT, SATELLITE, SHIP, SHOT } from './config';
+import { BURST, IMPACT, SATELLITE, SHIP, SHOT } from './config';
 import { GLOW, drawEarth, readEarthColors } from './earth';
 import { createRandom } from './random';
 import { satellitePositions, turretPositions } from './game';
@@ -17,6 +17,9 @@ export function readColors(element) {
     blastCore: read('--color-game-blast-core'),
     blast: read('--color-game-blast'),
     blastEdge: read('--color-game-blast-edge'),
+    flash: read('--color-game-flash'),
+    dust: read('--color-game-dust'),
+    spark: read('--color-game-spark'),
     asteroid: read('--color-game-asteroid'),
     asteroidEdge: read('--color-game-asteroid-edge'),
     shot: read('--color-game-shot'),
@@ -250,6 +253,133 @@ function drawImpacts(ctx, game, colors) {
   ctx.restore();
 }
 
+// A shot Asteroid shatters: a quick flash where it broke, a puff of rock dust,
+// and stone shards that spin away and fade
+function drawRockBurst(ctx, burst, t, colors) {
+  const { x, y, radius } = burst;
+  const fade = 1 - t;
+  const grow = 1 - fade ** 2;
+  const random = createRandom(Math.floor(burst.seed * 1e9));
+
+  if (t < 0.25) {
+    ctx.globalAlpha = 1 - t / 0.25;
+    ctx.fillStyle = colors.flash;
+    ctx.beginPath();
+    ctx.arc(x, y, radius * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const puff = radius * (0.8 + 1.2 * grow);
+  const dust = ctx.createRadialGradient(x, y, 0, x, y, puff);
+  dust.addColorStop(0, colors.dust);
+  dust.addColorStop(1, 'transparent');
+  ctx.globalAlpha = fade;
+  ctx.fillStyle = dust;
+  ctx.beginPath();
+  ctx.arc(x, y, puff, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = colors.asteroid;
+  ctx.strokeStyle = colors.asteroidEdge;
+  ctx.lineWidth = 1;
+  const shards = Math.round(radius / 4) + 4;
+  for (let i = 0; i < shards; i++) {
+    const angle = (i / shards) * Math.PI * 2 + random() * 0.6;
+    const distance = radius * (0.3 + (1.2 + random()) * grow);
+    const size = radius * (0.15 + random() * 0.2);
+    ctx.save();
+    ctx.translate(
+      x + Math.cos(angle) * distance,
+      y + Math.sin(angle) * distance
+    );
+    ctx.rotate(angle + t * (random() - 0.5) * 12);
+    ctx.beginPath();
+    ctx.moveTo(size, 0);
+    ctx.lineTo(-size * 0.6, -size * (0.4 + random() * 0.4));
+    ctx.lineTo(-size * 0.4, size * (0.4 + random() * 0.4));
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+// The Ship breaks up: its hull comes apart into the edges it's drawn with,
+// which tumble away, with a flash ring and electrical sparks
+function drawShipBurst(ctx, burst, t, colors) {
+  const { x, y, radius: r, angle } = burst;
+  const fade = 1 - t;
+  const grow = 1 - fade ** 3;
+  const random = createRandom(Math.floor(burst.seed * 1e9));
+
+  ctx.globalAlpha = fade * 0.8;
+  ctx.strokeStyle = colors.flash;
+  ctx.lineWidth = Math.max(1, r * 0.2 * fade);
+  ctx.beginPath();
+  ctx.arc(x, y, r * (0.5 + 3 * grow), 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.globalAlpha = fade;
+  ctx.fillStyle = colors.spark;
+  ctx.beginPath();
+  for (let i = 0; i < 14; i++) {
+    const a = random() * Math.PI * 2;
+    const distance = r * (1 + random() * 3.5) * grow;
+    const size = r * (0.08 + random() * 0.1) * fade;
+    const sx = x + Math.cos(a) * distance;
+    const sy = y + Math.sin(a) * distance;
+    ctx.moveTo(sx + size, sy);
+    ctx.arc(sx, sy, size, 0, Math.PI * 2);
+  }
+  ctx.fill();
+
+  // The hull's corners, as in drawShip
+  const hull = [
+    [r, 0],
+    [-r * 0.8, -r * 0.7],
+    [-r * 0.5, 0],
+    [-r * 0.8, r * 0.7],
+  ];
+  ctx.strokeStyle = colors.ship;
+  ctx.lineWidth = Math.max(1, r * 0.18);
+  ctx.lineCap = 'round';
+  hull.forEach((from, i) => {
+    const to = hull[(i + 1) % hull.length];
+    const mx = (from[0] + to[0]) / 2;
+    const my = (from[1] + to[1]) / 2;
+    const drift = Math.atan2(my, mx) + (random() - 0.5);
+    const distance = r * (1 + random() * 2) * grow;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.translate(
+      mx + Math.cos(drift) * distance,
+      my + Math.sin(drift) * distance
+    );
+    ctx.rotate((random() - 0.5) * 8 * t);
+    ctx.beginPath();
+    ctx.moveTo(from[0] - mx, from[1] - my);
+    ctx.lineTo(to[0] - mx, to[1] - my);
+    ctx.stroke();
+    ctx.restore();
+  });
+}
+
+function drawBursts(ctx, game, colors) {
+  ctx.save();
+  for (const burst of game.bursts) {
+    const t = burst.age / BURST[burst.kind];
+    const moved = {
+      ...burst,
+      x: burst.x + burst.vx * burst.age,
+      y: burst.y + burst.vy * burst.age,
+    };
+    if (burst.kind === 'rock') drawRockBurst(ctx, moved, t, colors);
+    else drawShipBurst(ctx, moved, t, colors);
+  }
+  ctx.restore();
+}
+
 // starAlpha fades the stars in after the Launch, so the hand-over isn't a jump
 export function draw(ctx, game, colors, stars, starAlpha = 1) {
   const { width, height, earth } = game;
@@ -273,6 +403,7 @@ export function draw(ctx, game, colors, stars, starAlpha = 1) {
   drawDefences(ctx, game, colors);
   drawAsteroids(ctx, game, colors);
   drawImpacts(ctx, game, colors);
+  drawBursts(ctx, game, colors);
   drawShots(ctx, game, colors);
   drawShip(ctx, game, colors);
 }

@@ -12,6 +12,8 @@ export const ASTEROIDS = {
 // The fire blast where an Asteroid hits Earth: how long it lasts, in seconds,
 // and how far it reaches, times the rock's radius, so bigger rocks blast bigger
 export const IMPACT = { time: 0.8, reach: 2.4 };
+// How long, in seconds, a shattered Asteroid and a wrecked Ship take to clear
+export const BURST = { rock: 0.6, ship: 1.2 };
 // How far past its radius a shot still hits an Asteroid
 export const ASTEROID_HIT = 1.25;
 // What a destroyed Asteroid breaks into

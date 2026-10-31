@@ -1,6 +1,7 @@
 // The game's rules (src/game/game.js), driven directly with no drawing
 import {
   ASTEROIDS,
+  BURST,
   FIRST_SPAWN,
   IMPACT,
   POPULATION_START,
@@ -205,6 +206,44 @@ describe('Game rules', () => {
     expect(game.impacts).to.have.length(1);
     step(game, IMPACT.time);
     expect(game.impacts).to.have.length(0);
+  });
+
+  it('shatters a shot Asteroid where it broke, then clears it', () => {
+    const game = emptyGame();
+    parkShip(game);
+    keepWaveGoing(game);
+    const rock = asteroid(game, 'small', 100, 300, 30, 0);
+    game.asteroids.push(rock);
+    game.shots.push({ from: 'ship', x: 100, y: 300, vx: 0, vy: 0, life: 1 });
+    step(game, 0.01);
+    expect(game.bursts).to.have.length(1);
+    expect(game.bursts[0]).to.include({ kind: 'rock', vx: 30 });
+    step(game, BURST.rock);
+    expect(game.bursts).to.have.length(0);
+  });
+
+  it('breaks the Ship apart when an Asteroid hits it', () => {
+    const game = emptyGame();
+    keepWaveGoing(game);
+    Object.assign(game.ship, { x: 100, y: 100, safeFor: 0 });
+    game.asteroids.push(asteroid(game, 'small', 100, 100));
+    step(game, 0.01);
+    expect(game.ship.alive).to.be.false;
+    expect(game.bursts.map((b) => b.kind)).to.deep.equal(['ship']);
+    step(game, BURST.ship);
+    expect(game.bursts).to.have.length(0);
+  });
+
+  it('lets the last shattered rock clear before opening the Shop', () => {
+    const game = emptyGame();
+    parkShip(game);
+    game.asteroids.push(asteroid(game, 'small', 100, 300));
+    game.shots.push({ from: 'ship', x: 100, y: 300, vx: 0, vy: 0, life: 1 });
+    step(game, 0.01);
+    expect(game.asteroids).to.have.length(0);
+    expect(game.status).to.equal('wave');
+    step(game, BURST.rock);
+    expect(game.status).to.equal('shop');
   });
 
   it('ends the game when the Population reaches zero', () => {

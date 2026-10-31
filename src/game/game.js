@@ -3,6 +3,7 @@
 import {
   ASTEROIDS,
   ASTEROID_HIT,
+  BURST,
   FIRST_SPAWN,
   IMPACT,
   PER_LEVEL,
@@ -50,6 +51,9 @@ export function createGame({ width, height, seed } = {}) {
     // Fire blasts where Asteroids hit Earth, kept as an angle around Earth
     // so they stay put if the window is resized
     impacts: [],
+    // Shattered Asteroids and the wrecked Ship. Space has no air to burn, so
+    // these break apart rather than catch fire.
+    bursts: [],
     owned: Object.fromEntries(Object.keys(SHOP_ITEMS).map((id) => [id, 0])),
     turretCooldowns: [],
     // Where each Turret's barrel points, for drawing
@@ -418,13 +422,31 @@ function hasLeft(game, asteroid) {
   );
 }
 
-function stepImpacts(game, dt) {
-  for (const impact of game.impacts) impact.age += dt;
+function stepEffects(game, dt) {
+  for (const effect of [...game.impacts, ...game.bursts]) effect.age += dt;
   game.impacts = game.impacts.filter((impact) => impact.age < IMPACT.time);
+  game.bursts = game.bursts.filter((burst) => burst.age < BURST[burst.kind]);
+}
+
+// Drifts on with what broke apart. The seed keeps its pieces the same each
+// frame without using the game's random numbers.
+function addBurst(game, kind, thing, radius, angle = 0) {
+  game.bursts.push({
+    kind,
+    x: thing.x,
+    y: thing.y,
+    vx: thing.vx,
+    vy: thing.vy,
+    radius,
+    angle,
+    seed: (thing.seed ?? game.time * 0.618) % 1,
+    age: 0,
+  });
 }
 
 function destroyAsteroid(game, asteroid) {
   const spec = ASTEROIDS[asteroid.size];
+  addBurst(game, 'rock', asteroid, asteroid.radius);
   game.ore += spec.ore;
   game.score += spec.score;
   const smaller = SPLITS_INTO[asteroid.size];
@@ -444,10 +466,10 @@ function destroyAsteroid(game, asteroid) {
 
 export function step(game, dt, input = {}) {
   // After the last hit, its blast still plays out behind the end screen
-  if (game.status === 'over') stepImpacts(game, dt);
+  if (game.status === 'over') stepEffects(game, dt);
   if (game.status !== 'wave') return;
   game.time += dt;
-  stepImpacts(game, dt);
+  stepEffects(game, dt);
 
   // Spawning
   if (game.spawnQueue.length) {
@@ -525,6 +547,7 @@ export function step(game, dt, input = {}) {
     ) {
       ship.alive = false;
       ship.respawnIn = SHIP.respawnDelay;
+      addBurst(game, 'ship', ship, SHIP.radius * game.scale, ship.angle);
     }
   }
 
@@ -547,8 +570,9 @@ export function step(game, dt, input = {}) {
   } else if (
     !game.spawnQueue.length &&
     !game.asteroids.length &&
-    // Let the last blast finish before the Shop covers it
-    !game.impacts.length
+    // Let the last blast or shattered rock finish before the Shop covers it
+    !game.impacts.length &&
+    !game.bursts.length
   ) {
     game.score += WAVE_BONUS * game.wave;
     game.status = 'shop';
@@ -596,7 +620,8 @@ export function resize(game, width, height) {
     y: height / 2,
     radius: earthRadius(width, height),
   };
-  for (const thing of [game.ship, ...game.asteroids, ...game.shots]) {
+  const things = [game.ship, ...game.asteroids, ...game.shots, ...game.bursts];
+  for (const thing of things) {
     thing.x += dx;
     thing.y += dy;
   }
