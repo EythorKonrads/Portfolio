@@ -10,7 +10,7 @@ import {
   resize,
   step,
 } from '@/game/game';
-import { draw, makeStars, readColors } from '@/game/draw';
+import { draw, makeStars, pixelRatio, readColors } from '@/game/draw';
 import GameShop from './GameShop.vue';
 import GameMenu from './GameMenu.vue';
 import GameEnd from './GameEnd.vue';
@@ -25,9 +25,12 @@ const hud = shallowRef({});
 let game = null;
 let ctx = null;
 let colors = null;
-let stars = [];
+let stars = null;
+// Redraw on the next frame even if the game is paused
+let needsDraw = true;
 let frame = 0;
 let lastTime = 0;
+let elapsed = 0;
 
 const keys = new Set();
 let touchTarget = null;
@@ -41,6 +44,7 @@ function newGame() {
   });
   if (window.Cypress) window.__game = game;
   isMenuOpen.value = false;
+  needsDraw = true;
   syncHud();
 }
 
@@ -80,20 +84,30 @@ function loop(time) {
   // A long gap (a background tab, a debugger) shouldn't teleport anything
   const dt = Math.min(0.05, (time - lastTime) / 1000 || 0);
   lastTime = time;
-  if (!isMenuOpen.value) step(game, dt, input());
-  draw(ctx, game, colors, stars);
+  elapsed += dt;
+  const starAlpha = Math.min(1, elapsed / 0.8);
+  // Paused, or in the Shop, nothing moves: skip drawing an identical frame
+  if (isFlying()) {
+    step(game, dt, input());
+  } else if (!needsDraw && starAlpha === 1) {
+    return;
+  }
+  needsDraw = false;
+  draw(ctx, game, colors, stars, starAlpha);
   syncHud();
 }
 
 function fitCanvas() {
   const { innerWidth: width, innerHeight: height } = window;
-  const ratio = window.devicePixelRatio || 1;
+  const ratio = pixelRatio();
   canvas.value.width = width * ratio;
   canvas.value.height = height * ratio;
-  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  stars = makeStars(width, height);
+  stars = makeStars(width, height, colors);
   if (game) resize(game, width, height);
+  needsDraw = true;
 }
+
+const isFlying = () => game.status === 'wave' && !isMenuOpen.value;
 
 function openMenu() {
   if (game.status === 'wave') isMenuOpen.value = true;
@@ -108,7 +122,7 @@ function onKeyDown(event) {
   }
   keys.add(event.code);
   // Arrows and Space would otherwise scroll or press a focused button
-  if (game.status === 'wave' && !isMenuOpen.value) event.preventDefault();
+  if (isFlying()) event.preventDefault();
 }
 const onKeyUp = (event) => keys.delete(event.code);
 // Nobody loses Population while looking at another tab
@@ -140,7 +154,7 @@ onMounted(() => {
   fitCanvas();
   newGame();
   root.value.focus();
-  draw(ctx, game, colors, stars);
+  draw(ctx, game, colors, stars, 0);
   emit('ready');
   frame = requestAnimationFrame((time) => {
     lastTime = time;
@@ -296,7 +310,6 @@ onBeforeUnmount(() => {
   border-radius: 0.75rem;
   background: var(--color-game-panel);
   color: var(--color-game-text);
-  backdrop-filter: blur(6px);
 }
 .game-panel__title {
   margin: 0 0 0.75rem;

@@ -44,6 +44,11 @@ function lockPage(locked) {
   document.documentElement.style.overflow = locked ? 'hidden' : '';
 }
 
+function hidePage(hidden) {
+  const app = document.getElementById('app');
+  if (app) app.style.visibility = hidden ? 'hidden' : '';
+}
+
 // The Launch: Earth glides from wherever it is now to the middle of the
 // screen, at exactly the size the game draws it, while the game loads
 async function launch() {
@@ -86,11 +91,15 @@ async function launch() {
 
 // The game shows its first frame before the Launch layer goes away
 function onGameReady() {
+  // Fully covered now: stop the browser painting the page (the Aurora,
+  // Mini Earth's orbit) behind the game
+  hidePage(true);
   isLaunching.value = false;
   isTakingOver.value = false;
 }
 
 function onGameClose() {
+  hidePage(false);
   isPlaying.value = false;
   isLaunching.value = false;
   isTakingOver.value = false;

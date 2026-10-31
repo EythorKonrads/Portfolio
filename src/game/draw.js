@@ -1,6 +1,8 @@
 // Draws a game onto the play field's canvas. Reads the game, never changes it.
+// Anything that doesn't move (the stars, Earth, each rock's outline) is drawn
+// once and reused, so a frame is mostly copying images.
 import { SATELLITE, SHIP, SHOT } from './config';
-import { drawEarth, readEarthColors } from './earth';
+import { GLOW, drawEarth, readEarthColors } from './earth';
 import { createRandom } from './random';
 import { satellitePositions, turretPositions } from './game';
 
@@ -19,40 +21,88 @@ export function readColors(element) {
   };
 }
 
-// The same stars every time for a given screen size
-export function makeStars(width, height) {
-  const random = createRandom(width * 7 + height);
-  const count = Math.round((width * height) / 6000);
-  return Array.from({ length: count }, () => ({
-    x: random() * width,
-    y: random() * height,
-    radius: random() * 1.2 + 0.3,
-    alpha: random() * 0.6 + 0.2,
-  }));
+// Above 2x, the extra pixels cost far more than they show
+export const pixelRatio = () => Math.min(2, window.devicePixelRatio || 1);
+
+function sprite(width, height, paint) {
+  const ratio = pixelRatio();
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.ceil(width * ratio);
+  canvas.height = Math.ceil(height * ratio);
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  paint(ctx);
+  return canvas;
 }
 
-function drawAsteroid(ctx, asteroid, colors) {
-  // A lumpy outline that stays the same for each rock as it turns
-  const random = createRandom(Math.floor(asteroid.seed * 1e9));
-  const points = 9;
-  ctx.save();
-  ctx.translate(asteroid.x, asteroid.y);
-  ctx.rotate(asteroid.rotation);
-  ctx.beginPath();
-  for (let i = 0; i < points; i++) {
-    const angle = (i / points) * Math.PI * 2;
-    const r = asteroid.radius * (0.75 + random() * 0.35);
-    const x = Math.cos(angle) * r;
-    const y = Math.sin(angle) * r;
-    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+// The same stars every time for a given screen size, painted once
+export function makeStars(width, height, colors) {
+  const random = createRandom(width * 7 + height);
+  const count = Math.round((width * height) / 6000);
+  return sprite(width, height, (ctx) => {
+    ctx.fillStyle = colors.star;
+    for (let i = 0; i < count; i++) {
+      ctx.globalAlpha = random() * 0.6 + 0.2;
+      ctx.beginPath();
+      ctx.arc(
+        random() * width,
+        random() * height,
+        random() * 1.2 + 0.3,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+  });
+}
+
+let earthSprite = null;
+function earthImage(radius, colors) {
+  if (earthSprite?.radius !== radius) {
+    const size = radius * 2 * GLOW;
+    earthSprite = {
+      radius,
+      image: sprite(size, size, (ctx) =>
+        drawEarth(ctx, size / 2, size / 2, radius, colors.earth)
+      ),
+    };
   }
-  ctx.closePath();
+  return earthSprite.image;
+}
+
+// A lumpy outline per rock, worked out the first time it's drawn
+const outlines = new WeakMap();
+function outline(asteroid) {
+  if (!outlines.has(asteroid)) {
+    const random = createRandom(Math.floor(asteroid.seed * 1e9));
+    const points = 9;
+    const path = new Path2D();
+    for (let i = 0; i < points; i++) {
+      const angle = (i / points) * Math.PI * 2;
+      const r = asteroid.radius * (0.75 + random() * 0.35);
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r;
+      i ? path.lineTo(x, y) : path.moveTo(x, y);
+    }
+    path.closePath();
+    outlines.set(asteroid, path);
+  }
+  return outlines.get(asteroid);
+}
+
+function drawAsteroids(ctx, game, colors) {
   ctx.fillStyle = colors.asteroid;
-  ctx.fill();
-  ctx.lineWidth = 1.5;
   ctx.strokeStyle = colors.asteroidEdge;
-  ctx.stroke();
-  ctx.restore();
+  ctx.lineWidth = 1.5;
+  for (const asteroid of game.asteroids) {
+    const path = outline(asteroid);
+    ctx.save();
+    ctx.translate(asteroid.x, asteroid.y);
+    ctx.rotate(asteroid.rotation);
+    ctx.fill(path);
+    ctx.stroke(path);
+    ctx.restore();
+  }
 }
 
 function drawShip(ctx, game, colors) {
@@ -100,24 +150,28 @@ function drawDefences(ctx, game, colors) {
   }
 }
 
-export function draw(ctx, game, colors, stars) {
+// starAlpha fades the stars in after the Launch, so the hand-over isn't a jump
+export function draw(ctx, game, colors, stars, starAlpha = 1) {
   const { width, height, earth } = game;
+  const ratio = pixelRatio();
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   ctx.clearRect(0, 0, width, height);
 
-  // The stars fade in after the Launch, so the hand-over isn't a jump
-  const starAlpha = Math.min(1, game.time / 0.8 + (game.wave > 1 ? 1 : 0));
-  ctx.fillStyle = colors.star;
-  for (const star of stars) {
-    ctx.globalAlpha = star.alpha * starAlpha;
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  ctx.globalAlpha = starAlpha;
+  ctx.drawImage(stars, 0, 0, width, height);
   ctx.globalAlpha = 1;
 
-  drawEarth(ctx, earth.x, earth.y, earth.radius, colors.earth);
+  const size = earth.radius * 2 * GLOW;
+  ctx.drawImage(
+    earthImage(earth.radius, colors),
+    earth.x - size / 2,
+    earth.y - size / 2,
+    size,
+    size
+  );
+
   drawDefences(ctx, game, colors);
-  for (const asteroid of game.asteroids) drawAsteroid(ctx, asteroid, colors);
+  drawAsteroids(ctx, game, colors);
 
   ctx.fillStyle = colors.shot;
   for (const shot of game.shots) {
