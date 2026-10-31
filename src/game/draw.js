@@ -22,6 +22,8 @@ export function readColors(element) {
     spark: read('--color-game-spark'),
     asteroid: read('--color-game-asteroid'),
     asteroidEdge: read('--color-game-asteroid-edge'),
+    armor: read('--color-game-armor'),
+    armorEdge: read('--color-game-armor-edge'),
     shot: read('--color-game-shot'),
     shotGlow: read('--color-game-shot-glow'),
     defence: read('--color-game-defence'),
@@ -98,18 +100,49 @@ function outline(asteroid) {
 }
 
 function drawAsteroids(ctx, game, colors) {
-  ctx.fillStyle = colors.asteroid;
-  ctx.strokeStyle = colors.asteroidEdge;
-  ctx.lineWidth = 1.5;
   for (const asteroid of game.asteroids) {
     const path = outline(asteroid);
     ctx.save();
     ctx.translate(asteroid.x, asteroid.y);
     ctx.rotate(asteroid.rotation);
-    ctx.fill(path);
-    ctx.stroke(path);
+    if (asteroid.size === 'armored') {
+      drawArmor(ctx, asteroid, path, colors);
+    } else {
+      ctx.fillStyle = colors.asteroid;
+      ctx.strokeStyle = colors.asteroidEdge;
+      ctx.lineWidth = 1.5;
+      ctx.fill(path);
+      ctx.stroke(path);
+    }
     ctx.restore();
   }
+}
+
+// Plated in steel so it reads as unbreakable: a thick bright edge, an inner
+// plate line, and rivets round it
+function drawArmor(ctx, asteroid, path, colors) {
+  ctx.fillStyle = colors.armor;
+  ctx.strokeStyle = colors.armorEdge;
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 3.5;
+  ctx.fill(path);
+  ctx.stroke(path);
+  ctx.save();
+  ctx.scale(0.55, 0.55);
+  ctx.lineWidth = 2 / 0.55;
+  ctx.stroke(path);
+  ctx.restore();
+  ctx.fillStyle = colors.armorEdge;
+  ctx.beginPath();
+  const rivet = Math.max(1, asteroid.radius * 0.07);
+  for (let i = 0; i < 6; i++) {
+    const angle = (i / 6) * Math.PI * 2;
+    const x = Math.cos(angle) * asteroid.radius * 0.72;
+    const y = Math.sin(angle) * asteroid.radius * 0.72;
+    ctx.moveTo(x + rivet, y);
+    ctx.arc(x, y, rivet, 0, Math.PI * 2);
+  }
+  ctx.fill();
 }
 
 function drawShip(ctx, game, colors) {

@@ -1,9 +1,11 @@
 // The game's rules (src/game/game.js), driven directly with no drawing
 import {
+  ARMORED,
   ASTEROIDS,
   BURST,
   FIRST_SPAWN,
   IMPACT,
+  LATE,
   PER_LEVEL,
   POPULATION_START,
   PRICE_GROWTH,
@@ -15,12 +17,16 @@ import {
   WAVE_TITLE,
 } from '../../src/game/config';
 import {
+  asteroidHp,
   buy,
+  clusterSize,
   createGame,
   nextWave,
   price,
   satellitePositions,
   shotDamage,
+  spawnInterval,
+  startWave,
   step,
   waveAsteroids,
 } from '../../src/game/game';
@@ -406,6 +412,105 @@ describe('Game rules', () => {
     for (let i = 0; i < 30; i++) step(game, 0.02, { target });
     expect(game.ship.x).to.be.greaterThan(x);
     expect(game.shots.some((s) => s.from === 'ship')).to.be.true;
+  });
+
+  context('later Waves', () => {
+    const share = (wave, size) =>
+      waveAsteroids(wave).filter((s) => s === size).length /
+      waveAsteroids(wave).length;
+
+    it('makes Asteroids tougher every Wave from Wave 6', () => {
+      const hp = (wave) => asteroidHp({ wave }, 'large');
+      expect(hp(5)).to.equal(ASTEROIDS.large.hp);
+      expect(hp(6)).to.be.closeTo(ASTEROIDS.large.hp * 1.12, 1e-9);
+      expect(hp(12)).to.be.greaterThan(hp(8));
+    });
+
+    it('gives new Asteroids, and their pieces, the toughness of the Wave', () => {
+      const game = emptyGame();
+      parkShip(game);
+      keepWaveGoing(game);
+      game.wave = 10;
+      const rock = asteroid(game, 'medium', 100, 300);
+      rock.hp = 0.1;
+      game.asteroids.push(rock);
+      game.shots.push({ from: 'ship', x: 100, y: 300, vx: 0, vy: 0, life: 1 });
+      step(game, 0.01);
+      const smalls = game.asteroids.filter((a) => a.size === 'small');
+      expect(smalls[1].hp).to.equal(asteroidHp(game, 'small'));
+    });
+
+    it('keeps speeding up spawns after Wave 10, down to the floor', () => {
+      expect(spawnInterval(11)).to.be.lessThan(spawnInterval(10));
+      expect(spawnInterval(20)).to.be.lessThan(spawnInterval(15));
+      expect(spawnInterval(60)).to.equal(LATE.spawnMin);
+    });
+
+    it('keeps shifting the mix towards large Asteroids after Wave 10', () => {
+      expect(share(16, 'large')).to.be.greaterThan(share(10, 'large'));
+    });
+
+    it('sends Asteroids in clusters from one side from Wave 10', () => {
+      expect(clusterSize(9)).to.equal(1);
+      expect(clusterSize(10)).to.equal(2);
+      expect(clusterSize(30)).to.equal(LATE.clusterMax);
+
+      const game = createGame({ ...SIZE, seed: 3 });
+      game.wave = 11;
+      startWave(game); // Wave 12
+      parkShip(game);
+      while (!game.asteroids.length) step(game, 0.05);
+      expect(game.asteroids).to.have.length(clusterSize(12));
+      // All just off the same edge
+      const edge = ({ x, y }) =>
+        x < 0 ? 'left' : x > SIZE.width ? 'right' : y < 0 ? 'top' : 'bottom';
+      expect(new Set(game.asteroids.map(edge)).size).to.equal(1);
+    });
+
+    it('brings in Armored Asteroids from Wave 20', () => {
+      expect(waveAsteroids(19)).to.not.include('armored');
+      expect(waveAsteroids(20)).to.include('armored');
+      expect(share(40, 'armored')).to.be.at.most(ARMORED.maxShare + 0.05);
+    });
+
+    it("lets only the Ship's shots crack an Armored Asteroid", () => {
+      const game = emptyGame();
+      parkShip(game);
+      keepWaveGoing(game);
+      const armored = asteroid(game, 'armored', 100, 300);
+      game.asteroids.push(armored);
+      for (const from of ['turret', 'satellite']) {
+        game.shots.push({ from, x: 100, y: 300, vx: 0, vy: 0, life: 1 });
+      }
+      step(game, 0.01);
+      expect(game.shots, 'glanced off').to.have.length(0);
+      expect(armored.hp).to.equal(ASTEROIDS.armored.hp);
+      game.shots.push({ from: 'ship', x: 100, y: 300, vx: 0, vy: 0, life: 1 });
+      step(game, 0.01);
+      expect(armored.hp).to.be.lessThan(ASTEROIDS.armored.hp);
+    });
+
+    it("doesn't have Turrets aim at Armored Asteroids", () => {
+      const game = emptyGame();
+      parkShip(game);
+      game.owned.turret = 1;
+      game.asteroids.push(asteroid(game, 'armored', 400, 150));
+      step(game, 0.01);
+      expect(game.shots.some((shot) => shot.from === 'turret')).to.be.false;
+    });
+
+    it('breaks an Armored Asteroid into mediums', () => {
+      const game = emptyGame();
+      parkShip(game);
+      keepWaveGoing(game);
+      const armored = asteroid(game, 'armored', 100, 300);
+      armored.hp = 0.1;
+      game.asteroids.push(armored);
+      game.shots.push({ from: 'ship', x: 100, y: 300, vx: 0, vy: 0, life: 1 });
+      step(game, 0.01);
+      const pieces = game.asteroids.filter((a) => a.size === 'medium');
+      expect(pieces).to.have.length(2);
+    });
   });
 
   context('upgrades', () => {

@@ -1,11 +1,13 @@
 // The game's rules, with no drawing or DOM: a game is a plain object that
 // step() advances by a slice of time. Tests drive it directly.
 import {
+  ARMORED,
   ASTEROIDS,
   ASTEROID_HIT,
   BURST,
   FIRST_SPAWN,
   IMPACT,
+  LATE,
   PER_LEVEL,
   POPULATION_START,
   PRICE_GROWTH,
@@ -16,6 +18,7 @@ import {
   SPAWN_INTERVAL,
   SPLIT_COUNT,
   SPLITS_INTO,
+  TOUGHER,
   TURRET,
   WAVE_BONUS,
   WAVE_SPEEDUP,
@@ -82,16 +85,30 @@ function newShip(game) {
   };
 }
 
-// Smalls only at first, mediums from Wave 3, larges from Wave 5
+// Smalls only at first, mediums from Wave 3, larges from Wave 5. From
+// Wave 10 larges keep taking a bigger share, and from Wave 20 armored rocks
+// join; both come out of the smalls' share.
+function waveMix(wave) {
+  if (wave <= 2) return { small: 1 };
+  if (wave <= 4) return { small: 0.7, medium: 0.3 };
+  const large = Math.min(
+    LATE.largeMax,
+    0.2 + LATE.largePerWave * Math.max(0, wave - LATE.from)
+  );
+  const armored =
+    wave < ARMORED.from
+      ? 0
+      : Math.min(
+          ARMORED.maxShare,
+          ARMORED.share + ARMORED.perWave * (wave - ARMORED.from)
+        );
+  return { small: 0.5 - (large - 0.2) - armored, medium: 0.3, large, armored };
+}
+
 export function waveAsteroids(wave) {
   // Wave 1 gets one extra rock, so clearing it pays for a first upgrade
   const count = 4 + wave * 2 + (wave === 1 ? 1 : 0);
-  const mix =
-    wave <= 2
-      ? { small: 1 }
-      : wave <= 4
-        ? { small: 0.7, medium: 0.3 }
-        : { small: 0.5, medium: 0.3, large: 0.2 };
+  const mix = waveMix(wave);
   const sizes = [];
   for (const [size, share] of Object.entries(mix)) {
     for (let i = 0; i < Math.round(count * share); i++) sizes.push(size);
@@ -112,11 +129,31 @@ export function startWave(game) {
   game.spawnTimer = FIRST_SPAWN;
 }
 
-function spawnInterval(wave) {
-  return Math.max(
+// Seconds between one spawn and the next, for a single rock
+export function spawnInterval(wave) {
+  const interval = Math.max(
     SPAWN_INTERVAL.min,
     SPAWN_INTERVAL.first - SPAWN_INTERVAL.perWave * (wave - 1)
   );
+  if (wave < LATE.from) return interval;
+  return Math.max(
+    LATE.spawnMin,
+    interval * LATE.spawnShrink ** (wave - LATE.from)
+  );
+}
+
+// How many rocks arrive together from one side
+export function clusterSize(wave) {
+  if (wave < LATE.from) return 1;
+  return Math.min(
+    LATE.clusterMax,
+    2 + Math.floor((wave - LATE.from) / LATE.clusterEvery)
+  );
+}
+
+export function asteroidHp(game, size) {
+  const waves = Math.max(0, game.wave - TOUGHER.from + 1);
+  return ASTEROIDS[size].hp * (1 + TOUGHER.perWave * waves);
 }
 
 export function asteroidSpeed(game, size) {
@@ -134,21 +171,37 @@ function makeAsteroid(game, size, x, y, angle) {
     vx: Math.cos(angle) * speed,
     vy: Math.sin(angle) * speed,
     radius: ASTEROIDS[size].radius * game.scale,
-    hp: ASTEROIDS[size].hp,
+    hp: asteroidHp(game, size),
     spin: (game.random() - 0.5) * 1.5,
     rotation: game.random() * Math.PI * 2,
     seed: game.random(),
   };
 }
 
-// Enter just off a random edge, aimed at Earth (give or take its radius)
-function spawnAsteroid(game, size) {
-  const { width, height, earth } = game;
-  const margin = ASTEROIDS[size].radius * game.scale + 5;
+// The next rocks in the queue enter together, just off one random edge,
+// spread a little along it and queued up behind each other. Returns how
+// many came.
+function spawnCluster(game) {
+  const count = Math.min(clusterSize(game.wave), game.spawnQueue.length);
   const along = game.random();
+  const side = Math.floor(game.random() * 4);
+  for (let i = 0; i < count; i++) {
+    const spread = (i - (count - 1) / 2) * 0.08;
+    const at = Math.min(0.95, Math.max(0.05, along + spread));
+    spawnAsteroid(game, game.spawnQueue.shift(), side, at, i);
+  }
+  return count;
+}
+
+// Enter just off an edge, aimed at Earth (give or take its radius). `behind`
+// pushes it further out, so a cluster doesn't start on top of itself.
+function spawnAsteroid(game, size, side, along, behind) {
+  const { width, height, earth } = game;
+  const radius = ASTEROIDS[size].radius * game.scale;
+  const margin = radius + 5 + behind * radius * 2.5;
   let x;
   let y;
-  switch (Math.floor(game.random() * 4)) {
+  switch (side) {
     case 0:
       [x, y] = [along * width, -margin];
       break;
@@ -327,6 +380,8 @@ function nearestAsteroid(game, x, y, range) {
   let best = null;
   let bestDistance = range;
   for (const asteroid of game.asteroids) {
+    // Their shots would only glance off armor
+    if (ASTEROIDS[asteroid.size].armored) continue;
     if (!inSight(game, x, y, asteroid)) continue;
     const distance = Math.hypot(asteroid.x - x, asteroid.y - y);
     if (distance < bestDistance) {
@@ -475,8 +530,8 @@ export function step(game, dt, input = {}) {
   if (game.spawnQueue.length) {
     game.spawnTimer -= dt;
     if (game.spawnTimer <= 0) {
-      spawnAsteroid(game, game.spawnQueue.shift());
-      game.spawnTimer = spawnInterval(game.wave);
+      // A cluster waits as long as its rocks would have one by one
+      game.spawnTimer = spawnInterval(game.wave) * spawnCluster(game);
     }
   }
 
@@ -514,6 +569,8 @@ export function step(game, dt, input = {}) {
       const reach = asteroid.radius * ASTEROID_HIT + SHOT.radius * game.scale;
       if (closestApproach(shot, asteroid.x, asteroid.y) > reach) continue;
       shot.life = 0;
+      // Only the Ship's shots crack armor; the others glance off
+      if (ASTEROIDS[asteroid.size].armored && shot.from !== 'ship') break;
       asteroid.hp -= shotDamage[shot.from](game);
       if (asteroid.hp <= 0) pieces.push(...destroyAsteroid(game, asteroid));
       break;

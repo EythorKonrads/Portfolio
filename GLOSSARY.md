@@ -22,6 +22,12 @@ A destroyed large Asteroid breaks into medium ones, and a medium one into
 small ones.
 _Avoid_: Rock, meteor, enemy
 
+**Armored Asteroid**:
+A plated Asteroid that joins from Wave 20. Only the Ship's shots can break
+it; Turret and Satellite shots glance off, so they don't aim at it. It
+breaks into medium Asteroids.
+_Avoid_: Metal rock, boss
+
 **Population**:
 How many people are alive on Earth: Earth's health. Asteroid hits reduce it,
 and the game ends when it reaches zero.

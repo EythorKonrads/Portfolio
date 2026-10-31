@@ -78,6 +78,26 @@ describe('Game drawing', () => {
     }
   });
 
+  it('draws normal and Armored Asteroids', () => {
+    const { ctx, colors, game, stars } = setup();
+    const rock = (size, x) => ({
+      size,
+      x,
+      y: 100,
+      vx: 0,
+      vy: 0,
+      radius: 30,
+      hp: 1,
+      spin: 0,
+      rotation: 0,
+      seed: 0.5,
+    });
+    game.asteroids = [rock('large', 100), rock('armored', 300)];
+    draw(ctx, game, colors, stars, 0);
+    expect(inkNear(ctx, 100, 100)).to.be.greaterThan(0);
+    expect(inkNear(ctx, 300, 100)).to.be.greaterThan(0);
+  });
+
   it('puts a shattered rock and a wrecked Ship on screen', () => {
     const { ctx, colors, game, stars } = setup();
     // Stars off, so any pixel there comes from the effects
