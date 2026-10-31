@@ -85,9 +85,8 @@ describe('Game', () => {
 
     it('launches from the header too, and returns focus there', () => {
       cy.get('[data-cy="headerPlay"]')
-        .should('have.attr', 'aria-label')
-        .and('match', /play/i);
-      cy.get('[data-cy="headerPlay"]').click();
+        .should('contain.text', 'Mini-game')
+        .click();
       cy.get('[data-cy="launch"]').should('exist');
       gameScreen().should('be.visible');
       cy.get('body').trigger('keydown', { code: 'Escape' });

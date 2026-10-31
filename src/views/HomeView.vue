@@ -6,7 +6,6 @@ import Projects from '../components/Projects.vue';
 import TagFilter from '../components/TagFilter.vue';
 import SectionNav from '../components/SectionNav.vue';
 import ThemeToggle from '../components/ThemeToggle.vue';
-import GameLaunchButton from '../components/GameLaunchButton.vue';
 import HeroAurora from '../components/HeroAurora.vue';
 import { useTheme } from '@/composables/useTheme';
 
@@ -22,7 +21,6 @@ const { theme } = useTheme();
       <header class="home__header" data-cy="homeHeader">
         <SectionNav />
         <div class="home__actions">
-          <GameLaunchButton />
           <ThemeToggle />
           <TagFilter class="home__filter" />
         </div>
