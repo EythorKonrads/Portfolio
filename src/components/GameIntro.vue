@@ -53,11 +53,6 @@ onMounted(() => startButton.value?.focus());
       </div>
     </dl>
 
-    <p class="game-intro__tip">
-      Destroyed Asteroids leave Ore. Spend it in the Shop between Waves on
-      Turrets, Satellites and a better Ship.
-    </p>
-
     <button
       ref="startButton"
       type="button"
@@ -81,13 +76,9 @@ onMounted(() => startButton.value?.focus());
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.game-intro__goal,
-.game-intro__tip {
+.game-intro__goal {
   margin: 0 0 1.25rem;
   opacity: 0.85;
-}
-.game-intro__tip {
-  font-size: 0.9em;
 }
 .game-intro__touch {
   margin-bottom: 1.25rem;

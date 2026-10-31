@@ -13,6 +13,8 @@ describe('Game panels', () => {
       .should('contain.text', 'turn')
       .and('contain.text', 'Shoot');
     cy.get('[data-cy="gameIntroTouch"]').should('not.exist');
+    // The Shop is left for players to find
+    cy.get('[data-cy="gameIntro"]').should('not.contain.text', 'Shop');
     cy.get('[data-cy="gameIntroStart"]').should('have.focus').click();
     cy.get('@start').should('have.been.calledOnce');
   });
