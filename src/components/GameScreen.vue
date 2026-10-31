@@ -144,9 +144,16 @@ function onKeyDown(event) {
   if (isFlying()) event.preventDefault();
 }
 const onKeyUp = (event) => keys.delete(event.code);
-// Nobody loses Population while looking at another tab
-const onVisibility = () =>
-  document.hidden && game.status === 'wave' && openMenu();
+// Nobody loses Population while looking at another tab or window
+function onAway() {
+  if (game.status === 'wave') openMenu();
+}
+const onVisibility = () => document.hidden && onAway();
+// Keys held when the window lost focus never get their keyup
+function onBlur() {
+  keys.clear();
+  onAway();
+}
 
 // Touch steers the Ship towards the finger; a mouse uses the keyboard
 function onPointer(event) {
@@ -200,6 +207,7 @@ onMounted(() => {
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
   document.addEventListener('visibilitychange', onVisibility);
+  window.addEventListener('blur', onBlur);
 });
 
 onBeforeUnmount(() => {
@@ -208,6 +216,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeyDown);
   window.removeEventListener('keyup', onKeyUp);
   document.removeEventListener('visibilitychange', onVisibility);
+  window.removeEventListener('blur', onBlur);
   if (window.Cypress) delete window.__game;
 });
 </script>

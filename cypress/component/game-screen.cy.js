@@ -112,6 +112,17 @@ describe('Game screen', () => {
     cy.document().then((doc) => delete doc.hidden);
   });
 
+  it('opens the Menu and lets go of held keys when the window loses focus', () => {
+    start();
+    key('keydown', 'ArrowUp');
+    cy.window().then((win) => win.dispatchEvent(new Event('blur')));
+    cy.get('[data-cy="gameMenu"]').should('be.visible');
+    cy.get('[data-cy="menuResume"]').click();
+    // ArrowUp's keyup was never seen, yet the engine isn't stuck on
+    cy.wait(100);
+    withGame((game) => expect(game.ship.thrusting).to.not.be.ok);
+  });
+
   it('flies the Ship with the keyboard', () => {
     start();
     withGame((game) => {
