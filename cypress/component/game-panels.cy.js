@@ -2,8 +2,30 @@
 import GameShop from '../../src/components/GameShop.vue';
 import GameMenu from '../../src/components/GameMenu.vue';
 import GameEnd from '../../src/components/GameEnd.vue';
+import GameIntro from '../../src/components/GameIntro.vue';
 
 describe('Game panels', () => {
+  it('shows the keys on the help screen, and starts from it', () => {
+    const onStart = cy.spy().as('start');
+    cy.mount(GameIntro, { props: { onStart } });
+    cy.get('[data-cy="gameIntro"]').should('contain.text', 'Defend Earth');
+    cy.get('[data-cy="gameIntroKeys"]')
+      .should('contain.text', 'turn')
+      .and('contain.text', 'Shoot');
+    cy.get('[data-cy="gameIntroTouch"]').should('not.exist');
+    cy.get('[data-cy="gameIntroStart"]').should('have.focus').click();
+    cy.get('@start').should('have.been.calledOnce');
+  });
+
+  it('explains touch steering instead of keys on a touch screen', () => {
+    cy.mount(GameIntro, { props: { touch: true } });
+    cy.get('[data-cy="gameIntroTouch"]').should(
+      'contain.text',
+      'Touch and hold'
+    );
+    cy.get('[data-cy="gameIntroKeys"]').should('not.exist');
+  });
+
   it('lists Shop items with prices and says why one is unavailable', () => {
     const onBuy = cy.spy().as('buy');
     const onNext = cy.spy().as('next');

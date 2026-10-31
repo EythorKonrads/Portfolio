@@ -17,6 +17,7 @@ declare module 'vue' {
     Experience: typeof import('./components/Experience.vue')['default']
     ExperienceJob: typeof import('./components/ExperienceJob.vue')['default']
     GameEnd: typeof import('./components/GameEnd.vue')['default']
+    GameIntro: typeof import('./components/GameIntro.vue')['default']
     GameMenu: typeof import('./components/GameMenu.vue')['default']
     GameScreen: typeof import('./components/GameScreen.vue')['default']
     GameShop: typeof import('./components/GameShop.vue')['default']

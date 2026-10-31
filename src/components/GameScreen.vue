@@ -16,12 +16,16 @@ import Icon from './Icon.vue';
 import GameShop from './GameShop.vue';
 import GameMenu from './GameMenu.vue';
 import GameEnd from './GameEnd.vue';
+import GameIntro from './GameIntro.vue';
 
 const emit = defineEmits(['ready', 'close']);
 
 const root = ref(null);
 const canvas = ref(null);
 const isMenuOpen = ref(false);
+// The controls are explained before the first Wave; Play again skips them
+const isIntro = ref(true);
+const isTouch = window.matchMedia('(pointer: coarse)').matches;
 // What the HTML on top shows, copied from the game once a frame
 const hud = shallowRef({});
 let game = null;
@@ -109,18 +113,25 @@ function fitCanvas() {
   needsDraw = true;
 }
 
-const isFlying = () => game.status === 'wave' && !isMenuOpen.value;
+const isFlying = () =>
+  game.status === 'wave' && !isMenuOpen.value && !isIntro.value;
 
-// During a Wave and in the Shop; not on the end screen
-const canOpenMenu = () => game.status === 'wave' || game.status === 'shop';
+// During a Wave and in the Shop; not on the help or end screen
+const canOpenMenu = () =>
+  !isIntro.value && (game.status === 'wave' || game.status === 'shop');
 
 function openMenu() {
   if (canOpenMenu()) isMenuOpen.value = true;
 }
 
+function startGame() {
+  isIntro.value = false;
+  root.value.focus();
+}
+
 function onKeyDown(event) {
   if (event.code === 'Escape') {
-    if (game.status === 'over') emit('close');
+    if (game.status === 'over' || isIntro.value) emit('close');
     else if (isMenuOpen.value) isMenuOpen.value = false;
     else openMenu();
     return;
@@ -171,7 +182,8 @@ onMounted(() => {
   colors = readColors(root.value);
   fitCanvas();
   newGame();
-  root.value.focus();
+  // The help screen focuses its Start button itself
+  if (!isIntro.value) root.value.focus();
   draw(ctx, game, colors, stars, 0);
   emit('ready');
   frame = requestAnimationFrame((time) => {
@@ -233,7 +245,7 @@ onBeforeUnmount(() => {
     </div>
 
     <button
-      v-if="hud.status === 'wave' || hud.status === 'shop'"
+      v-if="(hud.status === 'wave' || hud.status === 'shop') && !isIntro"
       type="button"
       class="game-screen__menu-button"
       aria-label="Menu"
@@ -246,11 +258,12 @@ onBeforeUnmount(() => {
     </button>
 
     <div
-      v-if="isMenuOpen || hud.status !== 'wave'"
+      v-if="isIntro || isMenuOpen || hud.status !== 'wave'"
       class="game-screen__overlay"
     >
+      <GameIntro v-if="isIntro" :touch="isTouch" @start="startGame" />
       <GameMenu
-        v-if="isMenuOpen"
+        v-else-if="isMenuOpen"
         @resume="isMenuOpen = false"
         @end="emit('close')"
       />

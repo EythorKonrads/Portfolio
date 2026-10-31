@@ -8,9 +8,12 @@ const gameScreen = () => cy.get('[data-cy="gameScreen"]');
 // The running game, which GameScreen exposes only under Cypress
 const withGame = (fn) => cy.window().its('__game').then(fn);
 
+// Launch, then get past the help screen
 const launch = () => {
   miniEarth().click();
   gameScreen().should('be.visible');
+  cy.get('[data-cy="gameIntroStart"]').click();
+  cy.get('[data-cy="gameIntro"]').should('not.exist');
   cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 1');
 };
 
@@ -78,6 +81,36 @@ describe('Game', () => {
         expect(game.earth.x).to.equal(1280 / 2);
         expect(game.earth.y).to.equal(800 / 2);
       });
+    });
+
+    it('explains the controls before the first Wave', () => {
+      miniEarth().click();
+      cy.get('[data-cy="gameIntro"]')
+        .should('be.visible')
+        .and('contain.text', 'Defend Earth');
+      cy.get('[data-cy="gameIntroKeys"] kbd')
+        .should('contain.text', '←')
+        .and('contain.text', '→')
+        .and('contain.text', '↑')
+        .and('contain.text', 'Space');
+      cy.get('[data-cy="gameMenuButton"]').should('not.exist');
+      // Nothing moves until Start
+      withGame((game) => {
+        cy.wait(300).then(() => expect(game.time).to.equal(0));
+      });
+      cy.get('[data-cy="gameIntroStart"]').should('have.focus').click();
+      cy.get('[data-cy="gameMenuButton"]').should('be.visible');
+      withGame((game) => {
+        cy.wrap(null).should(() => expect(game.time).to.be.greaterThan(0));
+      });
+    });
+
+    it('closes from the help screen with Esc', () => {
+      miniEarth().click();
+      cy.get('[data-cy="gameIntro"]').should('be.visible');
+      cy.get('body').trigger('keydown', { code: 'Escape' });
+      gameScreen().should('not.exist');
+      miniEarth().should('have.focus');
     });
 
     it('pauses in the Menu, from the button or Esc', () => {
@@ -169,6 +202,7 @@ describe('Game', () => {
       );
       cy.get('[data-cy="gameEndAgain"]').click();
       cy.get('[data-cy="gameEnd"]').should('not.exist');
+      cy.get('[data-cy="gameIntro"]').should('not.exist');
       cy.get('[data-cy="hudPopulation"]').should('contain.text', '8.0 billion');
       cy.get('[data-cy="hudWave"]').should('contain.text', 'Wave 1');
     });
@@ -179,6 +213,7 @@ describe('Game', () => {
     cy.visitHome();
     miniEarth().should('be.visible').click();
     gameScreen().should('be.visible');
+    cy.get('[data-cy="gameIntroStart"]').click();
     cy.get('[data-cy="gameMenuButton"]').should('be.visible');
     withGame((game) => {
       expect(game.earth.x).to.equal(375 / 2);
