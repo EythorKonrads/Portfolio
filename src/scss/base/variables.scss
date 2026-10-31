@@ -6,6 +6,11 @@
   /* Height of the sticky section nav / filter row on the home page */
   --header-height: 4rem;
 
+  /* The site's font, shared with the game, which sits outside .app */
+  --font-body:
+    Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+
   /* The game is always set in dark space, whatever the theme */
   --color-game-space: #050816;
   --color-game-star: #e2e8f0;

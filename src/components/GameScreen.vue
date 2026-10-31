@@ -230,7 +230,9 @@ onBeforeUnmount(() => {
   overflow: hidden;
   background-color: var(--color-game-space);
   color: var(--color-game-text);
+  font-family: var(--font-body);
   font-size: 15px;
+  line-height: 1.6;
   outline: none;
   /* The Ship is steered by touch; don't let the browser pan or zoom */
   touch-action: none;
