@@ -9,7 +9,11 @@ defineProps({
 });
 defineEmits(['buy', 'next']);
 
-const REASONS = { max: 'Maxed out', needs: 'Needs a Turret' };
+// Why an item can't be bought; upgrades name what they need first
+const reason = (item) =>
+  item.blocked === 'needs'
+    ? `Needs a ${SHOP_ITEMS[SHOP_ITEMS[item.id].needs].label}`
+    : 'Maxed out';
 </script>
 
 <template>
@@ -36,7 +40,7 @@ const REASONS = { max: 'Maxed out', needs: 'Needs a Turret' };
           data-cy="shopBuy"
           @click="$emit('buy', item.id)"
         >
-          {{ REASONS[item.blocked] ?? `${item.price} Ore` }}
+          {{ item.blocked ? reason(item) : `${item.price} Ore` }}
         </button>
       </li>
     </ul>

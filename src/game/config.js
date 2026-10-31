@@ -4,9 +4,10 @@ export const POPULATION_START = 8; // billions
 
 // Per Asteroid size. Radius is at a scale of 1 (see worldScale).
 export const ASTEROIDS = {
+  // A big rock also pays out through its pieces, so its own Ore is small
   small: { radius: 10, hp: 1, speed: 70, damage: 0.3, ore: 3, score: 10 },
-  medium: { radius: 20, hp: 3, speed: 55, damage: 1, ore: 8, score: 30 },
-  large: { radius: 34, hp: 6, speed: 42, damage: 2.5, ore: 20, score: 80 },
+  medium: { radius: 20, hp: 3, speed: 55, damage: 1, ore: 4, score: 30 },
+  large: { radius: 34, hp: 6, speed: 42, damage: 2.5, ore: 6, score: 80 },
 };
 // How far past its radius a shot still hits an Asteroid
 export const ASTEROID_HIT = 1.25;
@@ -20,7 +21,7 @@ export const SPAWN_INTERVAL = { first: 1.4, min: 0.45, perWave: 0.1 };
 
 export const SHIP = {
   radius: 10,
-  turnSpeed: 3.6, // radians per second
+  turnSpeed: 2.4, // radians per second
   thrust: 420,
   maxSpeed: 360,
   drag: 0.9, // share of speed lost per second
@@ -46,15 +47,32 @@ export const PER_LEVEL = {
   turretDamage: 0.5, // +0.5 damage a level
   shipRate: 0.35,
   shipEngine: 0.25, // thrust and top speed
+  shipWeapon: 0.5, // +0.5 damage a level, and a bigger shot
+  satelliteRate: 0.4,
+  satelliteDamage: 0.5,
 };
 
 // The Shop. `max` caps units bought or levels reached.
 export const SHOP_ITEMS = {
   turret: { label: 'Turret', price: 30, max: 4 },
-  turretRate: { label: 'Turret fire rate', price: 20, max: 3, needs: 'turret' },
-  turretDamage: { label: 'Turret damage', price: 20, max: 3, needs: 'turret' },
-  satellite: { label: 'Satellite', price: 25, max: 6 },
-  shipRate: { label: 'Ship fire rate', price: 15, max: 3 },
-  shipEngine: { label: 'Ship engine', price: 15, max: 3 },
+  turretRate: { label: 'Turret fire rate', price: 25, max: 3, needs: 'turret' },
+  turretDamage: { label: 'Turret damage', price: 25, max: 3, needs: 'turret' },
+  // Satellites cover all of Earth, not one side, so they cost more
+  satellite: { label: 'Satellite', price: 45, max: 6 },
+  satelliteRate: {
+    label: 'Satellite fire rate',
+    price: 35,
+    max: 3,
+    needs: 'satellite',
+  },
+  satelliteDamage: {
+    label: 'Satellite damage',
+    price: 35,
+    max: 3,
+    needs: 'satellite',
+  },
+  shipRate: { label: 'Ship fire rate', price: 20, max: 3 },
+  shipWeapon: { label: 'Ship weapon', price: 30, max: 3 },
+  shipEngine: { label: 'Ship engine', price: 20, max: 3 },
 };
-export const PRICE_GROWTH = 1.6;
+export const PRICE_GROWTH = 1.8;

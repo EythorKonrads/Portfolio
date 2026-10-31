@@ -159,12 +159,14 @@ function spawnAsteroid(game, size) {
 // Levels from the Shop
 const level = (game, id) => game.owned[id];
 export const shotDamage = {
-  ship: () => 1,
+  ship: (game) => 1 + PER_LEVEL.shipWeapon * level(game, 'shipWeapon'),
   turret: (game) => 1 + PER_LEVEL.turretDamage * level(game, 'turretDamage'),
-  satellite: () => 1,
+  satellite: (game) =>
+    1 + PER_LEVEL.satelliteDamage * level(game, 'satelliteDamage'),
 };
 
-function fire(game, from, x, y, angle, speed) {
+// size only changes how big the shot is drawn
+function fire(game, from, x, y, angle, speed, size = 1) {
   game.shots.push({
     from,
     x,
@@ -172,6 +174,7 @@ function fire(game, from, x, y, angle, speed) {
     vx: Math.cos(angle) * speed,
     vy: Math.sin(angle) * speed,
     life: SHOT.life,
+    size,
   });
 }
 
@@ -241,7 +244,9 @@ function stepShip(game, dt, input) {
       ship.x + Math.cos(ship.angle) * nose,
       ship.y + Math.sin(ship.angle) * nose,
       ship.angle,
-      SHOT.speed * game.scale
+      SHOT.speed * game.scale,
+      // A stronger weapon shows as a bigger ball
+      1 + 0.3 * level(game, 'shipWeapon')
     );
   }
 }
@@ -355,15 +360,21 @@ export function satellitePositions(game) {
 }
 
 function stepDefences(game, dt) {
-  const rate = 1 + PER_LEVEL.turretRate * level(game, 'turretRate');
+  const rate = (id) => 1 + PER_LEVEL[id] * level(game, id);
   const groups = [
-    [turretPositions(game), game.turretCooldowns, 'turret', TURRET, rate],
+    [
+      turretPositions(game),
+      game.turretCooldowns,
+      'turret',
+      TURRET,
+      rate('turretRate'),
+    ],
     [
       satellitePositions(game),
       game.satelliteCooldowns,
       'satellite',
       SATELLITE,
-      1,
+      rate('satelliteRate'),
     ],
   ];
   for (const [positions, cooldowns, from, spec, speedup] of groups) {

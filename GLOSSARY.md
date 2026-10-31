@@ -86,7 +86,8 @@ be upgraded.
 _Avoid_: Tower, cannon
 
 **Satellite**:
-An armed craft orbiting Earth. Each one bought joins the Constellation.
+An armed craft orbiting Earth. Each one bought joins the Constellation. Its
+fire rate and damage can be upgraded.
 _Avoid_: Drone, moon
 
 **Constellation**:
