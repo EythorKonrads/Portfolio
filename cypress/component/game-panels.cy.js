@@ -126,6 +126,25 @@ describe('Game panels', () => {
     cy.get('@end').should('have.been.calledOnce');
   });
 
+  it("links to a new GitHub issue for bugs, with the game's state", () => {
+    cy.mount(GameMenu, { props: { wave: 7, score: 1234 } });
+    cy.get('[data-cy="menuBugReport"]')
+      .should('have.attr', 'target', '_blank')
+      .and('have.attr', 'rel', 'noopener noreferrer')
+      .and('have.attr', 'aria-label')
+      .and('match', /new tab/);
+    cy.get('[data-cy="menuBugReport"]')
+      .invoke('attr', 'href')
+      .then((href) => {
+        const url = new URL(href);
+        expect(url.origin + url.pathname).to.equal(
+          'https://github.com/EythorKonrads/Portfolio/issues/new'
+        );
+        expect(url.searchParams.get('title')).to.equal('Game bug: ');
+        expect(url.searchParams.get('body')).to.contain('Wave 7, Score 1234');
+      });
+  });
+
   context("the Menu's Scoreboard", () => {
     it('shows the top 10, and goes back', () => {
       const board = [

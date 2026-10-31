@@ -307,6 +307,8 @@ onBeforeUnmount(() => {
       />
       <GameMenu
         v-else-if="isMenuOpen"
+        :wave="hud.wave"
+        :score="hud.score"
         @resume="isMenuOpen = false"
         @scoreboard="isScoreboardOpen = true"
         @end="emit('close')"
