@@ -4,6 +4,7 @@
 // Cypress. Launching it from the page is in cypress/e2e/game.cy.js.
 import GameScreen from '../../src/components/GameScreen.vue';
 import { SHIP } from '../../src/game/config';
+import { clusterSize } from '../../src/game/game';
 
 const withGame = (fn) => cy.window().its('__game').then(fn);
 const key = (type, code) => cy.document().trigger(type, { code });
@@ -192,5 +193,71 @@ describe('Game screen', () => {
     cy.get('[data-cy="gameIntro"]').should('not.exist');
     cy.get('[data-cy="hudPopulation"]').should('contain.text', '8.0 billion');
     cy.get('[data-cy="waveTitle"]').should('contain.text', 'Wave 1');
+  });
+  context('dev shortcuts in the URL', () => {
+    // GameScreen reads them when a game starts; put the URL back afterwards
+    let original;
+    beforeEach(() => {
+      original = window.location.href;
+    });
+    afterEach(() => {
+      window.history.replaceState(null, '', original);
+    });
+
+    it('starts on a late Wave, which plays with clusters and armor', () => {
+      window.history.replaceState(null, '', '?wave=20&ore=500');
+      mount();
+      cy.get('[data-cy="gameIntroStart"]').click();
+      cy.get('[data-cy="waveTitle"]').should('contain.text', 'Wave 20');
+      cy.get('[data-cy="hudOre"]').should('contain.text', '500');
+      withGame((game) => {
+        expect(game.spawnQueue).to.include('armored');
+        // The first cluster arrives together and is drawn; any error
+        // drawing it would fail the test
+        cy.wrap(game, { timeout: 6000 })
+          .its('asteroids')
+          .should('have.length.at.least', clusterSize(20));
+      });
+    });
+  });
+
+  it('sends the time played with a saved Score', () => {
+    cy.intercept('GET', '/api/scores', { board: [] });
+    cy.intercept('POST', '/api/scores', { board: [], rank: 1 }).as('save');
+    start();
+    cy.wait(500);
+    withGame((game) => {
+      game.score = 30;
+      game.population = 0;
+    });
+    cy.get('[data-cy="scoreInitials"]', { timeout: 6000 }).type('EK');
+    cy.get('[data-cy="scoreSave"]').click();
+    withGame((game) => {
+      cy.wait('@save').its('request.body').should('deep.equal', {
+        initials: 'EK',
+        score: 30,
+        wave: 1,
+        time: game.time,
+      });
+      expect(game.time).to.be.greaterThan(0);
+    });
+  });
+
+  it('unlocks upgrades in the Shop as they are bought, up to Max', () => {
+    start();
+    withGame((game) => {
+      game.spawnQueue = [];
+      game.asteroids = [];
+      game.ore = 1000;
+    });
+    const buyButton = (id) =>
+      cy.get(`[data-cy="shopItem-${id}"] [data-cy="shopBuy"]`);
+    buyButton('turretRate').should('be.disabled');
+    cy.get('[data-cy="shopItem-turret"]').click();
+    buyButton('turretRate').should('be.enabled');
+    for (let i = 0; i < 3; i++)
+      cy.get('[data-cy="shopItem-turretRate"]').click();
+    cy.get('[data-cy="shopItem-turretRate"]').should('contain.text', '3/3');
+    buyButton('turretRate').should('be.disabled').and('contain.text', 'Max');
   });
 });
