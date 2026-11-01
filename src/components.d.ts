@@ -23,6 +23,7 @@ declare module 'vue' {
     GameScoreboard: typeof import('./components/GameScoreboard.vue')['default']
     GameScreen: typeof import('./components/GameScreen.vue')['default']
     GameShop: typeof import('./components/GameShop.vue')['default']
+    GameTouchControls: typeof import('./components/GameTouchControls.vue')['default']
     Hero: typeof import('./components/Hero.vue')['default']
     HeroAurora: typeof import('./components/HeroAurora.vue')['default']
     Icon: typeof import('./components/Icon.vue')['default']

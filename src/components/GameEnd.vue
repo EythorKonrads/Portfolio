@@ -288,4 +288,42 @@ async function save() {
   opacity: 0.75;
   cursor: pointer;
 }
+/* Phones held sideways: two columns, the Score and buttons on the left and
+   the Scoreboard on the right, so nothing needs scrolling */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-end {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'title board'
+      'stats board'
+      'actions board'
+      'close board';
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 1rem;
+    width: min(100%, 44rem);
+  }
+  .game-end__title {
+    grid-area: title;
+  }
+  .game-end__stats {
+    grid-area: stats;
+    margin-bottom: 0.75rem;
+  }
+  .game-end__stat {
+    padding: 0.4rem;
+  }
+  .game-end__board {
+    grid-area: board;
+    margin: 0;
+  }
+  .game-end__actions {
+    grid-area: actions;
+  }
+  .game-end__close {
+    grid-area: close;
+    align-self: start;
+    margin-top: 0.5rem;
+  }
+}
 </style>

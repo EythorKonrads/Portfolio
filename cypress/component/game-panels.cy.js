@@ -20,12 +20,11 @@ describe('Game panels', () => {
     cy.get('@start').should('have.been.calledOnce');
   });
 
-  it('explains touch steering instead of keys on a touch screen', () => {
+  it('explains the joystick and Fire button instead of keys on touch', () => {
     cy.mount(GameIntro, { props: { touch: true } });
-    cy.get('[data-cy="gameIntroTouch"]').should(
-      'contain.text',
-      'Touch and hold'
-    );
+    cy.get('[data-cy="gameIntroTouch"]')
+      .should('contain.text', 'Joystick')
+      .and('contain.text', 'Fire');
     cy.get('[data-cy="gameIntroKeys"]').should('not.exist');
   });
 
@@ -80,12 +79,13 @@ describe('Game panels', () => {
     cy.get('@next').should('have.been.calledOnce');
   });
 
-  it('shows what a card is on the first tap, and buys on the next', () => {
+  it('names each card and buys on one tap on a touch screen', () => {
     const onBuy = cy.spy().as('buy');
     cy.mount(GameShop, {
       props: {
         ore: 100,
         wave: 1,
+        touch: true,
         items: [
           { id: 'turret', owned: 0, price: 30, blocked: null },
           { id: 'turretRate', owned: 0, price: 25, blocked: 'needs' },
@@ -93,24 +93,20 @@ describe('Game panels', () => {
         onBuy,
       },
     });
-    // trigger('click') rather than click(), which would add a mouse pointerdown
-    const tap = (id) =>
-      cy
-        .get(`[data-cy="shopItem-${id}"]`)
-        .trigger('pointerdown', { pointerType: 'touch' })
-        .trigger('click');
-    tap('turret');
-    cy.get('[data-cy="shopInfo"]').should('contain.text', 'Turret');
-    cy.get('@buy').should('not.have.been.called');
-    tap('turret');
+    cy.get('[data-cy="shopItem-turret"] [data-cy="shopName"]').should(
+      'contain.text',
+      'Turret'
+    );
+    // Locked upgrades still don't say what they are
+    cy.get('[data-cy="shopItem-turretRate"] [data-cy="shopName"]').should(
+      'contain.text',
+      'Locked'
+    );
+    cy.get('[data-cy="shopItem-turret"]').click();
     cy.get('@buy').should('have.been.calledOnceWith', 'turret');
-    tap('turret');
-    cy.get('@buy').should('have.been.calledTwice');
-    // A locked card only ever explains itself
-    tap('turretRate');
-    cy.get('[data-cy="shopInfo"]').should('contain.text', 'Buy a Turret first');
-    tap('turretRate');
-    cy.get('@buy').should('have.been.calledTwice');
+    // No tooltips on touch
+    cy.get('[data-cy="shopItem-turret"]').trigger('mouseenter');
+    cy.get('[data-cy="shopInfo"]').should('not.exist');
   });
 
   it('offers Resume, the Scoreboard and End game in the Menu', () => {

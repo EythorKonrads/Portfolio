@@ -14,6 +14,8 @@ export default [
       'public/**',
       'cypress/videos/**',
       'cypress/screenshots/**',
+      // Written by netlify dev: bundled functions and local data
+      '.netlify/**',
     ],
   },
   js.configs.recommended,
