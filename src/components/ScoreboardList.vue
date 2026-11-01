@@ -56,4 +56,12 @@ defineProps({
   text-align: center;
   opacity: 0.75;
 }
+/* Phones held sideways: tighter rows, so all ten fit */
+@media (orientation: landscape) and (max-height: 500px) {
+  .scoreboard-list__row {
+    padding: 0 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1.25;
+  }
+}
 </style>

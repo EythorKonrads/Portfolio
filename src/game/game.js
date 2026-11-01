@@ -244,8 +244,11 @@ function fire(game, from, x, y, angle, speed, size = 1) {
   });
 }
 
-// input: { turn: -1..1, thrust: bool, fire: bool, target: {x, y} | null }
-// A target (touch) steers the Ship towards it, thrusting, and fires.
+// How far a joystick must be pushed (0 to 1) before the engine fires
+const JOYSTICK_DEAD_ZONE = 0.15;
+
+// input: { turn: -1..1, thrust: bool, fire: bool } from the keyboard, or
+// { heading: radians, push: 0..1, fire: bool } from the touch joystick
 function stepShip(game, dt, input) {
   const { ship } = game;
   if (!ship.alive) {
@@ -264,26 +267,28 @@ function stepShip(game, dt, input) {
   const pressed = !!input.fire && !game.fireHeld;
   game.fireHeld = !!input.fire;
   if (pressed) ship.queuedShot = true;
-  let firing = !!input.fire || ship.queuedShot;
-  if (input.target) {
-    const dx = input.target.x - ship.x;
-    const dy = input.target.y - ship.y;
-    const wanted = Math.atan2(dy, dx);
+  const firing = !!input.fire || ship.queuedShot;
+  // How hard the engine pushes: full on the keyboard, while a joystick
+  // pushes harder the further it's tilted
+  let power = 1;
+  // A joystick points where to fly: the Ship turns to face that way, and
+  // thrusts once the stick is pushed past a small dead zone
+  if (input.heading !== undefined) {
     const diff = Math.atan2(
-      Math.sin(wanted - ship.angle),
-      Math.cos(wanted - ship.angle)
+      Math.sin(input.heading - ship.angle),
+      Math.cos(input.heading - ship.angle)
     );
     turn = Math.max(-1, Math.min(1, diff * 4));
-    // Ease off once there, rather than circling the finger
-    thrust = Math.hypot(dx, dy) > 30 * game.scale;
-    firing = true;
+    power = input.push ?? 0;
+    thrust = power > JOYSTICK_DEAD_ZONE;
   }
 
   ship.angle += turn * SHIP.turnSpeed * dt;
   ship.thrusting = thrust;
   if (thrust) {
-    ship.vx += Math.cos(ship.angle) * SHIP.thrust * engine * game.scale * dt;
-    ship.vy += Math.sin(ship.angle) * SHIP.thrust * engine * game.scale * dt;
+    const force = SHIP.thrust * engine * power * game.scale * dt;
+    ship.vx += Math.cos(ship.angle) * force;
+    ship.vy += Math.sin(ship.angle) * force;
   }
   const drag = Math.max(0, 1 - SHIP.drag * dt);
   ship.vx *= drag;

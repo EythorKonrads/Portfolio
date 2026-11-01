@@ -28,7 +28,13 @@ import GameMenu from './GameMenu.vue';
 import GameScoreboard from './GameScoreboard.vue';
 import GameEnd from './GameEnd.vue';
 import GameIntro from './GameIntro.vue';
+import GameTouchControls from './GameTouchControls.vue';
 
+const props = defineProps({
+  // Touch-screen controls and layout. Left out, it follows the device;
+  // tests set it to try both.
+  touch: { type: Boolean, default: undefined },
+});
 const emit = defineEmits(['ready', 'close']);
 
 const root = ref(null);
@@ -39,7 +45,12 @@ const isScoreboardOpen = ref(false);
 watch(isMenuOpen, () => (isScoreboardOpen.value = false));
 // The controls are explained before the first Wave; Play again skips them
 const isIntro = ref(true);
-const isTouch = window.matchMedia('(pointer: coarse)').matches;
+const isTouch = props.touch ?? window.matchMedia('(pointer: coarse)').matches;
+// Phones play sideways: held upright, the game waits behind a prompt
+const portraitQuery = window.matchMedia('(orientation: portrait)');
+const isPortrait = ref(portraitQuery.matches);
+const onOrientation = () => (isPortrait.value = portraitQuery.matches);
+const needsTurning = computed(() => isTouch && isPortrait.value);
 // What the HTML on top shows, copied from the game once a frame
 const hud = shallowRef({});
 let game = null;
@@ -53,7 +64,8 @@ let lastTime = 0;
 let elapsed = 0;
 
 const keys = new Set();
-let touchTarget = null;
+// From the on-screen joystick and shoot button
+const touchInput = { stick: null, fire: false };
 
 function newGame() {
   game = createGame({
@@ -92,12 +104,13 @@ const shopItems = computed(() => {
 
 function input() {
   const has = (...codes) => codes.some((code) => keys.has(code));
+  const fire = has('Space') || touchInput.fire;
+  if (touchInput.stick) return { ...touchInput.stick, fire };
   return {
     turn:
       (has('ArrowRight', 'KeyD') ? 1 : 0) - (has('ArrowLeft', 'KeyA') ? 1 : 0),
     thrust: has('ArrowUp', 'KeyW'),
-    fire: has('Space'),
-    target: touchTarget,
+    fire,
   };
 }
 
@@ -131,7 +144,10 @@ function fitCanvas() {
 }
 
 const isFlying = () =>
-  game.status === 'wave' && !isMenuOpen.value && !isIntro.value;
+  game.status === 'wave' &&
+  !isMenuOpen.value &&
+  !isIntro.value &&
+  !needsTurning.value;
 
 // During a Wave and in the Shop; not on the help or end screen
 const canOpenMenu = () =>
@@ -144,6 +160,60 @@ function openMenu() {
 function startGame() {
   isIntro.value = false;
   root.value.focus();
+  if (isTouch) goLandscape();
+}
+
+// Android can hide the browser's bars and lock the screen sideways once a
+// button is tapped. iPhones can't, so there it quietly does nothing.
+const canGoFullscreen = !!(
+  document.fullscreenEnabled && window.screen?.orientation?.lock
+);
+async function goLandscape() {
+  try {
+    if (!document.fullscreenElement) {
+      await root.value.requestFullscreen({ navigationUI: 'hide' });
+    }
+    await window.screen.orientation.lock('landscape');
+  } catch {
+    // Not allowed here; the turn-your-phone prompt covers it
+  }
+}
+
+// No zooming while the game is open: a pinch would leave the play field
+// zoomed in. The page itself keeps zoom (see ADR 0002).
+let viewportMeta = null;
+let viewportBefore = null;
+const stopPinch = (event) => event.preventDefault();
+const stopTwoFingerZoom = (event) => {
+  if (
+    event.touches.length > 1 &&
+    !event.target.closest?.('[data-cy="touchControls"]')
+  ) {
+    event.preventDefault();
+  }
+};
+function lockZoom(locked) {
+  if (locked) {
+    viewportMeta = document.querySelector('meta[name="viewport"]');
+    viewportBefore = viewportMeta?.getAttribute('content') ?? null;
+    if (!viewportMeta) {
+      viewportMeta = document.createElement('meta');
+      viewportMeta.name = 'viewport';
+      document.head.append(viewportMeta);
+    }
+    viewportMeta.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'
+    );
+  } else if (viewportBefore === null) {
+    viewportMeta?.remove();
+  } else {
+    viewportMeta.setAttribute('content', viewportBefore);
+  }
+  // iOS Safari ignores user-scalable, but lets a pinch be cancelled
+  const toggle = locked ? 'addEventListener' : 'removeEventListener';
+  document[toggle]('gesturestart', stopPinch);
+  document[toggle]('touchmove', stopTwoFingerZoom, { passive: false });
 }
 
 function onKeyDown(event) {
@@ -168,15 +238,6 @@ const onVisibility = () => document.hidden && onAway();
 function onBlur() {
   keys.clear();
   onAway();
-}
-
-// Touch steers the Ship towards the finger; a mouse uses the keyboard
-function onPointer(event) {
-  if (event.pointerType !== 'touch') return;
-  touchTarget =
-    event.type === 'pointerup' || event.type === 'pointercancel'
-      ? null
-      : { x: event.clientX, y: event.clientY };
 }
 
 function onBuy(id) {
@@ -223,6 +284,8 @@ onMounted(() => {
   window.addEventListener('keyup', onKeyUp);
   document.addEventListener('visibilitychange', onVisibility);
   window.addEventListener('blur', onBlur);
+  portraitQuery.addEventListener('change', onOrientation);
+  lockZoom(true);
 });
 
 onBeforeUnmount(() => {
@@ -232,20 +295,22 @@ onBeforeUnmount(() => {
   window.removeEventListener('keyup', onKeyUp);
   document.removeEventListener('visibilitychange', onVisibility);
   window.removeEventListener('blur', onBlur);
+  portraitQuery.removeEventListener('change', onOrientation);
+  lockZoom(false);
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   if (window.Cypress) delete window.__game;
 });
 </script>
 
 <template>
   <div ref="root" class="game-screen" tabindex="-1" data-cy="gameScreen">
-    <canvas
-      ref="canvas"
-      class="game-screen__canvas"
-      @pointerdown="onPointer"
-      @pointermove="onPointer"
-      @pointerup="onPointer"
-      @pointercancel="onPointer"
-    ></canvas>
+    <canvas ref="canvas" class="game-screen__canvas"></canvas>
+
+    <GameTouchControls
+      v-if="isTouch && hud.status === 'wave' && !isIntro && !isMenuOpen"
+      @stick="touchInput.stick = $event"
+      @fire="touchInput.fire = $event"
+    />
 
     <!-- Keyed by Wave, so each new Wave plays the animation again -->
     <div
@@ -315,6 +380,7 @@ onBeforeUnmount(() => {
       />
       <GameShop
         v-else-if="hud.status === 'shop'"
+        :touch="isTouch"
         :ore="hud.ore"
         :wave="hud.wave"
         :items="shopItems"
@@ -329,6 +395,34 @@ onBeforeUnmount(() => {
         @again="newGame"
         @close="emit('close')"
       />
+    </div>
+
+    <!-- Phones play sideways; held upright, the game waits here -->
+    <div
+      v-if="needsTurning"
+      class="game-screen__turn"
+      role="alert"
+      data-cy="turnPhone"
+    >
+      <Icon name="game-rotate" :icon="false" class="game-screen__turn-icon" />
+      <p class="game-screen__turn-text">Turn your phone sideways to play</p>
+      <button
+        v-if="canGoFullscreen"
+        type="button"
+        class="game-button"
+        data-cy="turnFullscreen"
+        @click="goLandscape"
+      >
+        Play fullscreen
+      </button>
+      <button
+        type="button"
+        class="game-screen__turn-back"
+        data-cy="turnBack"
+        @click="emit('close')"
+      >
+        Back to the page
+      </button>
     </div>
   </div>
 </template>
@@ -500,12 +594,96 @@ onBeforeUnmount(() => {
     background: var(--color-game-text);
   }
 }
+/* Above everything, the HUD and the Menu button included */
+.game-screen__turn {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--color-game-space);
+  text-align: center;
+}
+.game-screen__turn-icon {
+  width: 4rem;
+  height: 4rem;
+  color: var(--color-game-button);
+  animation: game-screen-turn 2s ease-in-out infinite;
+}
+@keyframes game-screen-turn {
+  0%,
+  30% {
+    transform: rotate(0);
+  }
+  60%,
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+.game-screen__turn-text {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.game-screen__turn-back {
+  padding: 0.25rem;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  opacity: 0.75;
+}
 .game-screen__overlay {
   position: absolute;
   inset: 0;
   display: grid;
+  /* A fixed-size cell, so a panel's max-height: 100% keeps it on screen
+     (an auto-sized cell would just grow to fit the panel) */
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
   padding: 1rem;
+}
+/* Phones held sideways: a smaller HUD and Menu button, tucked into the
+   corners, and panels with less space around them */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-screen__hud {
+    top: max(0.4rem, env(safe-area-inset-top));
+    left: max(0.5rem, env(safe-area-inset-left));
+    gap: 0.4rem 0.75rem;
+  }
+  .game-screen__population {
+    width: min(11rem, 30vw);
+    height: 1.4rem;
+  }
+  .game-screen__population-text {
+    padding: 0 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.4rem;
+  }
+  .game-screen__ore {
+    font-size: 0.9rem;
+    line-height: 1.4rem;
+  }
+  .game-screen__ore-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .game-screen__menu-button {
+    top: max(0.4rem, env(safe-area-inset-top));
+    right: max(0.5rem, env(safe-area-inset-right));
+    gap: 4px;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0 0.55rem;
+  }
+  .game-screen__overlay {
+    padding: 0.25rem max(0.5rem, env(safe-area-inset-right)) 0.25rem
+      max(0.5rem, env(safe-area-inset-left));
+  }
 }
 </style>
 
@@ -515,6 +693,8 @@ onBeforeUnmount(() => {
   width: min(100%, 24rem);
   max-height: 100%;
   overflow: auto;
+  /* Scrolls if it must, but never pinch-zooms (that zoomed the whole game) */
+  touch-action: pan-x pan-y;
   box-sizing: border-box;
   padding: 1.5rem;
   border: 1px solid var(--color-game-panel-border);
@@ -588,5 +768,14 @@ onBeforeUnmount(() => {
 }
 .game-hint:hover .game-hint__tip {
   display: block;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-panel {
+    padding: 0.6rem 1rem;
+  }
+  .game-panel__title {
+    margin-bottom: 0.4rem;
+    font-size: 1.1rem;
+  }
 }
 </style>
