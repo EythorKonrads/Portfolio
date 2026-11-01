@@ -91,12 +91,13 @@ describe('Project popup', () => {
 
   it('asks to play from its Play button', () => {
     const onPlay = cy.spy().as('play');
+    // Opened after mounting, as on the page: mounted open, it never slides in
     cy.mount(ProjectsItemPopup, {
-      props: { project: { ...project, playable: true }, isOpen: true, onPlay },
-    });
+      props: { project: { ...project, playable: true }, onPlay },
+    }).then(({ wrapper }) => wrapper.setProps({ isOpen: true }));
     cy.get('[data-cy="popupPlay"]')
       .should('be.visible')
-      .and('have.text', 'Play the game')
+      .and(($button) => expect($button.text().trim()).to.equal('Play the game'))
       .click();
     cy.get('@play').should('have.been.calledOnce');
   });
