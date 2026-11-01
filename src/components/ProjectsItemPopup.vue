@@ -1,12 +1,14 @@
 <script>
 import BasePopup from './BasePopup.vue';
 import Icon from './Icon.vue';
+import ProjectsGallery from './ProjectsGallery.vue';
 
 export default {
   name: 'ProjectsItemPopup',
   components: {
     BasePopup,
     Icon,
+    ProjectsGallery,
   },
   props: {
     project: {
@@ -18,7 +20,7 @@ export default {
       default: false,
     },
   },
-  emits: ['close'],
+  emits: ['close', 'play'],
   data() {
     return {
       hoveredTooltip: null,
@@ -37,7 +39,13 @@ export default {
 
 <template>
   <BasePopup :is-open="isOpen" :label="project.title" @close="$emit('close')">
-    <div class="project-item-popup__image">
+    <ProjectsGallery
+      v-if="project.media"
+      :media="project.media"
+      :title="project.title"
+      class="project-item-popup__gallery"
+    />
+    <div v-else class="project-item-popup__image">
       <img
         :src="project.image"
         :alt="project.title"
@@ -111,6 +119,15 @@ export default {
         </span>
       </div>
       <div class="project-item-popup__links" data-cy="popupLinks">
+        <button
+          v-if="project.playable"
+          type="button"
+          class="project-item-popup__link project-item-popup__link--play"
+          data-cy="popupPlay"
+          @click="$emit('play')"
+        >
+          Play the game
+        </button>
         <a
           v-if="project.githubUrl"
           :href="project.githubUrl"
@@ -159,6 +176,9 @@ export default {
   width: auto;
   object-fit: contain;
   object-position: center;
+}
+.project-item-popup__gallery {
+  margin-top: -37px;
 }
 .project-item-popup__content {
   max-width: 1000px;
@@ -286,6 +306,11 @@ export default {
   transition: background-color 0.3s ease;
   color: var(--color-accent);
   background-color: var(--color-accent-soft);
+}
+.project-item-popup__link--play {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
 }
 .project-item-popup__links--header .project-item-popup__link {
   padding: 0.25em;
