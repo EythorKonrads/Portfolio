@@ -22,9 +22,10 @@ onMounted(() => startButton.value?.focus());
 
     <div v-if="touch" class="game-intro__touch" data-cy="gameIntroTouch">
       <p>
-        <strong>Touch and hold</strong> to fly towards your finger. The Ship
-        fires by itself.
+        <strong>Joystick, bottom right:</strong> point where to fly. The further
+        you push, the faster you go.
       </p>
+      <p><strong>Fire, bottom left:</strong> hold to keep shooting.</p>
     </div>
     <dl v-else class="game-intro__controls" data-cy="gameIntroKeys">
       <div class="game-intro__control">
@@ -84,7 +85,7 @@ onMounted(() => startButton.value?.focus());
   margin-bottom: 1.25rem;
 
   p {
-    margin: 0;
+    margin: 0 0 0.4rem;
   }
 }
 .game-intro__controls {
@@ -146,5 +147,23 @@ onMounted(() => startButton.value?.focus());
 .game-intro__alt {
   font-size: 0.85em;
   opacity: 0.65;
+}
+/* Phones held sideways: tighter, so Start fits without scrolling */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-intro {
+    width: min(100%, 32rem);
+  }
+  .game-intro__title {
+    margin-bottom: 0.25rem;
+    font-size: 1.4rem;
+  }
+  .game-intro__goal,
+  .game-intro__touch {
+    margin-bottom: 0.75rem;
+  }
+  .game-intro__controls {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
 }
 </style>
