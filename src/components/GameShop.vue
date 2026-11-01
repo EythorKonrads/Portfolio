@@ -8,6 +8,9 @@ const props = defineProps({
   ore: { type: Number, required: true },
   wave: { type: Number, required: true },
   items: { type: Array, required: true },
+  // Touch screens have no hover for tooltips, so each card shows its name
+  // instead, and one tap buys
+  touch: { type: Boolean, default: false },
 });
 const emit = defineEmits(['buy', 'next']);
 
@@ -42,6 +45,7 @@ const TIP_WIDTH = 224;
 const tip = ref(null);
 
 function showTip(id, event) {
+  if (props.touch) return;
   const rect = event.currentTarget.getBoundingClientRect();
   const half = TIP_WIDTH / 2 + 8;
   const x = Math.min(
@@ -64,22 +68,15 @@ function showTip(id, event) {
 }
 const hideTip = () => (tip.value = null);
 
-// Touch has no hover, so the first tap on a card shows its tip and the next
-// tap on that card buys it (and keeps buying more levels). A mouse click or
-// the keyboard buys straight away.
-let pointer = null;
-const tapped = ref(null);
-const onPointerDown = (event) => (pointer = event.pointerType);
-
-function onCardClick(id, event) {
-  const isTouch = pointer === 'touch';
-  pointer = null;
-  if (isTouch && tapped.value !== id) {
-    tapped.value = id;
-    showTip(id, event);
-    return;
-  }
+function onCardClick(id) {
   if (canBuy(id)) emit('buy', id);
+}
+
+// A card's name, shown on touch screens. Locked ones still don't say what
+// they are.
+function cardName(id) {
+  if (isLocked(id)) return 'Locked';
+  return SHOP_ITEMS[id]?.label ?? ROWS.find((r) => r.head === id).label;
 }
 
 // Read from the items each time, so buying a Turret unlocks its upgrades
@@ -120,8 +117,7 @@ const tipText = computed(() => {
             'game-shop__item--buyable': canBuy(id),
           }"
           :data-cy="`shopItem-${id}`"
-          @pointerdown="onPointerDown"
-          @click="onCardClick(id, $event)"
+          @click="onCardClick(id)"
           @mouseenter="showTip(id, $event)"
           @mouseleave="hideTip"
           @focusin="showTip(id, $event)"
@@ -135,6 +131,9 @@ const tipText = computed(() => {
             :icon="false"
             class="game-shop__icon"
           />
+          <span v-if="touch" class="game-shop__name" data-cy="shopName">
+            {{ cardName(id) }}
+          </span>
           <template v-if="byId[id]">
             <span class="game-shop__owned">
               {{ byId[id].owned }}/{{ SHOP_ITEMS[id].max }}
@@ -164,7 +163,7 @@ const tipText = computed(() => {
     </ul>
     <button
       type="button"
-      class="game-button"
+      class="game-button game-shop__next"
       data-cy="shopNext"
       @click="$emit('next')"
     >
@@ -304,6 +303,72 @@ const tipText = computed(() => {
 
   strong {
     display: block;
+  }
+}
+.game-shop__name {
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+}
+/* Phones held sideways: wider and flatter, so the whole Shop and its Start
+   button fit without scrolling. Each card puts its icon beside its name
+   and level, with the buy button underneath. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-shop {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 1rem;
+    width: min(100%, 40rem);
+  }
+  .game-shop__title {
+    margin: 0;
+    text-align: left;
+  }
+  .game-shop__ore {
+    margin: 0;
+    font-size: 1rem;
+  }
+  .game-shop__ore-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .game-shop__items {
+    grid-column: 1 / -1;
+    gap: 0.3rem;
+    margin: 0.35rem 0;
+  }
+  .game-shop__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 0.4rem;
+    row-gap: 0.25rem;
+    padding: 0.3rem 0.35rem;
+  }
+  .game-shop__item .game-shop__icon,
+  .game-shop__item--head .game-shop__icon,
+  .game-shop__item--display .game-shop__icon {
+    grid-row: span 2;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .game-shop__name,
+  .game-shop__owned {
+    text-align: left;
+  }
+  .game-shop__name {
+    font-size: 0.7em;
+  }
+  .game-shop__buy {
+    grid-column: 1 / -1;
+    height: 1.4rem;
+    margin-top: 0;
+  }
+  .game-shop__next {
+    grid-column: 1 / -1;
+    padding: 0.35rem 1rem;
   }
 }
 </style>

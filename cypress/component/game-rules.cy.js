@@ -429,14 +429,30 @@ describe('Game rules', () => {
     expect(shipShots()).to.have.length(2);
   });
 
-  it('steers the Ship towards a touch, firing by itself', () => {
+  it('turns the Ship to where the joystick points and flies that way', () => {
     const game = emptyGame();
     keepWaveGoing(game);
-    const { x, y } = game.ship;
-    const target = { x: x + 200, y };
-    for (let i = 0; i < 30; i++) step(game, 0.02, { target });
+    const { x } = game.ship;
+    // The Ship starts pointing up; the stick points right
+    for (let i = 0; i < 40; i++) step(game, 0.02, { heading: 0, push: 1 });
+    expect(Math.cos(game.ship.angle)).to.be.greaterThan(0.9);
     expect(game.ship.x).to.be.greaterThan(x);
-    expect(game.shots.some((s) => s.from === 'ship')).to.be.true;
+    // No auto-fire: shooting is the shoot button's job
+    expect(game.shots).to.have.length(0);
+  });
+
+  it('thrusts harder the further the joystick is pushed, not at all near the middle', () => {
+    const speedAfter = (push) => {
+      const game = emptyGame();
+      keepWaveGoing(game);
+      for (let i = 0; i < 10; i++) {
+        step(game, 0.02, { heading: -Math.PI / 2, push });
+      }
+      return Math.hypot(game.ship.vx, game.ship.vy);
+    };
+    expect(speedAfter(0.1), 'dead zone').to.equal(0);
+    expect(speedAfter(1)).to.be.greaterThan(speedAfter(0.5));
+    expect(speedAfter(0.5)).to.be.greaterThan(0);
   });
 
   context('later Waves', () => {

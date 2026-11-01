@@ -33,7 +33,6 @@ const bugReportUrl = computed(() => {
 
 <template>
   <div class="game-menu game-panel" data-cy="gameMenu">
-    <h2 class="game-panel__title">Paused</h2>
     <div class="game-menu__actions">
       <button
         type="button"
@@ -77,5 +76,14 @@ const bugReportUrl = computed(() => {
 .game-menu__actions {
   display: grid;
   gap: 0.5rem;
+}
+/* Phones held sideways: two by two, so all four fit */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-menu {
+    width: min(100%, 30rem);
+  }
+  .game-menu__actions {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>
