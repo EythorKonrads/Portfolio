@@ -23,6 +23,7 @@ import {
   TURRET,
   WAVE_BONUS,
   WAVE_SPEEDUP,
+  WIDE_REACH,
 } from './config';
 import { earthRadius } from './earth';
 import { createRandom } from './random';
@@ -163,8 +164,8 @@ export function asteroidSpeed(game, size) {
   );
 }
 
-function makeAsteroid(game, size, x, y, angle) {
-  const speed = asteroidSpeed(game, size);
+function makeAsteroid(game, size, x, y, angle, slowdown = 1) {
+  const speed = asteroidSpeed(game, size) * slowdown;
   return {
     size,
     x,
@@ -218,8 +219,24 @@ function spawnAsteroid(game, size, side, along, behind) {
   const aimX = earth.x + (game.random() - 0.5) * earth.radius;
   const aimY = earth.y + (game.random() - 0.5) * earth.radius;
   game.asteroids.push(
-    makeAsteroid(game, size, x, y, Math.atan2(aimY - y, aimX - x))
+    makeAsteroid(
+      game,
+      size,
+      x,
+      y,
+      Math.atan2(aimY - y, aimX - x),
+      edgeSlowdown(game, side)
+    )
   );
+}
+
+// A short edge (top and bottom on a phone held sideways) starts rocks close
+// to Earth. Slow them so they take as long to arrive as from a desktop's.
+export function edgeSlowdown(game, side) {
+  const { width, height, earth } = game;
+  const toEdge = side % 2 === 0 ? height / 2 : width / 2;
+  const reach = (toEdge - earth.radius) / game.scale;
+  return Math.min(1, reach / WIDE_REACH);
 }
 
 // Levels from the Shop

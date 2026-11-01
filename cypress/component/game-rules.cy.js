@@ -19,9 +19,11 @@ import {
 } from '../../src/game/config';
 import {
   asteroidHp,
+  asteroidSpeed,
   buy,
   clusterSize,
   createGame,
+  edgeSlowdown,
   isEnded,
   isEnding,
   nextWave,
@@ -122,6 +124,24 @@ describe('Game rules', () => {
     step(game, 0.01);
     expect(game.asteroids).to.have.length(1);
     expect(game.status).to.equal('wave');
+  });
+
+  it('slows rocks from a short edge, so a phone is no harder than a desktop', () => {
+    // Seconds from the top edge (side 0) to Earth's surface
+    const fromTop = (width, height) => {
+      const game = createGame({ width, height, seed: 1 });
+      const distance = height / 2 - game.earth.radius;
+      return distance / (asteroidSpeed(game, 'small') * edgeSlowdown(game, 0));
+    };
+    const desktop = fromTop(1920, 1080);
+    expect(fromTop(844, 390)).to.be.closeTo(desktop, desktop * 0.05);
+    expect(fromTop(667, 320)).to.be.closeTo(desktop, desktop * 0.05);
+
+    // The long sides of a phone, and a big desktop, keep full speed
+    const phone = createGame({ width: 844, height: 390, seed: 1 });
+    expect(edgeSlowdown(phone, 1)).to.equal(1);
+    const big = createGame({ width: 1920, height: 1080, seed: 1 });
+    expect(edgeSlowdown(big, 0)).to.equal(1);
   });
 
   it('breaks a large Asteroid into mediums and a medium into smalls', () => {

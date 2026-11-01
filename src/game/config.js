@@ -40,6 +40,9 @@ export const SPLIT_COUNT = 2;
 
 export const WAVE_BONUS = 100; // Score per Wave survived, times the Wave
 export const WAVE_SPEEDUP = 0.08; // Extra Asteroid speed per Wave
+// Shortest way in from an edge to Earth's surface at a scale of 1, about a
+// 1080p desktop's top edge. Rocks from nearer edges slow to match.
+export const WIDE_REACH = 380;
 export const SPAWN_INTERVAL = { first: 1.4, min: 0.45, perWave: 0.1 };
 // Later Waves keep getting harder, so maxed-out upgrades don't make them
 // easy. Rocks get tougher from Wave 6: +12% HP a Wave.
