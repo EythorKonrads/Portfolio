@@ -202,9 +202,11 @@ onBeforeUnmount(() => {
   border: 0;
   border-radius: 50%;
   background-color: var(--color-gallery-control);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   line-height: 0;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 .projects-gallery-fullscreen__control:hover {
   background-color: var(--color-gallery-control-hover);
@@ -234,18 +236,21 @@ onBeforeUnmount(() => {
   right: max(0.75rem, env(safe-area-inset-right));
 }
 .projects-gallery-fullscreen__thumbs {
+  --thumb-width: 48px;
+  --thumb-height: 30px;
+  --thumb-grow: 2.5;
   display: flex;
+  align-items: flex-end;
   justify-content: center;
   gap: 0.4rem;
   padding: 0.5rem 1rem max(0.75rem, env(safe-area-inset-bottom));
-  /* Room above for a thumbnail that grows on hover */
-  overflow: visible;
 }
+/* Grown by size, not scale, so the others slide aside in the same motion */
 .projects-gallery-fullscreen__thumb {
   position: relative;
   flex-shrink: 0;
-  width: 48px;
-  height: 30px;
+  width: var(--thumb-width);
+  height: var(--thumb-height);
   padding: 0;
   border: 2px solid transparent;
   border-radius: 4px;
@@ -253,11 +258,12 @@ onBeforeUnmount(() => {
   background-color: var(--color-gallery-control);
   cursor: pointer;
   opacity: 0.6;
-  transform-origin: bottom center;
   transition:
-    transform 0.2s ease,
-    opacity 0.2s ease,
-    border-color 0.2s ease;
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease,
+    border-color 0.3s ease;
 }
 .projects-gallery-fullscreen__thumb--active {
   border-color: var(--color-accent);
@@ -265,10 +271,16 @@ onBeforeUnmount(() => {
 }
 /* Grows on hover for a better look before switching to it */
 @media (hover: hover) {
+  /* Always room for a grown thumbnail, so the picture above never jumps */
+  .projects-gallery-fullscreen__thumbs {
+    box-sizing: content-box;
+    height: calc(var(--thumb-height) * var(--thumb-grow));
+  }
   .projects-gallery-fullscreen__thumb:hover {
-    z-index: 1;
+    width: calc(var(--thumb-width) * var(--thumb-grow));
+    height: calc(var(--thumb-height) * var(--thumb-grow));
+    border-radius: 6px;
     opacity: 1;
-    transform: scale(2.5);
   }
 }
 .projects-gallery-fullscreen__thumb--video::after {
