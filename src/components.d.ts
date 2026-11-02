@@ -30,6 +30,7 @@ declare module 'vue' {
     MiniEarth: typeof import('./components/MiniEarth.vue')['default']
     Projects: typeof import('./components/Projects.vue')['default']
     ProjectsGallery: typeof import('./components/ProjectsGallery.vue')['default']
+    ProjectsGalleryFullscreen: typeof import('./components/ProjectsGalleryFullscreen.vue')['default']
     ProjectsItem: typeof import('./components/ProjectsItem.vue')['default']
     ProjectsItemPopup: typeof import('./components/ProjectsItemPopup.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
