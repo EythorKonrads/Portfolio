@@ -129,30 +129,31 @@ async function closeFullscreen() {
 }
 .projects-gallery__fullscreen {
   /* Top left: the video's controls take the bottom, the popup's close the
-     top right */
+     top right. Same size and inset as that close button. */
   position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
+  top: 1.75rem;
+  left: 1.75rem;
   display: grid;
   place-items: center;
-  padding: 0.45rem;
+  padding: 0.4rem;
   border: 0;
   border-radius: 50%;
-  background-color: var(--color-gallery-backdrop);
+  background-color: var(--color-popup-button);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   line-height: 0;
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 .projects-gallery__fullscreen:hover {
-  opacity: 1;
+  background-color: var(--color-popup-button-hover);
 }
 .projects-gallery__fullscreen-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 .projects-gallery__fullscreen-icon :deep(path) {
-  fill: var(--color-white);
+  fill: var(--color-popup-button-icon);
 }
 .projects-gallery__thumbs {
   display: flex;

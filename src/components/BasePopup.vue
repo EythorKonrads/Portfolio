@@ -27,17 +27,11 @@ export default {
       type: String,
       default: 'popup',
     },
-    // How far the popup scrolls before the close button gets a background
-    scrollThreshold: {
-      type: Number,
-      default: 250,
-    },
   },
   emits: ['close'],
   data() {
     return {
       isAnimating: false,
-      isScrolled: false,
     };
   },
   watch: {
@@ -52,7 +46,6 @@ export default {
         });
       } else {
         this.isAnimating = false;
-        this.isScrolled = false;
         document.body.style.overflow = '';
         window.removeEventListener('keydown', this.handleKeydown);
       }
@@ -72,9 +65,6 @@ export default {
     },
     handleKeydown(event) {
       if (event.key === 'Escape') this.close();
-    },
-    handleScroll(event) {
-      this.isScrolled = event.target.scrollTop > this.scrollThreshold;
     },
   },
 };
@@ -96,14 +86,12 @@ export default {
       :data-cy="cy"
       :class="[`base-popup--${size}`, { 'base-popup--visible': isAnimating }]"
       @click.stop
-      @scroll="handleScroll"
     >
       <button
         type="button"
         class="base-popup__close"
         aria-label="Close"
         :data-cy="`${cy}Close`"
-        :class="{ 'base-popup__close--scrolled': isScrolled }"
         @click="close"
       >
         <Icon name="close" class="social__icon o-icon" />
@@ -167,24 +155,23 @@ export default {
   color: inherit;
   font: inherit;
   line-height: 0;
-  background-color: var(--color-surface);
+  background-color: var(--color-popup-button);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   padding: 0.4rem;
   border-radius: 50%;
   transition: 0.3s ease;
   z-index: 1000;
   cursor: pointer;
 }
-.base-popup__close--scrolled {
-  background-color: var(--color-surface-raised);
-}
 .base-popup__close:hover {
-  background-color: var(--color-surface-raised-hover);
+  background-color: var(--color-popup-button-hover);
 }
 .base-popup__close .icon {
   width: 1.5rem;
   height: 1.5rem;
 }
 .base-popup__close :deep(path) {
-  fill: var(--color-accent);
+  fill: var(--color-popup-button-icon);
 }
 </style>
