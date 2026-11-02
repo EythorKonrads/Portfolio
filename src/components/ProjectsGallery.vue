@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 // A project's images and videos in its popup: one large item, with
 // thumbnails to switch between them when there's more than one
@@ -21,6 +21,15 @@ const autoplay = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const label = (item, index) =>
   item.alt || `${props.title}, ${item.type} ${index + 1}`;
+
+const isFullscreen = ref(false);
+const fullscreenButton = ref(null);
+// Back to where keyboard users left off
+async function closeFullscreen() {
+  isFullscreen.value = false;
+  await nextTick();
+  fullscreenButton.value.focus();
+}
 </script>
 
 <template>
@@ -49,6 +58,16 @@ const label = (item, index) =>
         class="projects-gallery__item"
         data-cy="galleryImage"
       />
+      <button
+        ref="fullscreenButton"
+        type="button"
+        class="projects-gallery__fullscreen"
+        aria-label="Show fullscreen"
+        data-cy="galleryFullscreenOpen"
+        @click="isFullscreen = true"
+      >
+        <Icon name="expand" class="projects-gallery__fullscreen-icon" />
+      </button>
     </div>
     <div
       v-if="media.length > 1"
@@ -76,6 +95,16 @@ const label = (item, index) =>
         />
       </button>
     </div>
+    <!-- On <body>: the popup's transform would pin it inside the popup -->
+    <Teleport v-if="isFullscreen" to="body">
+      <ProjectsGalleryFullscreen
+        v-model:index="activeIndex"
+        :media="media"
+        :title="title"
+        :label="label"
+        @close="closeFullscreen"
+      />
+    </Teleport>
   </div>
 </template>
 
@@ -85,6 +114,7 @@ const label = (item, index) =>
   flex-shrink: 0;
 }
 .projects-gallery__stage {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,6 +126,33 @@ const label = (item, index) =>
   max-width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.projects-gallery__fullscreen {
+  /* Top left: the video's controls take the bottom, the popup's close the
+     top right */
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: grid;
+  place-items: center;
+  padding: 0.45rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--color-gallery-backdrop);
+  line-height: 0;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+.projects-gallery__fullscreen:hover {
+  opacity: 1;
+}
+.projects-gallery__fullscreen-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.projects-gallery__fullscreen-icon :deep(path) {
+  fill: var(--color-white);
 }
 .projects-gallery__thumbs {
   display: flex;

@@ -102,3 +102,115 @@ describe('Project popup', () => {
     cy.get('@play').should('have.been.calledOnce');
   });
 });
+
+describe('Projects gallery fullscreen', () => {
+  const openFullscreen = () => {
+    cy.mount(ProjectsGallery, { props: { media, title: 'Game' } });
+    cy.get('[data-cy="galleryThumb"]').eq(1).click();
+    cy.get('[data-cy="galleryFullscreenOpen"]').click();
+    cy.get('[data-cy="galleryFullscreen"]').should('be.visible');
+  };
+  const showing = (src) =>
+    cy
+      .get('[data-cy="galleryFullscreen"] [data-cy^="galleryFullscreen"]')
+      .filter('img, video')
+      .should('have.attr', 'src', src);
+
+  it('opens on the item being shown, and steps through with wraparound', () => {
+    openFullscreen();
+    showing('/hhauksson.webp');
+    cy.get('[data-cy="galleryNext"]').click();
+    showing('/og-image.png');
+    // Past the last item, back to the first
+    cy.get('[data-cy="galleryNext"]').click();
+    showing('/clip.mp4');
+    cy.get('[data-cy="galleryPrev"]').click();
+    showing('/og-image.png');
+  });
+
+  it('closes from its button, back on the same item, with focus returned', () => {
+    openFullscreen();
+    cy.focused().should('have.attr', 'data-cy', 'galleryFullscreenClose');
+    cy.get('[data-cy="galleryNext"]').click();
+    cy.get('[data-cy="galleryFullscreenClose"]').click();
+    cy.get('[data-cy="galleryFullscreen"]').should('not.exist');
+    cy.get('[data-cy="galleryImage"]').should(
+      'have.attr',
+      'src',
+      '/og-image.png'
+    );
+    cy.focused().should('have.attr', 'data-cy', 'galleryFullscreenOpen');
+  });
+
+  it('steps with the arrow keys', () => {
+    openFullscreen();
+    cy.document().trigger('keydown', { key: 'ArrowRight' });
+    showing('/og-image.png');
+    cy.document().trigger('keydown', { key: 'ArrowLeft' });
+    showing('/hhauksson.webp');
+    cy.document().trigger('keydown', { key: 'ArrowLeft' });
+    showing('/clip.mp4');
+  });
+
+  it('switches from its thumbnails', () => {
+    openFullscreen();
+    cy.get('[data-cy="galleryFullscreenThumb"]')
+      .should('have.length', 3)
+      .eq(2)
+      .click();
+    showing('/og-image.png');
+    cy.get('[data-cy="galleryFullscreenThumb"]')
+      .eq(2)
+      .should('have.attr', 'aria-current', 'true');
+  });
+
+  it('steps on a sideways swipe, not an upright one', () => {
+    openFullscreen();
+    const swipe = (dx, dy) => {
+      cy.get('[data-cy="galleryFullscreenImage"]')
+        .trigger('touchstart', {
+          changedTouches: [{ clientX: 300, clientY: 300 }],
+        })
+        .trigger('touchend', {
+          changedTouches: [{ clientX: 300 + dx, clientY: 300 + dy }],
+        });
+    };
+    swipe(-120, 10);
+    showing('/og-image.png');
+    swipe(10, -120);
+    showing('/og-image.png');
+    swipe(120, 0);
+    showing('/hhauksson.webp');
+  });
+
+  it('plays a video with sound and controls', () => {
+    openFullscreen();
+    cy.get('[data-cy="galleryPrev"]').click();
+    cy.get('[data-cy="galleryFullscreenVideo"]')
+      .should('have.prop', 'muted', false)
+      .and('have.prop', 'controls', true);
+  });
+
+  it('has no arrows or thumbnails for a single item', () => {
+    cy.mount(ProjectsGallery, { props: { media: [media[1]], title: 'Game' } });
+    cy.get('[data-cy="galleryFullscreenOpen"]').click();
+    cy.get('[data-cy="galleryFullscreenImage"]').should('be.visible');
+    cy.get('[data-cy="galleryNext"]').should('not.exist');
+    cy.get('[data-cy="galleryFullscreenThumbs"]').should('not.exist');
+  });
+
+  it('closes on Esc, leaving the popup behind it open', () => {
+    const onClose = cy.spy().as('close');
+    cy.mount(ProjectsItemPopup, {
+      props: { project: { ...project, media }, onClose },
+    }).then(({ wrapper }) => wrapper.setProps({ isOpen: true }));
+    cy.get('[data-cy="galleryFullscreenOpen"]').click();
+    cy.get('[data-cy="galleryFullscreen"]').should('be.visible');
+    cy.document().trigger('keydown', { key: 'Escape' });
+    cy.get('[data-cy="galleryFullscreen"]').should('not.exist');
+    // The popup closes 400ms after its own Esc; give it longer
+    cy.wait(600);
+    cy.get('@close').should('not.have.been.called');
+    cy.get('[data-cy="popup"]').should('be.visible');
+  });
+});
