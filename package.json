@@ -29,7 +29,7 @@
         "@eslint/js": "^10.0.1",
         "@vitejs/plugin-vue": "^6.0.10",
         "@vue/eslint-config-prettier": "^10.2.0",
-        "cypress": "^16.2.0",
+        "cypress": "^16.2.1",
         "eslint": "^10.13.0",
         "eslint-plugin-cypress": "^7.0.2",
         "eslint-plugin-vue": "^10.11.1",
