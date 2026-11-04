@@ -85,6 +85,31 @@ describe('Projects', () => {
         cy.get('[data-cy="popup"]').should('not.exist');
       });
 
+      if (project.media) {
+        it('shows its gallery in the popup', () => {
+          cy.get('@card').click();
+          cy.get('[data-cy="gallery"]').should('be.visible');
+          if (project.media.length > 1) {
+            cy.get('[data-cy="galleryThumb"]').should(
+              'have.length',
+              project.media.length
+            );
+          }
+        });
+      }
+
+      if (project.playable) {
+        it('starts the game from the popup', () => {
+          cy.get('@card').click();
+          cy.get('[data-cy="popupPlay"]').should('be.visible').click();
+          cy.get('[data-cy="popup"]').should('not.exist');
+          cy.get('[data-cy="gameScreen"]').should('be.visible');
+          cy.get('body').trigger('keydown', { code: 'Escape' });
+          cy.get('[data-cy="gameScreen"]').should('not.exist');
+          cy.get('body').should('not.have.css', 'overflow', 'hidden');
+        });
+      }
+
       it('keeps the popup open when clicking inside it', () => {
         cy.get('@card').click();
         cy.get('[data-cy="popupTitle"]').click();

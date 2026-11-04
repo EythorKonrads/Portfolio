@@ -1,6 +1,7 @@
 <script>
 import ProjectsItemPopup from './ProjectsItemPopup.vue';
 import TagChip from './TagChip.vue';
+import { useGameLaunch } from '@/composables/useGameLaunch';
 
 export default {
   name: 'ProjectsItem',
@@ -14,6 +15,10 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const { requestLaunch } = useGameLaunch();
+    return { requestLaunch };
+  },
   data() {
     return {
       isOpen: false,
@@ -25,6 +30,11 @@ export default {
     },
     closePopup() {
       this.isOpen = false;
+    },
+    // The game takes over the screen, so the popup goes first
+    play() {
+      this.isOpen = false;
+      this.requestLaunch();
     },
   },
 };
@@ -67,6 +77,7 @@ export default {
       :project="project"
       :is-open="isOpen"
       @close="closePopup"
+      @play="play"
     />
   </div>
 </template>

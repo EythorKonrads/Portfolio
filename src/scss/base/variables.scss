@@ -53,6 +53,11 @@
   --color-game-health-warn: #f97316;
   --color-game-health-bad: #dc2626;
   --color-game-health-text: #ffffff;
+
+  /* A project's gallery in fullscreen is always dark, like a photo viewer */
+  --color-gallery-backdrop: rgba(5, 8, 22, 0.96);
+  --color-gallery-control: rgba(147, 147, 232, 0.25);
+  --color-gallery-control-hover: rgba(147, 147, 232, 0.45);
 }
 
 /* Dark is the default theme, used until the visitor picks light */
@@ -80,6 +85,10 @@
 
   /* Popups and their close button */
   --color-surface: #0f172a;
+  /* Round buttons over a popup or picture: close, fullscreen */
+  --color-popup-button: rgba(147, 147, 232, 0.25);
+  --color-popup-button-hover: rgba(147, 147, 232, 0.45);
+  --color-popup-button-icon: var(--color-white);
   --color-surface-raised: #1d243e;
   --color-surface-raised-hover: #2e3456;
   /* Project cards */
@@ -114,6 +123,9 @@
   --color-chip-selected-text: var(--color-white);
 
   --color-surface: var(--color-white);
+  --color-popup-button: rgba(80, 80, 200, 0.15);
+  --color-popup-button-hover: rgba(80, 80, 200, 0.28);
+  --color-popup-button-icon: #5050c8;
   --color-surface-raised: #eceef9;
   --color-surface-raised-hover: #dfe2f5;
   --color-card: var(--color-white);
