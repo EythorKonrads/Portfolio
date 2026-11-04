@@ -67,9 +67,11 @@ import MiniEarth from './MiniEarth.vue';
 .hero {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
   height: 100vh;
+  /* Scrolls when the screen is too short for it, as on a phone held sideways */
+  overflow-y: auto;
   /* Sized by the viewport only, so filtering the content can't resize it */
   flex-shrink: 0;
   width: clamp(300px, 30vw, 450px);
@@ -82,7 +84,8 @@ import MiniEarth from './MiniEarth.vue';
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 100%;
+    /* Fills the free height, but never shrinks over the links below it */
+    flex: 1 0 auto;
   }
   .hero__card {
     display: flex;

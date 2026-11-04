@@ -71,4 +71,36 @@ describe('Hero', () => {
       .and('have.attr', 'href', 'mailto:kh.krimper@gmail.com')
       .and('contain.text', "Let's talk");
   });
+
+  describe('on a phone held sideways', () => {
+    const top = ($el) => $el[0].getBoundingClientRect().top;
+    const bottom = ($el) => $el[0].getBoundingClientRect().bottom;
+
+    beforeEach(() => {
+      cy.viewport(667, 375);
+    });
+
+    it('starts with the top of the hero in view', () => {
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        cy.get('[data-cy="miniEarth"]').should(($earth) => {
+          expect(top($earth)).to.be.at.least(top($hero));
+        });
+      });
+    });
+
+    it("doesn't let the intro text run into the links", () => {
+      cy.get('[data-cy="heroText"]').then(($text) => {
+        cy.get('[data-cy="heroLinks"]').should(($links) => {
+          expect(top($links)).to.be.at.least(bottom($text));
+        });
+      });
+    });
+
+    it('scrolls down to the links', () => {
+      cy.get('[data-cy="hero"]').scrollTo('bottom', { ensureScrollable: true });
+      cy.get('[data-cy="heroLinks"]').should(($links) => {
+        expect(bottom($links)).to.be.at.most(375);
+      });
+    });
+  });
 });
