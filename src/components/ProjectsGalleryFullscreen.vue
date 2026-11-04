@@ -259,9 +259,9 @@ onBeforeUnmount(() => {
   cursor: pointer;
   opacity: 0.6;
   transition:
-    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.3s ease,
     border-color 0.3s ease;
 }
