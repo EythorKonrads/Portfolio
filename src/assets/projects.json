@@ -1,5 +1,101 @@
 [
   {
+    "title": "Defend Earth",
+    "image": "./defend-earth/06-earth-defences.png",
+    "media": [
+      {
+        "type": "video",
+        "src": "./defend-earth/defend-earth-trailer.mp4",
+        "poster": "./defend-earth/06-earth-defences.png",
+        "alt": "Defend Earth trailer"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/01-portfolio-mini-earth.png",
+        "alt": "Mini Earth in the portfolio, where the game starts"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/02-how-to-play.png",
+        "alt": "The how-to-play screen shown before the first Wave"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/03-wave-1.png",
+        "alt": "The Wave 1 title above Earth and the Ship"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/04-asteroid-impacts.png",
+        "alt": "Asteroids hitting Earth"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/05-shop.png",
+        "alt": "The Shop between Waves, with upgrades to spend Ore on"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/06-earth-defences.png",
+        "alt": "Turrets and a Constellation of Satellites defending Earth"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/07-armored-asteroids.png",
+        "alt": "Armored Asteroids, which only the Ship can crack"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/08-late-wave.png",
+        "alt": "A crowded late Wave"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/09-earth-explodes.png",
+        "alt": "Earth exploding when the last people die"
+      },
+      {
+        "type": "image",
+        "src": "./defend-earth/10-game-over.png",
+        "alt": "The game over screen"
+      }
+    ],
+    "description": "A small arcade game built right into this portfolio. Asteroids are heading for Earth, and you fly a Ship around the planet to shoot them down before they wipe out its 8 billion people. Start it from Mini-game in the menu, by clicking the little Earth orbiting my profile photo, or with the button below.\n\n<b>The Idea</b>\nPeople usually scroll through a portfolio once and move on. I wanted mine to have one thing people would remember and maybe come back to, and that showed what I can build instead of just describing it. I also wanted a real project to learn agentic development on, with a clear goal and enough complexity to test how far I could push it. A game was a good fit for both.\n\n<b>How It Plays</b>\nThe game is played in Waves that keep getting harder. Destroyed Asteroids break into smaller pieces and drop Ore. Between Waves you spend that Ore in the Shop, on upgrades for the Ship or on Earth defences: Turrets on the surface and a Constellation of Satellites in orbit. From Wave 20, Armored Asteroids arrive, and only the Ship's own shots can crack them. When the game ends, the best scores go on a shared top-10 Scoreboard with the player's initials.\n- Keyboard controls on desktop, with a joystick and shoot button on phones\n- A Shop with upgrades that unlock as you go\n- A shared Scoreboard for all players\n\n<b>Architecture & Code</b>\nI was the architect of the game. I designed how it works, decided how the code is structured and set the rules that every change has to follow. Claude Code wrote most of the code, and I reviewed and steered every change.\n\nThe core decision was to keep the game's logic completely separate from Vue. The rules (spawning Waves, collisions, splitting Asteroids, Ore, Score) live in plain JavaScript modules that don't know anything about the UI. That makes them fast and easy to test on their own: almost 50 tests cover the rules alone. Vue components only show the game's state and pass the player's input in.\n\nEarth, the Ship, Asteroids and shots are drawn on a single canvas, because dozens of moving, colliding pieces at 60fps stutter when they're DOM or SVG elements, especially on phones. Everything people read or click (the Shop, the Menu, the end screen) is ordinary Vue on top, so it stays testable. Every tuning number, from Asteroid speed to Shop prices, sits in one config file, so balancing the game means changing numbers, not code.\n\nThe Scoreboard runs on a Netlify Function backed by Netlify Blobs. It does the cheap checks first and only writes when a score makes the top 10, so spamming it costs almost nothing. The storage sits behind a handler that doesn't know where the scores are stored, so moving to AWS later only means replacing that one part, and no scores are lost.\n- Game logic in plain JavaScript, separate from the Vue UI\n- Canvas rendering with HTML/Vue UI layered on top\n- Every tuning number in one config file\n- Serverless Scoreboard on Netlify Functions and Blobs\n- Over 120 Cypress component and end-to-end tests for the game alone\n\n<b>Working with an AI Agent</b>\nTo work in a structured way, I used Matt Pocock's open-source agent skills (mattpocock/skills). These are reusable workflows that make the agent act more like a disciplined engineer than an autocomplete:\n- Grilling the design before coding: the agent questions me about the design until every decision is clear, and the answers are saved in the repo\n- A shared language: a glossary defines every game term (Wave, Ore, Shop, Constellation), so the code, the tests and the conversations all use the same names\n- Architecture decision records: every important decision is written down along with why it was made\n- Issues and triage: work is planned as GitHub issues and labelled by whether it's ready for the agent or needs me\n- Architecture reviews: the codebase is regularly reviewed for places where the structure could be simpler\n\nOn top of that, the repo has project rules the agent always follows: one branch and one PR per change, Conventional Commits, tests written alongside every feature, and nothing merged into master except by me.\n\n<b>What I Learned</b>\nAn agent is only as good as the structure around it, and the most valuable thing I learned is where it belongs in a project. I let the agent do what it's good at: writing implementation code and tests quickly, and trying out options. The decisions stay with me: what to build and why, how the code is structured, how the game should feel, which trade-offs to accept, and what gets merged. Most of my work went into those parts: setting the direction, naming things clearly, writing down why, and setting up tests the agent couldn't argue with. That way of working, with a human as architect and decision-maker and the agent doing the implementation, is something I'll bring into a team.",
+    "technologies": [
+      {
+        "title": "Vue.js 2/3",
+        "tag": "vue"
+      },
+      {
+        "title": "JavaScript",
+        "tag": "javascript"
+      },
+      {
+        "title": "Canvas",
+        "tag": "canvas"
+      },
+      {
+        "title": "SCSS",
+        "tag": "scss"
+      },
+      {
+        "title": "Netlify",
+        "tag": "netlify"
+      },
+      {
+        "title": "Cypress",
+        "tag": "cypress"
+      },
+      {
+        "title": "Claude Code",
+        "tag": "claude-code"
+      }
+    ],
+    "playable": true,
+    "liveUrl": null,
+    "githubUrl": "https://github.com/EythorKonrads/Portfolio"
+  },
+  {
     "title": "HHauksson website",
     "image": "./hhauksson.webp",
     "description": "H. Hauksson ehf. is an established Icelandic company with over 30 years of experience in selling construction materials, machinery, fencing supplies, and timber for the construction industry, agriculture, and tradespeople. The website hhauksson.is was developed as a digital presentation and communication platform, enabling customers to explore the product selection in a simple and accessible way. \n\n<b>A New Approach, Same Goal</b>\nThe company had previously maintained a simple website and had tried to improve it on their own with a new layout. However, those attempts proved time-consuming and technically challenging. We took over the project at that point, started the development from scratch, and stayed true to the original vision of a clear structure and user-friendly flow. The solution we created was easy to maintain, professionally presented, and designed with the future in mind.\n\n<b>Technical Implementation</b>\nWe decided to build the website on WordPress and used Elementor Pro to ensure flexibility in design and maintenance. With Advanced Custom Fields (ACF), we created custom product pages and content models that the H. Hauksson team can update independently, without technical assistance.\n\nTo establish a clear flow and structure, we created a site map that ensured all essential information was easily accessible in a logical and intuitive way.\n- Scalable and easy to maintain\n- Responsive design for phones, tablets, and desktops\n- Clear and efficient user experience across the site\n\nWe implemented Rank Math for search engine optimization (SEO), launched a Google Ads campaign, and integrated Google Analytics to track user behavior and support data-driven development.\n\n<b>Results & Follow-Up</b>\nThe new website has simplified the customer experience and made H. Hauksson’s product offering accessible in an efficient way. Information is now easy to find, and the site has strengthened both the company’s service and brand image.\n\nThrough a Google Ads campaign targeting key product categories, the company has reached a larger customer base. The campaign has delivered:\n- Increased website traffic\n- Better visibility in search results\n- Higher brand awareness\n\nFeedback from staff and users has been positive, and the website now serves as a solid foundation for ongoing development and marketing efforts.",
