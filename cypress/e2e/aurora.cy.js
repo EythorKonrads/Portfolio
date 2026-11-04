@@ -164,6 +164,31 @@ describe('Aurora', () => {
     });
   });
 
+  it('keeps its lights as close together on a huge screen', () => {
+    cy.viewport(2560, 1440);
+    cy.visitHome();
+    // Band sizes and gaps stop growing past 1600x1000
+    bands().should(($bands) => {
+      const [first, second, third] = [...$bands];
+      expect(first.offsetHeight).to.be.closeTo(300, 1);
+      expect(second.offsetTop - first.offsetTop).to.be.closeTo(150, 1);
+      expect(third.offsetTop - second.offsetTop).to.be.closeTo(150, 1);
+    });
+    // So does how far a band wanders: stop the first at its 65% keyframe
+    cy.get('[data-cy="auroraPath"]')
+      .first()
+      .should(($path) => {
+        const [wander] = $path[0].getAnimations();
+        wander.pause();
+        wander.currentTime = 0.65 * wander.effect.getTiming().duration;
+        const { m41, m42 } = new DOMMatrix(
+          getComputedStyle($path[0]).transform
+        );
+        expect(m41).to.be.closeTo(-24 * 16, 1);
+        expect(m42).to.be.closeTo(78 * 10, 1);
+      });
+  });
+
   it('uses two slower bands on phones', () => {
     cy.viewport(375, 812);
     cy.visitHome();

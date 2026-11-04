@@ -82,12 +82,16 @@ onBeforeUnmount(() => {
   --aurora-x: 50%;
   --aurora-y: 30%;
   --aurora-lean: 0;
+  /* 1vw and 1vh, but no bigger than on a 1600x1000 screen. Past that, gaps
+     between the lights would keep stretching while the rays and blur don't. */
+  --aurora-vw: min(1vw, 16px);
+  --aurora-vh: min(1vh, 10px);
   position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.12;
+  opacity: 0.1;
 }
 /* Slow wander around the screen, each band on its own path and pace, so the
    aurora never settles in one place */
@@ -111,41 +115,68 @@ onBeforeUnmount(() => {
     transform: translate(0, 0);
   }
   30% {
-    transform: translate(28vw, 45vh);
+    transform: translate(
+      calc(28 * var(--aurora-vw)),
+      calc(45 * var(--aurora-vh))
+    );
   }
   65% {
-    transform: translate(-24vw, 78vh);
+    transform: translate(
+      calc(-24 * var(--aurora-vw)),
+      calc(78 * var(--aurora-vh))
+    );
   }
   100% {
-    transform: translate(14vw, 10vh);
+    transform: translate(
+      calc(14 * var(--aurora-vw)),
+      calc(10 * var(--aurora-vh))
+    );
   }
 }
 @keyframes hero-aurora-wander-2 {
   0% {
-    transform: translate(0, 55vh);
+    transform: translate(0, calc(55 * var(--aurora-vh)));
   }
   40% {
-    transform: translate(-30vw, -5vh);
+    transform: translate(
+      calc(-30 * var(--aurora-vw)),
+      calc(-5 * var(--aurora-vh))
+    );
   }
   75% {
-    transform: translate(20vw, 35vh);
+    transform: translate(
+      calc(20 * var(--aurora-vw)),
+      calc(35 * var(--aurora-vh))
+    );
   }
   100% {
-    transform: translate(-12vw, 72vh);
+    transform: translate(
+      calc(-12 * var(--aurora-vw)),
+      calc(72 * var(--aurora-vh))
+    );
   }
 }
 @keyframes hero-aurora-wander-3 {
   0% {
-    transform: translate(0, 30vh);
+    transform: translate(0, calc(30 * var(--aurora-vh)));
   }
   35% {
-    transform: translate(26vw, 60vh);
+    transform: translate(
+      calc(26 * var(--aurora-vw)),
+      calc(60 * var(--aurora-vh))
+    );
   }
   70% {
-    transform: translate(-28vw, -15vh);
+    transform: translate(
+      calc(-28 * var(--aurora-vw)),
+      calc(-15 * var(--aurora-vh))
+    );
   }
   100% {
-    transform: translate(16vw, 45vh);
+    transform: translate(
+      calc(16 * var(--aurora-vw)),
+      calc(45 * var(--aurora-vh))
+    );
   }
 }
 .hero-aurora__band {
@@ -154,12 +185,12 @@ onBeforeUnmount(() => {
   width: 160%;
   /* Narrow curtains, so there's still dark sky for the cursor glow to light
      up */
-  height: 30%;
+  height: calc(30 * var(--aurora-vh));
   /* On the band, not the curtain: a filter runs before the mask on the same
      element, which would leave the rays hard-edged */
   filter: blur(8px);
   animation: hero-aurora-drift 26s ease-in-out infinite alternate;
-  transition: translate 1.5s ease-out;
+  transition: translate 1s ease-out;
 }
 /* A curtain like the real thing: brightest green along a sharper lower edge,
    fading through teal to purple at the top, cut into shimmering rays */
@@ -207,15 +238,15 @@ onBeforeUnmount(() => {
   animation: hero-aurora-rays 28s linear infinite;
 }
 .hero-aurora__band--1 {
-  top: -5%;
+  top: calc(-5 * var(--aurora-vh));
 }
 .hero-aurora__band--2 {
-  top: 10%;
+  top: calc(10 * var(--aurora-vh));
   animation-duration: 34s;
   animation-delay: -12s;
 }
 .hero-aurora__band--3 {
-  top: 25%;
+  top: calc(25 * var(--aurora-vh));
   animation-duration: 42s;
   animation-delay: -20s;
   animation-direction: alternate-reverse;
@@ -239,8 +270,8 @@ onBeforeUnmount(() => {
   opacity: 0;
   transition:
     opacity 0.8s ease,
-    left 0.6s ease-out,
-    top 0.6s ease-out;
+    left 0.3s ease-out,
+    top 0.3s ease-out;
 }
 .hero-aurora--following .hero-aurora__glow {
   opacity: 1;
@@ -269,7 +300,7 @@ onBeforeUnmount(() => {
     animation-duration: 40s;
   }
   .hero-aurora__band--2 {
-    top: 14%;
+    top: calc(14 * var(--aurora-vh));
     animation-duration: 52s;
   }
   .hero-aurora__band--3 {
