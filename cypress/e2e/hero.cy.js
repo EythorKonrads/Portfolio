@@ -90,6 +90,26 @@ describe('Hero', () => {
     });
   });
 
+  it('spaces the social links and "Let\'s talk" evenly on a phone', () => {
+    cy.viewport(390, 844);
+    cy.get('[data-cy="heroLinks"]').should(($row) => {
+      const row = $row[0].getBoundingClientRect();
+      const github = Cypress.$('[data-cy="socialGithub"]')[0];
+      const linkedin = Cypress.$('[data-cy="socialLinkedin"]')[0];
+      const mail = Cypress.$('[data-cy="heroMail"]')[0];
+
+      const left = github.getBoundingClientRect().left - row.left;
+      const between =
+        mail.getBoundingClientRect().left -
+        linkedin.getBoundingClientRect().right;
+      const right = row.right - mail.getBoundingClientRect().right;
+
+      expect(left).to.be.greaterThan(0);
+      expect(between).to.be.closeTo(left, 1);
+      expect(right).to.be.closeTo(left, 1);
+    });
+  });
+
   describe('on a phone held sideways', () => {
     const top = ($el) => $el[0].getBoundingClientRect().top;
     const bottom = ($el) => $el[0].getBoundingClientRect().bottom;
