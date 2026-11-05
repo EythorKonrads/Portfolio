@@ -154,7 +154,9 @@ import MiniEarth from './MiniEarth.vue';
     /* 0.5em of the 20px icon wrapper this used to sit in */
     margin-left: 10px;
   }
-  @media screen and (max-width: 750px) {
+  /* Sideways phones can be wider than 750px but need the room for the nav */
+  @media screen and (max-width: 750px),
+    screen and (orientation: landscape) and (max-height: 500px) {
     width: clamp(250px, 30vw, 450px);
   }
   @media screen and (max-width: 600px) {

@@ -72,6 +72,20 @@ describe('Hero', () => {
       .and('contain.text', "Let's talk");
   });
 
+  it('leaves room around the social icons on an upright phone', () => {
+    cy.viewport(390, 844);
+    ['socialGithub', 'socialLinkedin'].forEach((name) => {
+      cy.get(`[data-cy="${name}"]`).should(($link) => {
+        const link = $link[0].getBoundingClientRect();
+        const icon = $link.children()[0].getBoundingClientRect();
+        expect(icon.top - link.top, 'above').to.be.at.least(8);
+        expect(link.bottom - icon.bottom, 'below').to.be.at.least(8);
+        expect(icon.left - link.left, 'left').to.be.at.least(8);
+        expect(link.right - icon.right, 'right').to.be.at.least(8);
+      });
+    });
+  });
+
   describe('on a phone held sideways', () => {
     const top = ($el) => $el[0].getBoundingClientRect().top;
     const bottom = ($el) => $el[0].getBoundingClientRect().bottom;

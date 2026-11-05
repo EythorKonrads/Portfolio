@@ -157,10 +157,12 @@ onBeforeUnmount(() => {
     transition: none;
   }
 }
-@media screen and (max-width: 600px) {
+/* Scales with the width so every link fits, without swiping to reach the last */
+@media screen and (max-width: 600px),
+  screen and (orientation: landscape) and (max-height: 500px) {
   .section-nav__list {
     gap: 1rem;
-    font-size: 0.875rem;
+    font-size: min(0.875rem, 2.7vw);
   }
 }
 /* Room for the theme toggle and filter on the smallest phones */

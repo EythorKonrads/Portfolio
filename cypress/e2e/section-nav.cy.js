@@ -88,6 +88,28 @@ const viewports = [
 ];
 
 describe('Section nav', () => {
+  [
+    [361, 780],
+    [375, 812],
+    [390, 844],
+    [402, 874],
+    [412, 915],
+    [430, 932],
+    [600, 900],
+    [740, 360],
+    [780, 360],
+    [844, 390],
+    [932, 430],
+  ].forEach(([width, height]) => {
+    it(`fits every link without scrolling on a ${width}x${height} phone`, () => {
+      cy.viewport(width, height);
+      cy.visitHome();
+      cy.get('[data-cy="sectionNav"] > ul').should(($list) => {
+        expect($list[0].scrollWidth).to.be.at.most($list[0].clientWidth);
+      });
+    });
+  });
+
   viewports.forEach(({ name, width, height }) => {
     context(`${name} (${width}x${height})`, () => {
       beforeEach(() => {
