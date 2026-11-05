@@ -1,3 +1,7 @@
+---
+status: superseded by ADR-0004
+---
+
 # The scoreboard starts on Netlify Blobs, before the move to AWS
 
 Issue #37 planned the scoreboard for after a move to AWS. On Netlify's free

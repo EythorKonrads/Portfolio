@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-11-01",
+  // The live site only lives on its own domains
+  "workers_dev": false,
+  // www and ekonrads.com redirect here through Cloudflare Redirect Rules
+  "routes": [{ "pattern": "eythorkonrads.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    // Everything else is served without running the Worker, so it stays free
+    "run_worker_first": ["/api/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "portfolio-scores",
+      "database_id": "d7bb3da4-a71f-46dc-bac7-955551c54ea7",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "env": {
+    // PR previews: a separate Worker and database, as preview URLs would
+    // otherwise share the real Scoreboard
+    "preview": {
+      "workers_dev": true,
+      "routes": [],
+      // `wrangler preview` needs its bindings spelled out here too
+      "previews": {
+        "d1_databases": [
+          {
+            "binding": "DB",
+            "database_id": "bfc82227-a092-4237-8009-73d66d8b4b57",
+          },
+        ],
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "portfolio-scores-preview",
+          "database_id": "bfc82227-a092-4237-8009-73d66d8b4b57",
+          "migrations_dir": "migrations",
+        },
+      ],
+    },
+  },
+}

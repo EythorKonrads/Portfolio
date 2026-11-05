@@ -16,6 +16,8 @@ export default [
       'cypress/screenshots/**',
       // Written by netlify dev: bundled functions and local data
       '.netlify/**',
+      // Written by wrangler dev: bundled Worker and local data
+      '.wrangler/**',
     ],
   },
   js.configs.recommended,

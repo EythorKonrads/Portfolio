@@ -1,6 +1,6 @@
 // The shared scoreboard's rules: an arcade-style top 10 of 2–3 initials.
-// Used by both the end screen and the function that stores the board
-// (netlify/functions/scores/), so the two always agree.
+// Used by both the end screen and the Worker that stores the board
+// (worker/), so the two always agree.
 import {
   ASTEROIDS,
   FIRST_SPAWN,
