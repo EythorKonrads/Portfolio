@@ -64,7 +64,8 @@ const iconName = computed(() => (theme.value === 'dark' ? 'sun' : 'moon'));
   background-color: var(--color-accent-soft-hover);
 }
 /* Match the filter button's mobile height: one line plus its 0.375em padding */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 600px),
+  screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
   .theme-toggle {
     font-size: 0.875rem;
     width: calc(1lh + 0.75em);

@@ -106,7 +106,9 @@ const { theme } = useTheme();
       padding: 0 0 2em;
     }
   }
-  @media screen and (max-width: 600px) {
+  /* Small sideways phones too: below 740px the nav doesn't fit beside the hero */
+  @media screen and (max-width: 600px),
+    screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
     align-items: center;
     justify-content: space-between;
     flex-direction: column;

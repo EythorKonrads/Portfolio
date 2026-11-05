@@ -159,7 +159,8 @@ import MiniEarth from './MiniEarth.vue';
     screen and (orientation: landscape) and (max-height: 500px) {
     width: clamp(250px, 30vw, 450px);
   }
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 600px),
+    screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
     height: auto;
     width: 100vw;
 

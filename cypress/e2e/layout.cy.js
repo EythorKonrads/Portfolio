@@ -72,6 +72,53 @@ describe('Layout', () => {
     });
   });
 
+  context('sideways phones and the upright layout', () => {
+    const expectStacked = () =>
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        cy.get('[data-cy="experience"]').should(($experience) => {
+          expect(rect($experience).top).to.be.at.least(rect($hero).bottom - 1);
+        });
+      });
+    const expectSideBySide = () =>
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        cy.get('[data-cy="experience"]').should(($experience) => {
+          expect(rect($experience).left).to.be.at.least(rect($hero).right - 1);
+        });
+      });
+
+    [
+      [640, 360],
+      [667, 375],
+      [739, 390],
+    ].forEach(([width, height]) => {
+      it(`stacks a small sideways phone (${width}x${height})`, () => {
+        cy.viewport(width, height);
+        cy.visitHome();
+        expectStacked();
+        cy.assertNoHorizontalOverflow();
+      });
+    });
+
+    it('scrolls the whole page on a small sideways phone', () => {
+      cy.viewport(667, 375);
+      cy.visitHome();
+      cy.get('[data-cy="projects"]').scrollIntoView().should('be.visible');
+      cy.window().its('scrollY').should('be.greaterThan', 0);
+    });
+
+    it('keeps the hero beside the content on a larger sideways phone', () => {
+      cy.viewport(740, 390);
+      cy.visitHome();
+      expectSideBySide();
+    });
+
+    it('keeps the hero beside the content in a tall window that wide', () => {
+      cy.viewport(667, 900);
+      cy.visitHome();
+      expectSideBySide();
+    });
+  });
+
   context('font size', () => {
     const rootFontSize = (size) =>
       cy.get('html').should('have.css', 'font-size', size);

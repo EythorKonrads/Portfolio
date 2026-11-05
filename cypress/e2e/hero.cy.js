@@ -122,12 +122,12 @@ describe('Hero', () => {
     });
   });
 
-  describe('on a phone held sideways', () => {
+  describe('on a large phone held sideways', () => {
     const top = ($el) => $el[0].getBoundingClientRect().top;
     const bottom = ($el) => $el[0].getBoundingClientRect().bottom;
 
     beforeEach(() => {
-      cy.viewport(667, 375);
+      cy.viewport(844, 390);
     });
 
     it('starts with the top of the hero in view', () => {
@@ -149,7 +149,7 @@ describe('Hero', () => {
     it('scrolls down to the links', () => {
       cy.get('[data-cy="hero"]').scrollTo('bottom', { ensureScrollable: true });
       cy.get('[data-cy="heroLinks"]').should(($links) => {
-        expect(bottom($links)).to.be.at.most(375);
+        expect(bottom($links)).to.be.at.most(390);
       });
     });
   });
