@@ -25,6 +25,5 @@ the AWS experience the move would have added to the portfolio.
   likely rather than proven.
 - Preview URLs share production's resources, so previews run as a separate
   Worker with its own test database, keeping test scores off the real board.
-- The cutover is one switch rather than a gradual move. Scores saved on Netlify
-  after the export, while DNS changes, are lost; we accepted that to keep the
-  move simple.
+- The Scoreboard started empty on Cloudflare. The old board held only Eythor's
+  own Scores, so they weren't worth carrying over.
