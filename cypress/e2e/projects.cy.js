@@ -120,6 +120,43 @@ describe('Projects', () => {
     });
   });
 
+  describe('card layout', () => {
+    const titleTop = ($title) => $title[0].getBoundingClientRect().top;
+    const imageBottom = ($img) => $img[0].getBoundingClientRect().bottom;
+
+    beforeEach(() => {
+      cy.get('[data-cy="projectCard"]').first().as('card');
+    });
+
+    it('stacks the image above the text on a phone held sideways', () => {
+      cy.viewport(844, 390);
+      cy.get('@card').scrollIntoView();
+      cy.get('@card')
+        .find('[data-cy="projectImage"]')
+        .then(($img) => {
+          cy.get('@card')
+            .find('[data-cy="projectTitle"]')
+            .should(($title) => {
+              expect(titleTop($title)).to.be.at.least(imageBottom($img));
+            });
+        });
+    });
+
+    it('keeps the image beside the text on an upright tablet', () => {
+      cy.viewport(844, 1100);
+      cy.get('@card').scrollIntoView();
+      cy.get('@card')
+        .find('[data-cy="projectImage"]')
+        .then(($img) => {
+          cy.get('@card')
+            .find('[data-cy="projectTitle"]')
+            .should(($title) => {
+              expect(titleTop($title)).to.be.below(imageBottom($img));
+            });
+        });
+    });
+  });
+
   it('shows the "more projects" note', () => {
     cy.contains('More projects to showcase soon')
       .scrollIntoView()

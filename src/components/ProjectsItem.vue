@@ -131,7 +131,9 @@ export default {
   margin: 0.5em 0.375em 0 0;
   font-size: 0.9em;
 }
-@media screen and (max-width: 750px) {
+/* A phone held sideways is wider than 750px, but its column is just as narrow */
+@media screen and (max-width: 750px),
+  screen and (orientation: landscape) and (max-height: 500px) {
   .project-item {
     flex-direction: column;
     min-height: auto;
