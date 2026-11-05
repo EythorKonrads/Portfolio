@@ -72,16 +72,20 @@ describe('Hero', () => {
       .and('contain.text', "Let's talk");
   });
 
-  it('leaves room around the social icons on an upright phone', () => {
+  it('keeps the social links on one line with "Let\'s talk" on a phone', () => {
     cy.viewport(390, 844);
-    ['socialGithub', 'socialLinkedin'].forEach((name) => {
-      cy.get(`[data-cy="${name}"]`).should(($link) => {
-        const link = $link[0].getBoundingClientRect();
-        const icon = $link.children()[0].getBoundingClientRect();
-        expect(icon.top - link.top, 'above').to.be.at.least(8);
-        expect(link.bottom - icon.bottom, 'below').to.be.at.least(8);
-        expect(icon.left - link.left, 'left').to.be.at.least(8);
-        expect(link.right - icon.right, 'right').to.be.at.least(8);
+    const middle = ($el) => {
+      const { top, bottom } = $el[0].getBoundingClientRect();
+      return (top + bottom) / 2;
+    };
+    cy.get('[data-cy="heroMail"]').then(($mail) => {
+      ['socialGithub', 'socialLinkedin'].forEach((name) => {
+        cy.get(`[data-cy="${name}"]`).should(($link) => {
+          expect(middle($link)).to.be.closeTo(middle($mail), 4);
+          expect($link[0].getBoundingClientRect().right).to.be.at.most(
+            $mail[0].getBoundingClientRect().left
+          );
+        });
       });
     });
   });

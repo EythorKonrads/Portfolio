@@ -58,14 +58,5 @@ import Icon from './Icon.vue';
   .social__item:last-child .social__link {
     padding-right: 0;
   }
-  /* Centred here, so the outer edges need no alignment with the column */
-  @media screen and (max-width: 600px) {
-    .social__link,
-    .social__item:first-child .social__link,
-    .social__item:last-child .social__link {
-      display: inline-block;
-      padding: 0.75rem;
-    }
-  }
 }
 </style>

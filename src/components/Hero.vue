@@ -162,10 +162,6 @@ import MiniEarth from './MiniEarth.vue';
   @media screen and (max-width: 600px) {
     height: auto;
     width: 100vw;
-
-    .hero__links {
-      flex-direction: column;
-    }
   }
 }
 </style>
