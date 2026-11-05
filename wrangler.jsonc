@@ -21,29 +21,15 @@
       "migrations_dir": "migrations",
     },
   ],
-  "env": {
-    // PR previews: a separate Worker and database, as preview URLs would
-    // otherwise share the real Scoreboard
-    "preview": {
-      "workers_dev": true,
-      "routes": [],
-      // `wrangler preview` needs its bindings spelled out here too
-      "previews": {
-        "d1_databases": [
-          {
-            "binding": "DB",
-            "database_id": "bfc82227-a092-4237-8009-73d66d8b4b57",
-          },
-        ],
+  // PR previews: branches of this Worker, each with its own URL, on a test
+  // database so testing doesn't put scores on the real board
+  "preview_urls": true,
+  "previews": {
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_id": "bfc82227-a092-4237-8009-73d66d8b4b57",
       },
-      "d1_databases": [
-        {
-          "binding": "DB",
-          "database_name": "portfolio-scores-preview",
-          "database_id": "bfc82227-a092-4237-8009-73d66d8b4b57",
-          "migrations_dir": "migrations",
-        },
-      ],
-    },
+    ],
   },
 }
