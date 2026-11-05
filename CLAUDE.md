@@ -69,12 +69,13 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 # Project overview
 
-Personal portfolio site for Eythor Konradsson (ekonrads.com): a single page
+Personal portfolio site for Eythor Konradsson (eythorkonrads.com): a single page
 with a hero, Experience, Education and Projects, plus a tag filter and a
 sticky section nav.
 
 - Stack: Vue 3 (`<script setup>`), Vite, SCSS, Cypress for e2e tests.
-  Deployed on Netlify, which builds with Node 24 (`netlify.toml`).
+  Deployed on Cloudflare Workers (`wrangler.jsonc`), with Scores in D1
+  (`docs/scoreboard.md`).
 - `src/assets/*.json`: the site's content (jobs, educations, projects).
 - `src/components/`: one component per piece of UI; `src/views/HomeView.vue`
   puts the page together.
@@ -213,9 +214,9 @@ site works. Rely on it instead of checking things by hand in a browser.
 - Education and Projects are shorter than the screen, so they can't scroll all
   the way up to the sticky header.
 - PRs that only change docs or tooling skip CI (`paths-ignore` in
-  `.github/workflows/ci.yml`) and the Netlify deploy
-  (`scripts/netlify-ignore.sh`). When adding a file that affects the site or
-  the tests, check it isn't covered by either list.
+  `.github/workflows/ci.yml`) and the Cloudflare deploy (build watch paths, set
+  in the dashboard: Settings > Build). When adding a file that affects the site
+  or the tests, check it isn't covered by either list.
 
 ## Agent skills
 

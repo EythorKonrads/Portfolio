@@ -48,17 +48,3 @@ first, and keep 10.
 ```sh
 npx wrangler d1 export portfolio-scores --remote --output=scores.sql
 ```
-
-## Moving from Netlify
-
-Until Netlify is shut down, the old scores can still be exported from Netlify
-Blobs:
-
-```sh
-NETLIFY_SITE_ID=… NETLIFY_AUTH_TOKEN=… npm run --silent export:scores > scores.jsonl
-```
-
-This prints every entry as JSON Lines, one object per line, with its `id`
-added. The site ID is under Site configuration in Netlify. The token is a
-personal access token from User settings → Applications. Each line is one row
-of `entries`.
