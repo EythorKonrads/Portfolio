@@ -1,6 +1,5 @@
 // The shared scoreboard: its rules (src/game/scoreboard.js) and the API that
-// stores it (netlify/functions/scores/handler.mjs), here with an in-memory
-// store in place of Netlify Blobs
+// stores it (worker/handler.mjs), here with an in-memory store in place of D1
 import { ASTEROIDS, FIRST_SPAWN, WAVE_BONUS } from '../../src/game/config';
 import { waveAsteroids } from '../../src/game/game';
 import {
@@ -10,7 +9,7 @@ import {
   maxScore,
   qualifies,
 } from '../../src/game/scoreboard';
-import { handleScores } from '../../netlify/functions/scores/handler.mjs';
+import { handleScores } from '../../worker/handler.mjs';
 
 const entry = (initials, score, date = '2026-01-01T00:00:00.000Z') => ({
   initials,
@@ -24,14 +23,12 @@ const fullBoard = () =>
     entry('AAA', (BOARD_SIZE - i) * 100)
   );
 
-const memoryStore = () => {
-  const data = new Map();
-  return {
-    data,
-    get: async (key) => (data.has(key) ? JSON.parse(data.get(key)) : null),
-    setJSON: async (key, value) => data.set(key, JSON.stringify(value)),
-  };
-};
+const memoryStore = (entries = []) => ({
+  entries,
+  board: async () =>
+    entries.reduce((board, e) => addToBoard(board, e).board, []),
+  add: async (id, e) => entries.push({ id, ...e }),
+});
 const request = (method, body) =>
   new Request('http://localhost/api/scores', {
     method,
@@ -102,20 +99,18 @@ describe('Scoreboard', () => {
       const { board, rank } = await response.json();
       expect(rank).to.equal(1);
       expect(board[0]).to.include({ initials: 'ABC', score: 50, wave: 1 });
-      const keys = [...store.data.keys()];
-      expect(keys.filter((k) => k.startsWith('entries/'))).to.have.length(1);
-      expect(keys).to.include('board');
+      expect(store.entries).to.have.length(1);
+      expect(store.entries[0]).to.include({ initials: 'ABC', score: 50 });
     });
 
     it("writes nothing for a Score that doesn't make the board", async () => {
-      const store = memoryStore();
-      await store.setJSON('board', fullBoard());
+      const store = memoryStore(fullBoard());
       const response = await handleScores(
         request('POST', { initials: 'ABC', score: 50, wave: 1, time: 20 }),
         store
       );
       expect((await response.json()).rank).to.equal(0);
-      expect([...store.data.keys()]).to.deep.equal(['board']);
+      expect(store.entries).to.have.length(BOARD_SIZE);
     });
 
     it('turns away impossible, malformed and oversized entries', async () => {
@@ -138,7 +133,7 @@ describe('Scoreboard', () => {
         await status(request('POST', { initials: 'x'.repeat(600) }))
       ).to.equal(413);
       expect(await status(request('DELETE'))).to.equal(405);
-      expect(store.data.size).to.equal(0);
+      expect(store.entries).to.have.length(0);
     });
   });
 });

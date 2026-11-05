@@ -1,6 +1,6 @@
-// Talks to the scoreboard function (netlify/functions/scores/). Any failure,
-// such as being offline or running under `vite dev`, which has no functions,
-// comes back as null, and the end screen says the board isn't available.
+// Talks to the Scoreboard Worker (worker/). Any failure, such as being offline
+// or running `vite dev` without `wrangler dev`, comes back as null, and the end
+// screen says the board isn't available.
 const ENDPOINT = '/api/scores';
 
 async function call(options) {

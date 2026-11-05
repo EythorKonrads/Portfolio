@@ -1,5 +1,5 @@
-// Playtesting shortcuts, read from the page's URL under `npm run dev` or
-// `netlify dev` only; production builds leave them out. For example:
+// Playtesting shortcuts, read from the page's URL under `npm run dev` only;
+// production builds leave them out. For example:
 //
 //   http://localhost:5173/?wave=20&ore=3000&people=0.5
 //

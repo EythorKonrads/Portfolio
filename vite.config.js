@@ -25,4 +25,8 @@ export default defineConfig({
     },
   },
   base: '',
+  // The Scoreboard API, when `wrangler dev` is running (docs/scoreboard.md)
+  server: {
+    proxy: { '/api': 'http://localhost:8787' },
+  },
 });
