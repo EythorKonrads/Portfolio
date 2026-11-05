@@ -110,6 +110,18 @@ describe('Hero', () => {
     });
   });
 
+  it('leaves room above the links on a phone', () => {
+    cy.viewport(390, 844);
+    cy.get('[data-cy="heroLinks"]').should(($links) => {
+      const text = Cypress.$('[data-cy="heroText"]')[0];
+      const gap =
+        $links[0].getBoundingClientRect().top -
+        text.getBoundingClientRect().bottom;
+      // 1.5rem at this width's 12px root
+      expect(gap).to.be.at.least(18);
+    });
+  });
+
   describe('on a phone held sideways', () => {
     const top = ($el) => $el[0].getBoundingClientRect().top;
     const bottom = ($el) => $el[0].getBoundingClientRect().bottom;

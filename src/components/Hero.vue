@@ -165,6 +165,7 @@ import MiniEarth from './MiniEarth.vue';
 
     .hero__links {
       justify-content: space-evenly;
+      margin-top: 1.5rem;
     }
   }
 }
