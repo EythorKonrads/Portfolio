@@ -106,7 +106,9 @@ const { theme } = useTheme();
       padding: 0 0 2em;
     }
   }
-  @media screen and (max-width: 600px) {
+  /* Small sideways phones too: below 740px the nav doesn't fit beside the hero */
+  @media screen and (max-width: 600px),
+    screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
@@ -128,6 +130,10 @@ const { theme } = useTheme();
       right: 0;
       padding: 0 1rem;
       box-shadow: 0 1px 0 var(--color-accent-soft);
+    }
+    /* The header no longer spaces it from the hero, so match .home__education */
+    .home__experience {
+      margin-top: 2em;
     }
   }
   /* Room for the nav, theme toggle and filter on the smallest phones */

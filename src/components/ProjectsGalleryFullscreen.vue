@@ -301,7 +301,8 @@ onBeforeUnmount(() => {
   object-fit: cover;
 }
 /* Phones: the picture gets the width, with the arrows over its edges */
-@media (max-width: 600px) {
+@media (max-width: 600px),
+  (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
   .projects-gallery-fullscreen__stage {
     padding: 3.5rem 0.5rem 0.5rem;
   }

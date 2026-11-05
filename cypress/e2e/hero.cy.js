@@ -72,12 +72,62 @@ describe('Hero', () => {
       .and('contain.text', "Let's talk");
   });
 
-  describe('on a phone held sideways', () => {
+  it('keeps the social links on one line with "Let\'s talk" on a phone', () => {
+    cy.viewport(390, 844);
+    const middle = ($el) => {
+      const { top, bottom } = $el[0].getBoundingClientRect();
+      return (top + bottom) / 2;
+    };
+    cy.get('[data-cy="heroMail"]').then(($mail) => {
+      ['socialGithub', 'socialLinkedin'].forEach((name) => {
+        cy.get(`[data-cy="${name}"]`).should(($link) => {
+          expect(middle($link)).to.be.closeTo(middle($mail), 4);
+          expect($link[0].getBoundingClientRect().right).to.be.at.most(
+            $mail[0].getBoundingClientRect().left
+          );
+        });
+      });
+    });
+  });
+
+  it('spaces the social links and "Let\'s talk" evenly on a phone', () => {
+    cy.viewport(390, 844);
+    cy.get('[data-cy="heroLinks"]').should(($row) => {
+      const row = $row[0].getBoundingClientRect();
+      const github = Cypress.$('[data-cy="socialGithub"]')[0];
+      const linkedin = Cypress.$('[data-cy="socialLinkedin"]')[0];
+      const mail = Cypress.$('[data-cy="heroMail"]')[0];
+
+      const left = github.getBoundingClientRect().left - row.left;
+      const between =
+        mail.getBoundingClientRect().left -
+        linkedin.getBoundingClientRect().right;
+      const right = row.right - mail.getBoundingClientRect().right;
+
+      expect(left).to.be.greaterThan(0);
+      expect(between).to.be.closeTo(left, 1);
+      expect(right).to.be.closeTo(left, 1);
+    });
+  });
+
+  it('leaves room above the links on a phone', () => {
+    cy.viewport(390, 844);
+    cy.get('[data-cy="heroLinks"]').should(($links) => {
+      const text = Cypress.$('[data-cy="heroText"]')[0];
+      const gap =
+        $links[0].getBoundingClientRect().top -
+        text.getBoundingClientRect().bottom;
+      // 1.5rem at this width's 12px root
+      expect(gap).to.be.at.least(18);
+    });
+  });
+
+  describe('on a large phone held sideways', () => {
     const top = ($el) => $el[0].getBoundingClientRect().top;
     const bottom = ($el) => $el[0].getBoundingClientRect().bottom;
 
     beforeEach(() => {
-      cy.viewport(667, 375);
+      cy.viewport(844, 390);
     });
 
     it('starts with the top of the hero in view', () => {
@@ -99,7 +149,7 @@ describe('Hero', () => {
     it('scrolls down to the links', () => {
       cy.get('[data-cy="hero"]').scrollTo('bottom', { ensureScrollable: true });
       cy.get('[data-cy="heroLinks"]').should(($links) => {
-        expect(bottom($links)).to.be.at.most(375);
+        expect(bottom($links)).to.be.at.most(390);
       });
     });
   });

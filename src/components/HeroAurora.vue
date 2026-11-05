@@ -295,7 +295,8 @@ onBeforeUnmount(() => {
   }
 }
 /* Lighter on phones: two bands, slower */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 600px),
+  screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
   .hero-aurora__band {
     animation-duration: 40s;
   }

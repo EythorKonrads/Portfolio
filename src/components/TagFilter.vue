@@ -150,7 +150,8 @@ const isOpen = ref(false);
   cursor: default;
 }
 /* Match the section nav's mobile size; the app's 15px base doesn't scale */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 600px),
+  screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
   .tag-filter__button,
   .tag-filter__clear {
     font-size: 0.875rem;
