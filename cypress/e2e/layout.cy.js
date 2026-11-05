@@ -57,6 +57,42 @@ describe('Layout', () => {
     it('has no horizontal overflow', () => {
       cy.assertNoHorizontalOverflow();
     });
+
+    it('spaces Experience from the hero like Education from Experience', () => {
+      cy.get('[data-cy="experience"]').should(($experience) => {
+        const aboveExperience =
+          rect($experience).top - rect(Cypress.$('[data-cy="hero"]')).bottom;
+        const aboveEducation =
+          rect(Cypress.$('[data-cy="education"]')).top -
+          rect($experience).bottom;
+
+        expect(aboveEducation).to.be.greaterThan(0);
+        expect(aboveExperience).to.be.closeTo(aboveEducation, 1);
+      });
+    });
+  });
+
+  context('font size', () => {
+    const rootFontSize = (size) =>
+      cy.get('html').should('have.css', 'font-size', size);
+
+    it('matches an upright phone on a phone held sideways', () => {
+      cy.viewport(844, 390);
+      cy.visitHome();
+      rootFontSize('14px');
+    });
+
+    it('stays full size on an upright tablet of the same width', () => {
+      cy.viewport(844, 1100);
+      cy.visitHome();
+      rootFontSize('16px');
+    });
+
+    it('stays full size on a short desktop window', () => {
+      cy.viewport(1280, 600);
+      cy.visitHome();
+      rootFontSize('16px');
+    });
   });
 
   context('link previews', () => {

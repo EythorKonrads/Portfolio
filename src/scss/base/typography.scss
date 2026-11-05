@@ -1,5 +1,7 @@
 html {
-  @media screen and (max-width: 600px) {
+  /* Same size on a phone held sideways, which is wider than 600px */
+  @media screen and (max-width: 600px),
+    screen and (orientation: landscape) and (max-height: 500px) {
     font-size: 14px;
   }
 

@@ -129,6 +129,10 @@ const { theme } = useTheme();
       padding: 0 1rem;
       box-shadow: 0 1px 0 var(--color-accent-soft);
     }
+    /* The header no longer spaces it from the hero, so match .home__education */
+    .home__experience {
+      margin-top: 2em;
+    }
   }
   /* Room for the nav, theme toggle and filter on the smallest phones */
   @media screen and (max-width: 360px) {
