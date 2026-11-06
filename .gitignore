@@ -27,8 +27,5 @@ coverage
 *.sln
 *.sw?
 
-# Local Netlify folder
-.netlify
-
 # Local Wrangler folder
 .wrangler
