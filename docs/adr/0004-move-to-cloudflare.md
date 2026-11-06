@@ -23,7 +23,7 @@ the AWS experience the move would have added to the portfolio.
   affects the Scoreboard and not the page. Cloudflare documents static files as
   free and unlimited, but not exactly what happens at the limit, so this is
   likely rather than proven.
-- Preview URLs share production's resources, so previews run as a separate
-  Worker with its own test database, keeping test scores off the real board.
+- PR previews are branches of the same Worker, given their own test database
+  so test scores stay off the real board.
 - The Scoreboard started empty on Cloudflare. The old board held only Eythor's
   own Scores, so they weren't worth carrying over.

@@ -31,10 +31,9 @@ npx wrangler dev   # leave running, and run npm run dev in another terminal
 
 ## The data
 
-Everything is in the D1 database `portfolio-scores`. PR previews run as a
-separate Worker, `portfolio-preview`, with its own database,
-`portfolio-scores-preview`, so testing there doesn't put scores on the real
-board.
+Everything is in the D1 database `portfolio-scores`. PR previews use their own
+database, `portfolio-scores-preview`, so testing there doesn't put scores on
+the real board.
 
 The `entries` table has one row per Score that made the board, kept for good
 even after it drops off: `id`, `initials`, `score`, `wave`, `time` (seconds
