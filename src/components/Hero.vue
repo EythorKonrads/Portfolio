@@ -76,7 +76,13 @@ import MiniEarth from './MiniEarth.vue';
   flex-shrink: 0;
   width: clamp(300px, 30vw, 450px);
   box-sizing: border-box;
-  background-color: var(--color-background-overlay);
+  /* The overlay on an opaque base, so the Aurora doesn't show through */
+  background:
+    linear-gradient(
+      var(--color-background-overlay),
+      var(--color-background-overlay)
+    ),
+    var(--color-background);
   padding: 1.5rem;
 
   .hero__wrapper {
