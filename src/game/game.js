@@ -33,11 +33,14 @@ export function worldScale(width, height) {
   return Math.min(1.2, Math.max(0.6, Math.min(width, height) / 800));
 }
 
-export function createGame({ width, height, seed } = {}) {
+// pace: the { width, height } that sets how fast rocks fly, if not the field
+export function createGame({ width, height, seed, pace } = {}) {
   const game = {
     width,
     height,
     scale: worldScale(width, height),
+    pace,
+    paceScale: worldScale(pace?.width ?? width, pace?.height ?? height),
     random: createRandom(seed),
     status: 'wave', // 'wave' | 'shop' | 'over'
     wave: 0,
@@ -160,7 +163,9 @@ export function asteroidHp(game, size) {
 
 export function asteroidSpeed(game, size) {
   return (
-    ASTEROIDS[size].speed * game.scale * (1 + WAVE_SPEEDUP * (game.wave - 1))
+    ASTEROIDS[size].speed *
+    game.paceScale *
+    (1 + WAVE_SPEEDUP * (game.wave - 1))
   );
 }
 
@@ -233,9 +238,9 @@ function spawnAsteroid(game, size, side, along, behind) {
 // A short edge (top and bottom on a phone held sideways) starts rocks close
 // to Earth. Slow them so they take as long to arrive as from a desktop's.
 export function edgeSlowdown(game, side) {
-  const { width, height, earth } = game;
+  const { width, height } = game.pace ?? game;
   const toEdge = side % 2 === 0 ? height / 2 : width / 2;
-  const reach = (toEdge - earth.radius) / game.scale;
+  const reach = (toEdge - earthRadius(width, height)) / game.paceScale;
   return Math.min(1, reach / WIDE_REACH);
 }
 

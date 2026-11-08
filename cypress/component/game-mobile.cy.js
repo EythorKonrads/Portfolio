@@ -64,6 +64,15 @@ describe('Game on phones', () => {
     });
   });
 
+  it('paces a desktop game by the screen and a touch game by its field', () => {
+    mountGame(false);
+    cy.window().then((win) =>
+      withGame((game) => expect(game.pace).to.equal(win.screen))
+    );
+    mountGame(true);
+    withGame((game) => expect(game.pace).to.be.undefined);
+  });
+
   it('asks for fullscreen and to stay sideways when a game starts', () => {
     cy.viewport(844, 390);
     startGame();

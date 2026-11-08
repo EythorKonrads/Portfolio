@@ -28,6 +28,7 @@ import {
   isEnding,
   nextWave,
   price,
+  resize,
   satellitePositions,
   shotDamage,
   spawnInterval,
@@ -142,6 +143,28 @@ describe('Game rules', () => {
     expect(edgeSlowdown(phone, 1)).to.equal(1);
     const big = createGame({ width: 1920, height: 1080, seed: 1 });
     expect(edgeSlowdown(big, 0)).to.equal(1);
+  });
+
+  it('keeps rocks at full-screen speed in a smaller desktop window', () => {
+    const pace = { width: 1920, height: 1080 };
+    const speed = (game, side) =>
+      asteroidSpeed(game, 'small') * edgeSlowdown(game, side);
+    const full = createGame({ ...pace, pace, seed: 1 });
+    const windows = [
+      [844, 390],
+      [1920, 500],
+      [500, 1000],
+    ];
+    for (const [width, height] of windows) {
+      const game = createGame({ width, height, pace, seed: 1 });
+      expect(speed(game, 0)).to.equal(speed(full, 0));
+      expect(speed(game, 1)).to.equal(speed(full, 1));
+    }
+
+    // Starting small and then enlarging the window gains nothing either
+    const enlarged = createGame({ width: 844, height: 390, pace, seed: 1 });
+    resize(enlarged, 1920, 1080);
+    expect(speed(enlarged, 0)).to.equal(speed(full, 0));
   });
 
   it('breaks a large Asteroid into mediums and a medium into smalls', () => {

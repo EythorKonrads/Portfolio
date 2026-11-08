@@ -71,6 +71,9 @@ function newGame() {
   game = createGame({
     width: window.innerWidth,
     height: window.innerHeight,
+    // Rocks slow down on small fields to suit phones. On a computer, pacing
+    // by the screen stops a shrunken window from getting that too.
+    pace: isTouch ? undefined : window.screen,
     // Tests replay the same game every time
     seed: window.Cypress ? 1 : undefined,
   });
