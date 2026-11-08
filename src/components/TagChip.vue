@@ -47,7 +47,7 @@ const { isSelected, toggleTag } = useTagFilter();
   box-sizing: border-box;
   font: inherit;
   line-height: inherit;
-  color: var(--color-accent);
+  color: var(--color-chip-text);
   background-color: var(--color-accent-soft);
   cursor: pointer;
   transition:

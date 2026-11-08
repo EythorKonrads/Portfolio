@@ -13,6 +13,18 @@ const resolveColor = (doc, variable) => {
   return color;
 };
 
+const rect = ($el) => $el[0].getBoundingClientRect();
+
+// How much of the lights, top to bottom, sits above the column. By layout
+// position: the skew stretches a wide band's box.
+const expectTopHidden = ($bands) => {
+  const shown = [...$bands].filter((band) => band.offsetParent);
+  const top = shown[0].offsetTop;
+  const last = shown[shown.length - 1];
+  const hidden = -top / (last.offsetTop + last.offsetHeight - top);
+  expect(hidden, 'share hidden above the column').to.be.within(0.2, 0.4);
+};
+
 describe('Aurora', () => {
   context('desktop, dark theme', () => {
     beforeEach(() => {
@@ -20,77 +32,66 @@ describe('Aurora', () => {
       cy.visitHome();
     });
 
-    it('drifts behind the whole page without catching clicks', () => {
+    it('sits behind the content without catching clicks', () => {
       aurora()
         .should('have.attr', 'aria-hidden', 'true')
         .and('have.css', 'pointer-events', 'none')
-        .and('have.css', 'z-index', '-1')
-        .and('have.css', 'position', 'fixed')
-        .should(($aurora) => {
-          const rect = $aurora[0].getBoundingClientRect();
-          expect(rect.width).to.equal(
-            $aurora[0].ownerDocument.documentElement.clientWidth
-          );
-          expect(rect.height).to.be.closeTo(800, 1);
-        });
-      // A sibling of the hero, behind it and the content column alike
-      cy.get('[data-cy="hero"]')
-        .parent()
-        .children('[data-cy="heroAurora"]')
-        .should('exist');
-      bands()
-        .should('have.length', 3)
-        .each(($band) => {
-          expect(getComputedStyle($band[0]).animationName).not.to.equal('none');
-        });
+        .and('have.css', 'z-index', '-1');
+      bands().should('have.length', 3);
     });
 
-    it('floats its bands around the screen instead of staying put', () => {
-      const centers = () =>
-        cy.get('[data-cy="auroraBand"]').then(($bands) =>
-          [...$bands].map((band) => {
-            const { left, top, width, height } = band.getBoundingClientRect();
-            return { x: left + width / 2, y: top + height / 2 };
-          })
-        );
-      cy.get('[data-cy="auroraPath"]')
-        .should('have.length', 3)
-        .each(($path) => {
-          expect(getComputedStyle($path[0]).animationName).to.match(
-            /^hero-aurora-wander-\d/
-          );
+    it('holds completely still', () => {
+      aurora().should(($aurora) => {
+        expect($aurora[0].getAnimations({ subtree: true })).to.have.length(0);
+      });
+      cy.get('[data-cy="hero"]').trigger('pointermove', 50, 120);
+      aurora().should(($aurora) => {
+        expect($aurora[0].getAnimations({ subtree: true })).to.have.length(0);
+      });
+    });
+
+    it('keeps its lights near the top of the screen', () => {
+      bands().should(($bands) => {
+        [...$bands].forEach((band) => {
+          const { top, height } = band.getBoundingClientRect();
+          expect(top + height / 2).to.be.lessThan(800 * 0.6);
         });
-      // The paths are slow, so a short wait still shows each band moving
-      centers().then((before) => {
-        cy.wait(1500);
-        centers().then((after) => {
-          after.forEach(({ x, y }, i) => {
-            const moved = Math.hypot(x - before[i].x, y - before[i].y);
-            expect(moved, `band ${i + 1} moved`).to.be.greaterThan(2);
+      });
+    });
+
+    it('hides the top of its lights above the column', () => {
+      bands().should(expectTopHidden);
+    });
+
+    it('leans right, away from the hero', () => {
+      bands().should(($bands) => {
+        const layer = $bands[0].parentElement;
+        expect($bands[0].offsetLeft / layer.clientWidth).to.be.closeTo(
+          -0.15,
+          0.01
+        );
+      });
+    });
+
+    it('stays in the content column, clear of the hero', () => {
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        cy.get('[data-cy="homeWrapper"]').then(($wrapper) => {
+          aurora().should(($aurora) => {
+            expect(rect($aurora).left).to.be.at.least(rect($hero).right - 1);
+            expect(rect($aurora).right).to.be.at.most(rect($wrapper).right + 1);
           });
         });
       });
-      // Their paths reach well below the top of the screen. Centres, not
-      // tops: the skew stretches a wide band's box far above its middle.
-      centers().then((now) => {
-        const lowest = Math.max(...now.map(({ y }) => y));
-        expect(lowest, 'a band below the top quarter').to.be.greaterThan(
-          800 * 0.25
-        );
-      });
     });
 
-    it('brightens gently around the cursor', () => {
-      cy.get('[data-cy="auroraGlow"]').should('have.css', 'opacity', '0');
-      cy.get('[data-cy="hero"]').trigger('pointermove', 50, 120);
-      aurora().should(($aurora) => {
-        expect($aurora[0].style.getPropertyValue('--aurora-y')).to.match(/%$/);
+    it('scrolls away with the content', () => {
+      aurora().then(($aurora) => {
+        const start = rect($aurora).top;
+        cy.get('[data-cy="homeWrapper"]').scrollTo(0, 300);
+        aurora().should(($moved) => {
+          expect(rect($moved).top).to.be.closeTo(start - 300, 1);
+        });
       });
-      cy.get('[data-cy="auroraGlow"]').should(($glow) => {
-        expect(Number(getComputedStyle($glow[0]).opacity)).to.be.greaterThan(0);
-      });
-      cy.get('[data-cy="hero"]').trigger('pointerleave');
-      cy.get('[data-cy="auroraGlow"]').should('have.css', 'opacity', '0');
     });
 
     it('keeps text at 4.5:1 over its brightest color', () => {
@@ -113,13 +114,20 @@ describe('Aurora', () => {
             composite(resolveColor(doc, variable), page, layerOpacity)
           )
           .sort((a, b) => luminance(b) - luminance(a))[0];
+        const card = composite(resolveColor(doc, '--color-card'), sky);
         const backgrounds = {
-          hero: composite(getComputedStyle(hero).backgroundColor, sky),
+          // The Aurora doesn't reach the hero
+          hero: composite(
+            resolveColor(doc, '--color-background-overlay'),
+            page
+          ),
           header: composite(
             getComputedStyle(header, '::before').backgroundColor,
             sky
           ),
           content: sky,
+          // A tag on a project card, the lightest place a tag sits
+          chip: composite(resolveColor(doc, '--color-accent-soft'), card),
         };
 
         const checks = [
@@ -133,7 +141,7 @@ describe('Aurora', () => {
           ['navLink', 'header', 4.5],
           ['filterButton', 'header', 4.5],
           ['jobTitle', 'content', 4.5],
-          ['jobTag', 'content', 4.5],
+          ['jobTag', 'chip', 4.5],
         ];
         checks.forEach(([id, area, minimum]) => {
           const color = getComputedStyle(
@@ -174,45 +182,38 @@ describe('Aurora', () => {
       expect(second.offsetTop - first.offsetTop).to.be.closeTo(150, 1);
       expect(third.offsetTop - second.offsetTop).to.be.closeTo(150, 1);
     });
-    // So does how far a band wanders: stop the first at its 65% keyframe
-    cy.get('[data-cy="auroraPath"]')
-      .first()
-      .should(($path) => {
-        const [wander] = $path[0].getAnimations();
-        wander.pause();
-        wander.currentTime = 0.65 * wander.effect.getTiming().duration;
-        const { m41, m42 } = new DOMMatrix(
-          getComputedStyle($path[0]).transform
-        );
-        expect(m41).to.be.closeTo(-24 * 16, 1);
-        expect(m42).to.be.closeTo(78 * 10, 1);
-      });
   });
 
-  it('uses two slower bands on phones', () => {
-    cy.viewport(375, 812);
-    cy.visitHome();
-    bands().filter(':visible').should('have.length', 2);
-    bands()
-      .first()
-      .should(($band) => {
-        expect(
-          parseFloat(getComputedStyle($band[0]).animationDuration)
-        ).to.be.greaterThan(26);
-      });
-  });
+  context('phone', () => {
+    beforeEach(() => {
+      cy.viewport(375, 812);
+      cy.visitHome();
+    });
 
-  it('stands still for visitors who prefer reduced motion', () => {
-    cy.viewport(1280, 800);
-    cy.visitHome({ reducedMotion: true });
-    aurora().should('exist');
-    bands().each(($band) => {
-      expect(getComputedStyle($band[0]).animationName).to.equal('none');
+    it('uses two bands', () => {
+      bands().filter(':visible').should('have.length', 2);
     });
-    cy.get('[data-cy="auroraPath"]').each(($path) => {
-      expect(getComputedStyle($path[0]).animationName).to.equal('none');
+
+    it('hides the top of its lights above the column', () => {
+      bands().should(expectTopHidden);
     });
-    cy.get('[data-cy="hero"]').trigger('pointermove', 50, 120);
-    cy.get('[data-cy="auroraGlow"]').should('not.be.visible');
+
+    it('starts below the hero', () => {
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        aurora().should(($aurora) => {
+          expect(rect($aurora).top).to.be.at.least(rect($hero).bottom - 1);
+        });
+      });
+    });
+
+    it('scrolls away with the page', () => {
+      aurora().then(($aurora) => {
+        const start = rect($aurora).top;
+        cy.scrollTo(0, 300);
+        aurora().should(($moved) => {
+          expect(rect($moved).top).to.be.closeTo(start - 300, 1);
+        });
+      });
+    });
   });
 });

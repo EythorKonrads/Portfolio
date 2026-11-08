@@ -8,10 +8,11 @@ defend Earth from asteroids.
 **Hero**:
 The panel that introduces Eythor: profile photo, name, role and the
 "Let's talk" link.
-_Avoid_: Header, banner, intro
+_Avoid_: Header, banner, intro, About Me
 
 **Aurora**:
-The northern-lights effect behind the whole page, shown only in the dark theme.
+The still northern-lights picture at the top of the content column, shown
+only in the dark theme. It scrolls away with the content.
 _Avoid_: Background animation, northern lights
 
 ## Game

@@ -80,6 +80,7 @@
   --color-accent: #9393e8;
   --color-accent-soft: rgba(147, 147, 232, 0.1);
   --color-accent-soft-hover: rgba(147, 147, 232, 0.2);
+  --color-chip-text: #c4c4f4;
   --color-chip-selected-bg: rgba(147, 147, 232, 0.45);
   --color-chip-selected-text: var(--color-white);
 
@@ -96,7 +97,7 @@
   --color-card-shadow: rgba(0, 0, 0, 0.1);
   /* The sticky header, see-through so the Aurora shows behind it */
   --color-header-background: rgba(15, 23, 42, 0.6);
-  /* The Aurora behind the page, dark theme only */
+  /* The Aurora behind the content, dark theme only */
   --color-aurora-green: #4ade80;
   --color-aurora-teal: #2dd4bf;
   --color-aurora-purple: #c084fc;
@@ -119,6 +120,7 @@
   --color-accent: #5050c8;
   --color-accent-soft: rgba(80, 80, 200, 0.08);
   --color-accent-soft-hover: rgba(80, 80, 200, 0.15);
+  --color-chip-text: var(--color-accent);
   --color-chip-selected-bg: #5050c8;
   --color-chip-selected-text: var(--color-white);
 
