@@ -244,7 +244,6 @@ describe('Tag filter', () => {
         matching(section, selected).length ? 'not.exist' : 'exist'
       );
     });
-    cy.contains('More projects to showcase soon').should('not.exist');
   });
 
   it('applies tags from the URL and ignores unknown ones', () => {

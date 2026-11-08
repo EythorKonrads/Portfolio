@@ -4,7 +4,7 @@ import ProjectsItem from './ProjectsItem.vue';
 import projects from '@/assets/projects.json';
 import { useTagFilter } from '@/composables/useTagFilter';
 
-const { matches, hasFilter } = useTagFilter();
+const { matches } = useTagFilter();
 const visibleProjects = computed(() =>
   projects
     .map((project, index) => ({ project, index }))
@@ -31,9 +31,6 @@ const visibleProjects = computed(() =>
       data-cy="projectsEmpty"
     >
       No projects match the selected filters.
-    </p>
-    <p v-if="!hasFilter" v-reveal class="projects__more">
-      More projects to showcase soon...
     </p>
   </div>
 </template>
@@ -63,12 +60,6 @@ const visibleProjects = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
-.projects__more {
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  color: var(--color-text-muted);
-  text-align: center;
 }
 .projects__empty {
   margin: 1rem 0 0;
