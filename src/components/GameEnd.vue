@@ -156,7 +156,7 @@ async function save() {
 
     <div class="game-end__actions">
       <a
-        href="mailto:kh.krimper@gmail.com"
+        href="mailto:hello@eythorkonrads.com"
         class="game-button"
         data-cy="gameEndTalk"
       >
