@@ -31,7 +31,7 @@
 }
 .hero-aurora__band {
   position: absolute;
-  left: -30%;
+  left: -15%;
   width: 160%;
   height: calc(30 * var(--aurora-vh));
   /* On the band, not the curtain: a filter runs before the mask on the same
@@ -52,13 +52,14 @@
     var(--color-aurora-purple) 75%,
     transparent
   );
-  /* Faded ends, a lower edge and a top that fades out, then two sets of
-     rays at different spacings so the pattern never looks regular */
+  /* Faded ends (the left one gone before the column's edge, so no glow meets
+     the Hero), a lower edge and a top that fades out, then two sets of rays
+     at different spacings so the pattern never looks regular */
   mask-image:
     linear-gradient(
       90deg,
-      transparent,
-      var(--color-black) 25%,
+      transparent 12%,
+      var(--color-black) 30%,
       var(--color-black) 75%,
       transparent
     ),
@@ -83,20 +84,24 @@
     );
   mask-composite: intersect;
 }
+/* About the top 30% of the lights sits above the column, out of sight */
 .hero-aurora__band--1 {
-  top: calc(-5 * var(--aurora-vh));
+  top: calc(-18 * var(--aurora-vh));
 }
 .hero-aurora__band--2 {
-  top: calc(10 * var(--aurora-vh));
+  top: calc(-3 * var(--aurora-vh));
 }
 .hero-aurora__band--3 {
-  top: calc(25 * var(--aurora-vh));
+  top: calc(12 * var(--aurora-vh));
 }
 /* Lighter on phones: two bands */
 @media screen and (max-width: 600px),
   screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
+  .hero-aurora__band--1 {
+    top: calc(-15 * var(--aurora-vh));
+  }
   .hero-aurora__band--2 {
-    top: calc(14 * var(--aurora-vh));
+    top: calc(4 * var(--aurora-vh));
   }
   .hero-aurora__band--3 {
     display: none;

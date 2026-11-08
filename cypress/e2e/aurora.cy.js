@@ -15,6 +15,16 @@ const resolveColor = (doc, variable) => {
 
 const rect = ($el) => $el[0].getBoundingClientRect();
 
+// How much of the lights, top to bottom, sits above the column. By layout
+// position: the skew stretches a wide band's box.
+const expectTopHidden = ($bands) => {
+  const shown = [...$bands].filter((band) => band.offsetParent);
+  const top = shown[0].offsetTop;
+  const last = shown[shown.length - 1];
+  const hidden = -top / (last.offsetTop + last.offsetHeight - top);
+  expect(hidden, 'share hidden above the column').to.be.within(0.2, 0.4);
+};
+
 describe('Aurora', () => {
   context('desktop, dark theme', () => {
     beforeEach(() => {
@@ -46,6 +56,20 @@ describe('Aurora', () => {
           const { top, height } = band.getBoundingClientRect();
           expect(top + height / 2).to.be.lessThan(800 * 0.6);
         });
+      });
+    });
+
+    it('hides the top of its lights above the column', () => {
+      bands().should(expectTopHidden);
+    });
+
+    it('leans right, away from the hero', () => {
+      bands().should(($bands) => {
+        const layer = $bands[0].parentElement;
+        expect($bands[0].offsetLeft / layer.clientWidth).to.be.closeTo(
+          -0.15,
+          0.01
+        );
       });
     });
 
@@ -168,6 +192,10 @@ describe('Aurora', () => {
 
     it('uses two bands', () => {
       bands().filter(':visible').should('have.length', 2);
+    });
+
+    it('hides the top of its lights above the column', () => {
+      bands().should(expectTopHidden);
     });
 
     it('starts below the hero', () => {
