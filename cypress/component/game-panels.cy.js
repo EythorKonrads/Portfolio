@@ -273,7 +273,7 @@ describe('Game panels', () => {
     cy.get('[data-cy="gameEndTalk"]').should(
       'have.attr',
       'href',
-      'mailto:kh.krimper@gmail.com'
+      'mailto:hello@eythorkonrads.com'
     );
     cy.get('[data-cy="gameEndAgain"]').click();
     cy.get('@again').should('have.been.calledOnce');

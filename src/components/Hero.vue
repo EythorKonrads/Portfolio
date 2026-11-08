@@ -52,7 +52,7 @@ import MiniEarth from './MiniEarth.vue';
     >
       <Social />
       <a
-        href="mailto:kh.krimper@gmail.com"
+        href="mailto:hello@eythorkonrads.com"
         class="hero__mail"
         data-cy="heroMail"
       >
