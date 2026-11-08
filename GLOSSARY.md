@@ -11,8 +11,8 @@ The panel that introduces Eythor: profile photo, name, role and the
 _Avoid_: Header, banner, intro, About Me
 
 **Aurora**:
-The still northern-lights picture behind the content column, shown only in
-the dark theme. It stays put while the content scrolls over it.
+The still northern-lights picture at the top of the content column, shown
+only in the dark theme. It scrolls away with the content.
 _Avoid_: Background animation, northern lights
 
 ## Game

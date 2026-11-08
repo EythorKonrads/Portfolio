@@ -11,16 +11,19 @@
 </template>
 
 <style scoped>
-/* Fixed (.home is its stacking context), so it stays put whichever element
-   scrolls. The Hero's opaque background covers it, leaving it behind the
-   content only. Its opacity caps how much it lightens the text's background,
-   keeping 4.5:1. */
+/* At the top of the content column, so it scrolls away with the content. Its
+   opacity caps how much it lightens the text's background, keeping 4.5:1. */
 .hero-aurora {
   /* 1vw and 1vh, but no bigger than on a 1600x1000 screen. Past that, gaps
      between the lights would keep stretching while the rays and blur don't. */
   --aurora-vh: min(1vh, 10px);
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Room for all the bands, but never taller than short filtered content,
+     which would make the column scroll */
+  height: min(100%, calc(70 * var(--aurora-vh)));
   z-index: -1;
   overflow: hidden;
   pointer-events: none;

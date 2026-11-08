@@ -14,10 +14,10 @@ const { theme } = useTheme();
 
 <template>
   <div class="home">
-    <!-- Real auroras only show against a dark sky -->
-    <HeroAurora v-if="theme === 'dark'" />
     <Hero class="home__hero" />
     <div class="home__wrapper" data-cy="homeWrapper">
+      <!-- Real auroras only show against a dark sky -->
+      <HeroAurora v-if="theme === 'dark'" />
       <header class="home__header" data-cy="homeHeader">
         <SectionNav />
         <div class="home__actions">
@@ -52,6 +52,8 @@ const { theme } = useTheme();
     z-index: 2;
   }
   .home__wrapper {
+    /* Holds the Aurora, which scrolls away with the content */
+    position: relative;
     /* Fill the space beside the hero regardless of content width */
     flex: 1 1 0;
     min-width: 0;

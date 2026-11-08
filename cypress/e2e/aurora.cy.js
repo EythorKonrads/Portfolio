@@ -13,12 +13,7 @@ const resolveColor = (doc, variable) => {
   return color;
 };
 
-// The Hero must hide the Aurora, so nothing of it can show through
-const heroIsOpaque = ($hero) => {
-  const { backgroundColor } = getComputedStyle($hero[0]);
-  const alpha = Number(backgroundColor.match(/[\d.]+/g)[3] ?? 1);
-  expect(alpha, 'hero base is opaque').to.equal(1);
-};
+const rect = ($el) => $el[0].getBoundingClientRect();
 
 describe('Aurora', () => {
   context('desktop, dark theme', () => {
@@ -27,12 +22,11 @@ describe('Aurora', () => {
       cy.visitHome();
     });
 
-    it('stays put behind the page without catching clicks', () => {
+    it('sits behind the content without catching clicks', () => {
       aurora()
         .should('have.attr', 'aria-hidden', 'true')
         .and('have.css', 'pointer-events', 'none')
-        .and('have.css', 'z-index', '-1')
-        .and('have.css', 'position', 'fixed');
+        .and('have.css', 'z-index', '-1');
       bands().should('have.length', 3);
     });
 
@@ -55,12 +49,24 @@ describe('Aurora', () => {
       });
     });
 
-    it('is hidden behind the hero, which fills its column', () => {
-      cy.get('[data-cy="hero"]').should(($hero) => {
-        heroIsOpaque($hero);
-        const rect = $hero[0].getBoundingClientRect();
-        expect(rect.top).to.equal(0);
-        expect(rect.height).to.be.closeTo(800, 1);
+    it('stays in the content column, clear of the hero', () => {
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        cy.get('[data-cy="homeWrapper"]').then(($wrapper) => {
+          aurora().should(($aurora) => {
+            expect(rect($aurora).left).to.be.at.least(rect($hero).right - 1);
+            expect(rect($aurora).right).to.be.at.most(rect($wrapper).right + 1);
+          });
+        });
+      });
+    });
+
+    it('scrolls away with the content', () => {
+      aurora().then(($aurora) => {
+        const start = rect($aurora).top;
+        cy.get('[data-cy="homeWrapper"]').scrollTo(0, 300);
+        aurora().should(($moved) => {
+          expect(rect($moved).top).to.be.closeTo(start - 300, 1);
+        });
       });
     });
 
@@ -164,12 +170,21 @@ describe('Aurora', () => {
       bands().filter(':visible').should('have.length', 2);
     });
 
-    it('is hidden behind the hero, which spans the screen', () => {
-      cy.get('[data-cy="hero"]').should(($hero) => {
-        heroIsOpaque($hero);
-        expect($hero[0].getBoundingClientRect().width).to.be.at.least(
-          $hero[0].ownerDocument.documentElement.clientWidth
-        );
+    it('starts below the hero', () => {
+      cy.get('[data-cy="hero"]').then(($hero) => {
+        aurora().should(($aurora) => {
+          expect(rect($aurora).top).to.be.at.least(rect($hero).bottom - 1);
+        });
+      });
+    });
+
+    it('scrolls away with the page', () => {
+      aurora().then(($aurora) => {
+        const start = rect($aurora).top;
+        cy.scrollTo(0, 300);
+        aurora().should(($moved) => {
+          expect(rect($moved).top).to.be.closeTo(start - 300, 1);
+        });
       });
     });
   });
