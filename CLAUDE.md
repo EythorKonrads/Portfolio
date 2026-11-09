@@ -138,7 +138,7 @@ code. Read it before writing or reviewing code.
 
 ### Issue tracker
 
-Issues live in this repo's GitHub Issues, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues live in this repo's GitHub Issues, managed with the `gh` CLI. Read one with `gh issue view <number> --json number,title,body,labels,comments`. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
