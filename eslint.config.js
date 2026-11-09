@@ -57,4 +57,23 @@ export default [
     files: ['cypress/**/*.js'],
     ...pluginCypress.configs.globals,
   },
+  {
+    files: ['cypress/**/*.js'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "CallExpression[callee.object.name='cy'][callee.property.name='visit']",
+          message: 'Use cy.visitHome(), which fails on any console.error.',
+        },
+        {
+          selector:
+            "CallExpression[callee.object.name='Cypress'][callee.property.name='env']",
+          message:
+            'Cypress.env() was removed in Cypress 16. Use Cypress.expose() or cy.env().',
+        },
+      ],
+    },
+  },
 ];

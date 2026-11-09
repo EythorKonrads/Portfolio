@@ -1,6 +1,8 @@
 import { defineConfig } from 'cypress';
 
 export default defineConfig({
+  // Cypress's trash helper fails on Apple Silicon, with a long warning each run
+  trashAssetsBeforeRuns: false,
   e2e: {
     specPattern: 'cypress/e2e/**/*.{cy,spec}.{js,jsx,ts,tsx}',
     baseUrl: 'http://localhost:5173',

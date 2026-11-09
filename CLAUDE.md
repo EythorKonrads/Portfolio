@@ -34,7 +34,8 @@ sticky section nav.
   served by Vite with no build. CI runs these too.
 - `npm run test:e2e:quiet`, `npm run test:component:quiet`: the same runs with
   short output, and failures still print in full. Agents use these by default.
-- `npx eslint .`: lint without fixing (`npm run lint` fixes).
+- `npm run check`: lint and formatting without fixing, as CI runs them
+  (`npm run lint` and `npm run format` fix).
 
 # Generated files
 
@@ -93,8 +94,6 @@ site works. Rely on it instead of checking things by hand in a browser.
   edits need no test changes.
 - Select elements with `data-cy` attributes, not CSS classes. Add a `data-cy`
   to any new element a test needs.
-- Visit the page with `cy.visitHome()` (`cypress/support/commands.js`); it fails
-  the test on any `console.error`.
 - Elements below the fold start hidden until scrolled to (`v-reveal`), so
   `scrollIntoView()` before asserting `be.visible`.
 - If a test fails, fix the code, not the test, unless the test is wrong. Say
@@ -107,8 +106,6 @@ site works. Rely on it instead of checking things by hand in a browser.
 - Tests run on Linux in CI, where scrollbars take up width (they don't on
   macOS). Compare widths against `document.documentElement.clientWidth`
   rather than the viewport width.
-- `Cypress.env()` was removed in Cypress 16; use `Cypress.expose()` or
-  `cy.env()`.
 
 # Coding standards
 
