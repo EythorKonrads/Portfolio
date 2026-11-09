@@ -25,8 +25,15 @@ sticky section nav.
 
 # Commands
 
-- One spec, after `npx vite build`:
-  `npx start-server-and-test 'vite preview --port 4173 --strictPort' http://localhost:4173 'cypress run --e2e -b electron --spec cypress/e2e/<name>.cy.js --config baseUrl=http://localhost:4173'`
+- `npm run dev`: dev server at http://localhost:5173.
+- `npm run test:e2e`: build, then run every Cypress spec against the preview
+  server. CI runs the same thing on every PR.
+- One spec: `npm run test:e2e -- --spec cypress/e2e/<name>.cy.js`.
+- `npm run test:e2e:dev`: Cypress's interactive runner against the dev server.
+- `npm run test:component`: Cypress component specs (`cypress/component/`),
+  served by Vite with no build. CI runs these too.
+- `npm run test:e2e:quiet`, `npm run test:component:quiet`: the same runs with
+  short output, and failures still print in full. Agents use these by default.
 - `npx eslint .`: lint without fixing (`npm run lint` fixes).
 
 # Generated files
@@ -45,6 +52,8 @@ Don't edit these by hand:
 - Before making any changes, check the current branch. If it is `master`,
   create a new branch named `claude/<type>/<short-description>` and switch to it.
 - Leave merging into `master` to me (via pull request).
+- One worktree per issue, named `issue-<n>` and created from `origin/master`.
+  Each session works only in its own worktree, on branches it created.
 - Committing on a `claude/*` branch is fine without asking. Ask me before
   pushing or opening a pull request, every time.
 - `.claude/settings.json` pre-approves routine commands (tests, lint, git on

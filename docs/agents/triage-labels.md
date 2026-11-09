@@ -12,4 +12,6 @@ The skills speak in terms of five canonical triage roles. This file maps those r
 
 When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the corresponding label string from this table.
 
+Apply `ready-for-agent` only when the issue states the expected behaviour as something an agent can check, including who it applies to and what must stay the same. Otherwise apply `needs-info` and ask for it.
+
 Edit the "Label in our tracker" column to match whatever vocabulary you actually use.

@@ -29,6 +29,13 @@ it; Turret and Satellite shots glance off, so they don't aim at it. It
 breaks into medium Asteroids.
 _Avoid_: Metal rock, boss
 
+**Pace**:
+How fast Asteroids fly. On a touch screen it follows the play field; on a
+computer it follows the physical screen, so resizing the window can't change
+it. It is separate from the world scale, which fits sizes and the Ship's
+speed to the play field.
+_Avoid_: Speed scale, difficulty
+
 **Population**:
 How many people are alive on Earth: Earth's health. Asteroid hits reduce it,
 and the game ends when it reaches zero: Earth explodes, then the end screen
