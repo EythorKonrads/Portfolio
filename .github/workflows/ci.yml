@@ -48,7 +48,7 @@ jobs:
 
       # ESLint only warns about formatting
       - name: Formatting
-        run: npx prettier --check src/
+        run: npx prettier --check src/ cypress/
 
       # Builds the site, then runs every spec against the preview server
       - name: e2e tests
