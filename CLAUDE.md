@@ -54,8 +54,8 @@ Don't edit these by hand:
 - Leave merging into `master` to me (via pull request).
 - One worktree per issue, named `issue-<n>` and created from `origin/master`.
   Each session works only in its own worktree, on branches it created.
-- Committing on a `claude/*` branch is fine without asking. Ask me before
-  pushing or opening a pull request, every time.
+- Committing, pushing and opening pull requests on `claude/*` branches are
+  fine without asking.
 - `.claude/settings.json` pre-approves routine commands (tests, lint, git on
   `claude/*` branches, opening PRs) and blocks pushing to `master`, force
   pushes and merging PRs. Keep commands simple (no `cd … &&` chains) so they
