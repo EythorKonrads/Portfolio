@@ -274,6 +274,31 @@ describe('Tag filter', () => {
         widths().should('deep.equal', before);
       });
     });
+
+    it(`keeps the header at the top when filtering at ${width}px`, () => {
+      // Tall enough that the filtered content is shorter than the screen
+      cy.viewport(width, 2000);
+      cy.visitHome({ path: `/?tags=${rareTag.tag}` });
+      assertShown([rareTag.tag]);
+      cy.get('[data-cy="homeHeader"]').should(($header) => {
+        expect($header[0].getBoundingClientRect().top).to.equal(0);
+      });
+    });
+  });
+
+  it('keeps short filtered content right under the hero on a phone', () => {
+    // Tall enough that the filtered content is shorter than the screen
+    cy.viewport(390, 2000);
+    cy.visitHome({ path: `/?tags=${rareTag.tag}` });
+    assertShown([rareTag.tag]);
+    cy.get('[data-cy="hero"]').then(($hero) => {
+      cy.get('[data-cy="homeWrapper"]').then(($wrapper) => {
+        expect($wrapper[0].getBoundingClientRect().top).to.be.closeTo(
+          $hero[0].getBoundingClientRect().bottom,
+          1
+        );
+      });
+    });
   });
 
   describe('closing the popup', () => {

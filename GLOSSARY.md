@@ -10,6 +10,11 @@ The panel that introduces Eythor: profile photo, name, role and the
 "Let's talk" link.
 _Avoid_: Header, banner, intro, About Me
 
+**Header**:
+The bar pinned to the top of the content column, holding the section links,
+theme toggle and filter.
+_Avoid_: Navbar, top bar
+
 **Aurora**:
 The still northern-lights picture at the top of the content column, shown
 only in the dark theme. It scrolls away with the content.
