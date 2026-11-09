@@ -17,7 +17,7 @@ const { status } = spawnSync(
   [
     `vite preview --port ${port} --strictPort`,
     url,
-    `cypress run --e2e -b electron --config baseUrl=${url}`,
+    `cypress run --e2e -b electron --config baseUrl=${url} ${process.argv.slice(2).join(' ')}`,
   ],
   { stdio: 'inherit' }
 );

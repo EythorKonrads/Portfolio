@@ -46,6 +46,10 @@ jobs:
       - name: Lint
         run: npx eslint .
 
+      # ESLint only warns about formatting
+      - name: Formatting
+        run: npx prettier --check src/
+
       # Builds the site, then runs every spec against the preview server
       - name: e2e tests
         run: npm run test:e2e
