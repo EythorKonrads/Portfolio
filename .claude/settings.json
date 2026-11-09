@@ -40,7 +40,7 @@
       "Bash(gh run watch *)",
       "Bash(git remote -v)",
       "Bash(git worktree list*)",
-      "Bash(git worktree add)"
+      "Bash(git worktree add *)"
     ],
     "ask": [
       "Bash(gh pr close*)"
@@ -65,7 +65,7 @@
           {
             "type": "command",
             "if": "Bash(git switch *)",
-            "command": "test -z \"$(git status --porcelain)\" || printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This worktree has uncommitted changes, which may belong to another session.\"}}'"
+            "command": "jq -r .tool_input.command | grep -qxE 'git switch (-c|--create) [^;&|]*' || test -z \"$(git status --porcelain)\" || printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This worktree has uncommitted changes, which may belong to another session.\"}}'"
           },
           {
             "type": "command",

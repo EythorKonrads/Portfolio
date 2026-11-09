@@ -82,9 +82,8 @@ Commit messages, PR titles and the `<type>` in branch names follow
 The Cypress e2e suite (`cypress/e2e/`) is the source of truth for whether the
 site works. Rely on it instead of checking things by hand in a browser.
 
-- After any change to `src/`, run `npm run test:e2e` (it builds first, then
-  runs every spec against the preview server) and `npm run test:component`,
-  and make sure both pass before committing.
+- After any change to `src/`, run `npm run test:e2e:quiet` and
+  `npm run test:component:quiet`, and make sure both pass before committing.
 - Prettier (`.prettierrc`) and ESLint must pass before committing.
 - Component specs (`cypress/component/`) mount one component, or import a
   plain module such as the game's rules (`src/game/`) and test it directly.
@@ -100,6 +99,9 @@ site works. Rely on it instead of checking things by hand in a browser.
   `scrollIntoView()` before asserting `be.visible`.
 - If a test fails, fix the code, not the test, unless the test is wrong. Say
   which it was.
+- For a bug that needs content shorter than the screen, test on a screen taller
+  than the content (`cy.viewport(width, 2000)`) and see it fail before fixing.
+  At a fixed everyday height, a content edit can stop the test reaching the bug.
 - Cypress can't judge how something looks or feels (spacing, animation
   smoothness). Call that out for me to check rather than taking screenshots.
 - Tests run on Linux in CI, where scrollbars take up width (they don't on
