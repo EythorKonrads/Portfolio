@@ -71,6 +71,8 @@ Don't edit these by hand:
   (anything Cypress can't judge). Write the body from these sections and leave
   out the `pr` skill, whose template doesn't apply here.
 - If PRs will conflict with each other, say which and in which files.
+- For a diff that only touches `src/assets/*.json`, do both axes of the
+  `code-review` skill yourself, without sub-agents.
 
 # Conventional Commits
 
