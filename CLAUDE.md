@@ -174,6 +174,11 @@ site works. Rely on it instead of checking things by hand in a browser.
 - `Cypress.env()` was removed in Cypress 16; use `Cypress.expose()` or
   `cy.env()`.
 
+# Coding standards
+
+`CODING_STANDARDS.md`: rules for changed code. Read it before writing or
+reviewing code.
+
 # Code style
 
 - Prettier (`.prettierrc`) and ESLint must pass before committing.
