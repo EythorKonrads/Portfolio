@@ -14,6 +14,15 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 
 Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
 
+## Download attachments
+
+Attachments need `gh`'s auth: an image's only working URL is signed and lasts 5 minutes, and a video 404s without auth. Run these as separate commands, writing to the scratchpad, so the signed URLs stay out of the transcript:
+
+1. Save the rendered body: `gh api repos/{owner}/{repo}/issues/<n> -H 'Accept: application/vnd.github.full+json' --jq .body_html > body.html`
+2. Extract the image URLs, in issue order: `grep -oE 'https://private-user-images[^"]+' body.html | sed 's/&amp;/\&/g' | awk '!seen[$0]++' > urls.txt`
+3. Download the images: `xargs -n 1 curl -fsSLO --output-dir <dir> < urls.txt`. Files are named in upload order, so use `urls.txt` for the order in the issue.
+4. Download each video, which appears as a bare `https://github.com/user-attachments/assets/<id>` link in the body: `gh api <link> > <dir>/video.mp4`
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
