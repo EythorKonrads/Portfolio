@@ -93,6 +93,11 @@ _Avoid_: Hover animation, expand
 Earth gliding from the Hero to the centre of the screen as the game starts.
 _Avoid_: Transition, zoom
 
+**Help screen**:
+The panel explaining the goal and the controls, shown after the Launch and
+before the first Wave. Play again skips it.
+_Avoid_: Tips, popup, intro
+
 ### Upgrades
 
 **Earth defences**:
