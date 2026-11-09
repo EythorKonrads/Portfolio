@@ -12,6 +12,8 @@ The skills speak in terms of five canonical triage roles. This file maps those r
 
 When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the corresponding label string from this table.
 
+An issue carries one of these labels at a time, so applying one removes any other.
+
 Apply `ready-for-agent` only when the issue states the expected behaviour as something an agent can check, including who it applies to and what must stay the same. Otherwise apply `needs-info` and ask for it.
 
 For a change to something shared beyond this repo (Cloudflare account settings, DNS, domains), the issue lists everything else that shares it and how each is affected.
