@@ -113,8 +113,8 @@ Don't edit these by hand:
 - Before making any changes, check the current branch. If it is `master`,
   create a new branch named `claude/<type>/<short-description>` and switch to it.
 - Leave merging into `master` to me (via pull request).
-- Committing and pushing on a `claude/*` branch are fine without asking. Ask
-  me before opening a pull request, every time.
+- Committing, pushing and opening pull requests on `claude/*` branches are
+  fine without asking.
 - `.claude/settings.json` pre-approves routine commands (tests, lint, git on
   `claude/*` branches, opening PRs) and blocks pushing to `master`, force
   pushes and merging PRs. Keep commands simple (no `cd … &&` chains) so they
