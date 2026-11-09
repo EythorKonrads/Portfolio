@@ -148,3 +148,7 @@ The five default triage labels, each named after its role (`needs-triage`, `need
 ### Domain docs
 
 Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Cloudflare
+
+Cloudflare account changes or dashboard directions: see `docs/agents/cloudflare.md`.

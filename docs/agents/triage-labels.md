@@ -14,4 +14,8 @@ When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the 
 
 Apply `ready-for-agent` only when the issue states the expected behaviour as something an agent can check, including who it applies to and what must stay the same. Otherwise apply `needs-info` and ask for it.
 
+For a change to something shared beyond this repo (Cloudflare account settings, DNS, domains), the issue lists everything else that shares it and how each is affected.
+
+Apply `ready-for-human` to Cloudflare account, DNS and domain changes, since auto mode blocks an agent from making them. The agent does the read-only checks and supplies the exact command.
+
 Edit the "Label in our tracker" column to match whatever vocabulary you actually use.
