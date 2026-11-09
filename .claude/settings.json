@@ -51,5 +51,24 @@
       "Bash(git reset --hard*)",
       "Bash(rm -rf*)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git switch *)",
+            "command": "test -z \"$(git status --porcelain)\" || printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This worktree has uncommitted changes, which may belong to another session.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git checkout *)",
+            "command": "test -z \"$(git status --porcelain)\" || printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This worktree has uncommitted changes, which may belong to another session.\"}}'"
+          }
+        ]
+      }
+    ]
   }
 }
