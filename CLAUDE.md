@@ -89,8 +89,7 @@ sticky section nav.
 - `npm run dev`: dev server at http://localhost:5173.
 - `npm run test:e2e`: build, then run every Cypress spec against the preview
   server. CI runs the same thing on every PR.
-- One spec, after `npx vite build`:
-  `npx start-server-and-test 'vite preview --port 4173 --strictPort' http://localhost:4173 'cypress run --e2e -b electron --spec cypress/e2e/<name>.cy.js --config baseUrl=http://localhost:4173'`
+- One spec: `npm run test:e2e -- --spec cypress/e2e/<name>.cy.js`.
 - `npm run test:e2e:dev`: Cypress's interactive runner against the dev server.
 - `npm run test:component`: Cypress component specs (`cypress/component/`),
   served by Vite with no build. CI runs these too.
