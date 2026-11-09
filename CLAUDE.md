@@ -94,6 +94,8 @@ sticky section nav.
 - `npm run test:e2e:dev`: Cypress's interactive runner against the dev server.
 - `npm run test:component`: Cypress component specs (`cypress/component/`),
   served by Vite with no build. CI runs these too.
+- `npm run test:e2e:quiet`, `npm run test:component:quiet`: the same runs with
+  short output, and failures still print in full. Agents use these by default.
 - `npx eslint .`: lint without fixing (`npm run lint` fixes).
 - `npm run format`: format `src/` with Prettier.
 
