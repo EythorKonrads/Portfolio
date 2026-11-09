@@ -238,7 +238,7 @@ export default {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgb(32 39 65);
+  background-color: var(--color-popup-tooltip);
   color: white;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
@@ -269,7 +269,7 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid transparent;
-  border-top-color: rgb(32 39 65);
+  border-top-color: var(--color-popup-tooltip);
 }
 @keyframes tooltipFadeIn {
   from {

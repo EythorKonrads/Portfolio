@@ -108,7 +108,7 @@ export default {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   z-index: 998;
   cursor: pointer;
   display: flex;
@@ -117,7 +117,7 @@ export default {
   transition: background-color 0.3s ease;
 }
 .base-popup__backdrop--visible {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-popup-backdrop);
 }
 .base-popup {
   position: relative;
@@ -129,7 +129,7 @@ export default {
   transform: translateY(100vh);
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border-radius: 8px;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 50px var(--color-popup-shadow);
   overflow-y: auto;
   overflow-x: hidden;
   cursor: default;

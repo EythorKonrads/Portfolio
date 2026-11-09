@@ -47,6 +47,7 @@ export default [
           math: 'always',
         },
       ],
+      'vue/no-template-target-blank': 'error',
       'vue/valid-attribute-name': 'off',
       'vue/html-indent': 'off',
       indent: 'off',
