@@ -48,6 +48,15 @@ export default [
         },
       ],
       'vue/no-template-target-blank': 'error',
+      'vue/no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "VStartTag:has(VAttribute[key.name='target'][value.value='_blank']):not(:has(VAttribute[key.name='aria-label'])):not(:has(VAttribute[key.argument.name='aria-label']))",
+          message:
+            'Links that open a new tab need an aria-label saying so (CODING_STANDARDS.md).',
+        },
+      ],
       'vue/valid-attribute-name': 'off',
       'vue/html-indent': 'off',
       indent: 'off',

@@ -133,6 +133,7 @@ export default {
           :href="project.githubUrl"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="View GitHub repository (opens in a new tab)"
           class="project-item-popup__link"
           @click.stop
         >
@@ -147,6 +148,7 @@ export default {
           :href="project.liveUrl"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="View project (opens in a new tab)"
           class="project-item-popup__link"
           @click.stop
         >

@@ -26,6 +26,7 @@ defineProps({
             :href="title?.url"
             target="_blank"
             rel="noopener noreferrer"
+            :aria-label="`${title?.title} (opens in a new tab)`"
           >
             {{ title?.title }}
             <Icon
@@ -54,6 +55,7 @@ defineProps({
             :href="project.url"
             target="_blank"
             rel="noopener noreferrer"
+            :aria-label="`${project.title} (opens in a new tab)`"
           >
             <template v-if="key !== 0">| </template>
             {{ project.title }}
