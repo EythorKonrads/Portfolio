@@ -1,68 +1,14 @@
 # Working principles
 
-## 1. Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-
-- State your assumptions explicitly. If uncertain, ask.
-- If a simpler approach exists, say so. Push back when warranted.
 - If my request is ambiguous or has several readings, stop and ask one
   clarifying question, naming what's unclear, before doing anything.
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
-## 5. Reporting
-
+- Write the minimum code that solves the problem, with features, abstractions
+  and configurability limited to what was asked.
+- Every changed line traces to my request. Match the existing style, remove
+  only what your own change orphaned, and mention unrelated dead code rather
+  than deleting it.
+- Turn each task into a check you can verify, such as a test that reproduces
+  the bug, and loop until it passes.
 - In chat replies to me, be extremely concise; sacrifice grammar for
   concision. This doesn't apply to commit messages, PR descriptions or docs,
   which are written in full sentences.
@@ -73,16 +19,9 @@ Personal portfolio site for Eythor Konradsson (eythorkonrads.com): a single page
 with a hero, Experience, Education and Projects, plus a tag filter and a
 sticky section nav.
 
-- Stack: Vue 3 (`<script setup>`), Vite, SCSS, Cypress for e2e tests.
-  Deployed on Cloudflare Workers (`wrangler.jsonc`), with Scores in D1
-  (`docs/scoreboard.md`).
 - `src/assets/*.json`: the site's content (jobs, educations, projects).
-- `src/components/`: one component per piece of UI; `src/views/HomeView.vue`
-  puts the page together.
-- `src/composables/`: shared state, e.g. `useTagFilter.js`.
-- `src/scss/base/`: global styles; `variables.scss` holds the colors.
-- `src/assets/icons/`: SVG icons, rendered with `Icon.vue`.
-- `public/`: files served as-is (favicons, manifest, link preview image).
+- Deployed on Cloudflare Workers (`wrangler.jsonc`), with Scores in D1
+  (`docs/scoreboard.md`).
 
 # Commands
 
@@ -96,7 +35,6 @@ sticky section nav.
 - `npm run test:e2e:quiet`, `npm run test:component:quiet`: the same runs with
   short output, and failures still print in full. Agents use these by default.
 - `npx eslint .`: lint without fixing (`npm run lint` fixes).
-- `npm run format`: format `src/` with Prettier.
 
 # Generated files
 
@@ -134,18 +72,9 @@ Don't edit these by hand:
 
 # Conventional Commits
 
-Follow the [Conventional Commits](https://www.conventionalcommits.org/)
-specification when naming branches, writing commit messages and titling pull requests.
-
-- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`,
-  `ci`, `chore`, `revert`.
-- Commit messages: `<type>[optional scope]: <description>`,
-  e.g. `fix(hero): correct link color on hover`.
-  Mark breaking changes with `!` after the type/scope or a `BREAKING CHANGE:` footer.
-- Pull request titles: use the same format as a commit message,
-  e.g. `feat(jobs): add bullet lists to job entries`.
-- Branch names: `claude/<type>/<short-description>` in kebab-case,
-  e.g. `claude/feat/project-filters`.
+Commit messages, PR titles and the `<type>` in branch names follow
+[Conventional Commits](https://www.conventionalcommits.org/), e.g.
+`fix(hero): correct link color on hover`. Branch descriptions are kebab-case.
 
 # Testing
 
@@ -155,6 +84,7 @@ site works. Rely on it instead of checking things by hand in a browser.
 - After any change to `src/`, run `npm run test:e2e` (it builds first, then
   runs every spec against the preview server) and `npm run test:component`,
   and make sure both pass before committing.
+- Prettier (`.prettierrc`) and ESLint must pass before committing.
 - Component specs (`cypress/component/`) mount one component, or import a
   plain module such as the game's rules (`src/game/`) and test it directly.
   Use them for logic and single components; use e2e for flows on the page.
@@ -179,30 +109,8 @@ site works. Rely on it instead of checking things by hand in a browser.
 
 # Coding standards
 
-`CODING_STANDARDS.md`: rules for changed code. Read it before writing or
-reviewing code.
-
-# Code style
-
-- Prettier (`.prettierrc`) and ESLint must pass before committing.
-- Components use `<script setup>` and `<style scoped>`; match the file you're
-  editing.
-- Class names are BEM-style: `block__element--modifier`, with the component
-  name as the block (e.g. `tag-filter__button`).
-- Colors come from the CSS variables in `src/scss/base/variables.scss`. Don't
-  add hardcoded colors; add a variable if none fits.
-- Comments explain why, not what, and are kept short.
-
-# Accessibility
-
-- Icon-only links and buttons need an `aria-label`; the icon itself is
-  decorative (`aria-hidden="true"`).
-- Links with `target="_blank"` need `rel="noopener noreferrer"`, and their
-  label should say they open in a new tab.
-- Text needs at least 4.5:1 contrast against its background.
-- Use real `<button>` and `<a>` elements so everything works from the keyboard.
-- The game is exempt from these rules inside its own screen; the button that
-  starts it is not (`docs/adr/0002-game-skips-accessibility.md`).
+`CODING_STANDARDS.md`: code style, accessibility and other rules for changed
+code. Read it before writing or reviewing code.
 
 # Dependencies
 
