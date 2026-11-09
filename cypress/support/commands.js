@@ -32,6 +32,7 @@ Cypress.Commands.add(
       { log: false }
     );
 
+    // eslint-disable-next-line no-restricted-syntax -- this is cy.visitHome()
     cy.visit(path, {
       onBeforeLoad(win) {
         consoleError = cy.spy(win.console, 'error');

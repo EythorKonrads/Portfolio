@@ -58,6 +58,7 @@ describe('Theme', () => {
   });
 
   it('applies a saved light theme before the app loads', () => {
+    // eslint-disable-next-line no-restricted-syntax -- asserts during onLoad
     cy.visit('/', {
       onBeforeLoad(win) {
         win.localStorage.setItem('theme', 'light');

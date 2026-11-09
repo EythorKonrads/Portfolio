@@ -12,14 +12,21 @@ const port = await new Promise((resolve) => {
 });
 const url = `http://localhost:${port}`;
 
-const { status } = spawnSync(
+const isQuiet = process.argv.includes('--quiet');
+const { status, stderr } = spawnSync(
   'start-server-and-test',
   [
     `vite preview --port ${port} --strictPort`,
     url,
     `cypress run --e2e -b electron --config baseUrl=${url} ${process.argv.slice(2).join(' ')}`,
   ],
-  { stdio: 'inherit' }
+  {
+    stdio: ['inherit', 'inherit', isQuiet ? 'pipe' : 'inherit'],
+    encoding: 'utf8',
+  }
 );
+
+// A failed run ends with a long error dump that only repeats the exit code
+if (stderr) process.stderr.write(stderr.split('Error: Command failed')[0]);
 
 process.exit(status ?? 1);
