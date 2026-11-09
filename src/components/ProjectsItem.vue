@@ -100,6 +100,8 @@ export default {
 .project-item__img {
   width: 160px;
   height: 100%;
+  /* Sizes the card before the image loads, whatever the image's shape */
+  aspect-ratio: 16 / 9;
   border-radius: 8px;
   object-fit: cover;
 }

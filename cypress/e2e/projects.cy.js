@@ -21,6 +21,8 @@ describe('Projects', () => {
       beforeEach(() => {
         cy.get('[data-cy="projectCard"]').eq(index).scrollIntoView().as('card');
         cy.get('@card').should('be.visible');
+        // Opens the card from its title: a tag chip at the centre would filter
+        cy.get('@card').find('[data-cy="projectTitle"]').as('cardTitle');
       });
 
       it('shows title, loaded image and technologies', () => {
@@ -40,7 +42,7 @@ describe('Projects', () => {
 
       it('opens a popup with details and links', () => {
         cy.get('[data-cy="popup"]').should('not.exist');
-        cy.get('@card').click();
+        cy.get('@cardTitle').click();
 
         cy.get('[data-cy="popup"]')
           .should('be.visible')
@@ -72,14 +74,14 @@ describe('Projects', () => {
       });
 
       it('closes the popup with the close button', () => {
-        cy.get('@card').click();
+        cy.get('@cardTitle').click();
         cy.get('[data-cy="popupClose"]').should('be.visible').click();
         cy.get('[data-cy="popup"]').should('not.exist');
         cy.get('body').should('not.have.css', 'overflow', 'hidden');
       });
 
       it('closes the popup when clicking the backdrop', () => {
-        cy.get('@card').click();
+        cy.get('@cardTitle').click();
         cy.get('[data-cy="popup"]').should('be.visible');
         cy.get('[data-cy="popupBackdrop"]').click('topLeft');
         cy.get('[data-cy="popup"]').should('not.exist');
@@ -87,7 +89,7 @@ describe('Projects', () => {
 
       if (project.media) {
         it('shows its gallery in the popup', () => {
-          cy.get('@card').click();
+          cy.get('@cardTitle').click();
           cy.get('[data-cy="gallery"]').should('be.visible');
           if (project.media.length > 1) {
             cy.get('[data-cy="galleryThumb"]').should(
@@ -100,7 +102,7 @@ describe('Projects', () => {
 
       if (project.playable) {
         it('starts the game from the popup', () => {
-          cy.get('@card').click();
+          cy.get('@cardTitle').click();
           cy.get('[data-cy="popupPlay"]').should('be.visible').click();
           cy.get('[data-cy="popup"]').should('not.exist');
           cy.get('[data-cy="gameScreen"]').should('be.visible');
@@ -111,7 +113,7 @@ describe('Projects', () => {
       }
 
       it('keeps the popup open when clicking inside it', () => {
-        cy.get('@card').click();
+        cy.get('@cardTitle').click();
         cy.get('[data-cy="popupTitle"]').click();
         // The close animation takes 400ms, wait past it before asserting
         cy.wait(500);
