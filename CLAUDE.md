@@ -222,7 +222,7 @@ site works. Rely on it instead of checking things by hand in a browser.
 
 ### Issue tracker
 
-Issues live in this repo's GitHub Issues, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues live in this repo's GitHub Issues, managed with the `gh` CLI. Read one with `gh issue view <number> --json number,title,body,labels,comments`. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
