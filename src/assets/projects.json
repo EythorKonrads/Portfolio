@@ -190,5 +190,75 @@
     ],
     "liveUrl": "https://hhauksson.is",
     "githubUrl": null
+  },
+  {
+    "title": "Number Guessing Game",
+    "image": "./number-guessing-game/card.jpg",
+    "media": [
+      {
+        "type": "video",
+        "src": "./number-guessing-game/number-guessing-game-trailer.mp4",
+        "poster": "./number-guessing-game/01-new-game.jpg",
+        "alt": "Number Guessing Game trailer"
+      },
+      {
+        "type": "image",
+        "src": "./number-guessing-game/01-new-game.jpg",
+        "alt": "A new game on Medium difficulty, with an empty Scoreboard"
+      },
+      {
+        "type": "image",
+        "src": "./number-guessing-game/02-too-low.jpg",
+        "alt": "The \"Too low! Try again.\" hint after the first guess"
+      },
+      {
+        "type": "image",
+        "src": "./number-guessing-game/03-correct-guess.jpg",
+        "alt": "A correct guess, with a form for saving the score"
+      },
+      {
+        "type": "image",
+        "src": "./number-guessing-game/04-score-saved.jpg",
+        "alt": "A saved score of 400 points on the Scoreboard"
+      },
+      {
+        "type": "image",
+        "src": "./number-guessing-game/05-hard-difficulty.jpg",
+        "alt": "A new game on Hard difficulty, with numbers from 1 to 200 and 7 attempts"
+      }
+    ],
+    "description": "A browser game where you try to guess a secret number before your attempts run out. It was a short project to brush up on my React and TypeScript skills. I wanted something small and self-contained that I could build start to finish.\n\n<b>How It Plays</b>\nThe game picks a secret number, and after each guess it tells you if you were too high or too low. The difficulty sets the range and how many attempts you get. When you win, you can save your score to a scoreboard that tracks your total games played and your best results.\n- Easy: 1 to 50, with 15 attempts\n- Medium: 1 to 100, with 10 attempts\n- Hard: 1 to 200, with 7 attempts\n\n<b>Architecture & Code</b>\nThe game is client-side only: there is no backend, and all game state lives in the browser. One App component holds the game and manages its state with useState hooks, and a separate Scoreboard component shows the results. Types are kept next to the code that uses them. The scoreboard and the chosen difficulty are saved to localStorage, so they survive page reloads, and the site is hosted on Cloudflare.\n\n<b>Working with AI</b>\nI built the game in the early days of AI coding tools. GitHub Copilot was the only one I used then, mostly for autocomplete, so I wrote most of the code myself. More recently, I used Claude to write the deploy script.",
+    "technologies": [
+      {
+        "title": "React",
+        "tag": "react"
+      },
+      {
+        "title": "TypeScript",
+        "tag": "typescript"
+      },
+      {
+        "title": "Vite",
+        "tag": "vite"
+      },
+      {
+        "title": "ESLint",
+        "tag": "eslint"
+      },
+      {
+        "title": "Prettier",
+        "tag": "prettier"
+      },
+      {
+        "title": "localStorage",
+        "tag": "localstorage"
+      },
+      {
+        "title": "Cloudflare",
+        "tag": "cloudflare"
+      }
+    ],
+    "liveUrl": "https://guesser.eythorkonrads.com/",
+    "githubUrl": "https://github.com/EythorKonrads/Number-guessing-game"
   }
 ]
