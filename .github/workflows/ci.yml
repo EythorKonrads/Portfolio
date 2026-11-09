@@ -50,6 +50,13 @@ jobs:
       - name: Formatting
         run: npx prettier --check src/ cypress/
 
+      # Colors belong in variables.scss
+      - name: Hardcoded colors
+        run: |
+          ! grep -rnEi '#[0-9a-f]{3,8}\b|(rgb|hsl)a?\([0-9]' src \
+            --include='*.vue' --include='*.scss' --include='*.css' --include='*.js' \
+            --exclude=variables.scss
+
       # Builds the site, then runs every spec against the preview server
       - name: e2e tests
         run: npm run test:e2e

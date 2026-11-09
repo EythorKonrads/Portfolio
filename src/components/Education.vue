@@ -82,7 +82,7 @@ const visibleEducations = computed(() =>
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.025em;
-  color: #9393e8;
+  color: var(--color-language-heading);
 }
 .education__languages-list {
   display: flex;
@@ -104,6 +104,6 @@ const visibleEducations = computed(() =>
 }
 .education__language-level {
   font-size: 0.9rem;
-  color: rgba(100, 116, 139, 1);
+  color: var(--color-text-muted);
 }
 </style>
