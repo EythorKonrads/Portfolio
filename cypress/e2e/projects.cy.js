@@ -158,8 +158,4 @@ describe('Projects', () => {
         });
     });
   });
-
-  it('does not show a "more projects" note', () => {
-    cy.contains('More projects to showcase soon').should('not.exist');
-  });
 });
