@@ -91,7 +91,8 @@ site works. Rely on it instead of checking things by hand in a browser.
   Use them for logic and single components; use e2e for flows on the page.
 - When adding or changing a feature, add or update the matching spec in the
   same change. Specs read content from `src/assets/*.json`, so content-only
-  edits need no test changes.
+  edits need no test changes. They need only the e2e run, since component specs
+  bring their own data.
 - Select elements with `data-cy` attributes, not CSS classes. Add a `data-cy`
   to any new element a test needs.
 - Elements below the fold start hidden until scrolled to (`v-reveal`), so
