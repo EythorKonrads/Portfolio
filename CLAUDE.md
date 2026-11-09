@@ -34,8 +34,8 @@ sticky section nav.
   served by Vite with no build. CI runs these too.
 - `npm run test:e2e:quiet`, `npm run test:component:quiet`: the same runs with
   short output, and failures still print in full. Agents use these by default.
-- `npm run check`: lint and formatting without fixing, as CI runs them
-  (`npm run lint` and `npm run format` fix).
+- `npm run check`: lint, formatting and hardcoded colors without fixing, as CI
+  runs them (`npm run lint` and `npm run format` fix).
 
 # Generated files
 
@@ -85,7 +85,7 @@ site works. Rely on it instead of checking things by hand in a browser.
 
 - After any change to `src/`, run `npm run test:e2e:quiet` and
   `npm run test:component:quiet`, and make sure both pass before committing.
-- Prettier (`.prettierrc`) and ESLint must pass before committing.
+- `npm run check` must pass before committing.
 - Component specs (`cypress/component/`) mount one component, or import a
   plain module such as the game's rules (`src/game/`) and test it directly.
   Use them for logic and single components; use e2e for flows on the page.

@@ -18,7 +18,8 @@
         "test:component:open": "cypress open --component -b electron",
         "test:e2e:dev": "start-server-and-test 'vite dev --port 5173' http://localhost:5173 'cypress open --e2e -b electron'",
         "lint": "eslint . --fix",
-        "check": "eslint . && prettier --check src/ cypress/",
+        "check": "eslint . && prettier --check src/ cypress/ && npm run check:colors",
+        "check:colors": "! grep -rnEi '#[0-9a-f]{3,8}\\b|(rgb|hsl)a?\\([0-9]' src --include='*.vue' --include='*.scss' --include='*.css' --include='*.js' --exclude=variables.scss",
         "format": "prettier --write src/ cypress/"
     },
     "dependencies": {
