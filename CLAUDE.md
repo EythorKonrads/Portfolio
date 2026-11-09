@@ -67,7 +67,8 @@ Don't edit these by hand:
   another branch when it can't be done without it, and say so at the top.
 - Description sections: **Summary** (what changed and why), **Tests** (specs
   added or changed, and the `npm run test:e2e` result), and **Check by eye**
-  (anything Cypress can't judge). These override the `pr` skill's template.
+  (anything Cypress can't judge). Write the body from these sections and leave
+  out the `pr` skill, whose template doesn't apply here.
 - If PRs will conflict with each other, say which and in which files.
 
 # Conventional Commits
