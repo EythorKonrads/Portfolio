@@ -50,8 +50,9 @@ Don't edit these by hand:
 
 - This repo's main branch is `master`.
 - Never commit to, merge into, or push to `master`.
-- Before making any changes, check the current branch. If it is `master`,
-  create a new branch named `claude/<type>/<short-description>` and switch to it.
+- Before making any changes, check the current branch. If it is `master` or
+  `worktree-*`, create a new branch named `claude/<type>/<short-description>`
+  and switch to it.
 - Leave merging into `master` to me (via pull request).
 - One worktree per issue, named `issue-<n>` and created from `origin/master`.
   Each session works only in its own worktree, on branches it created.
