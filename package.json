@@ -42,6 +42,6 @@
         "wrangler": "^4.158.0"
     },
     "allowScripts": {
-        "cypress@16.2.0": true
+        "cypress@16.2.1": true
     }
 }
