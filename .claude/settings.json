@@ -37,7 +37,10 @@
       "Bash(gh issue list*)",
       "Bash(gh run list*)",
       "Bash(gh run view *)",
-      "Bash(gh run watch *)"
+      "Bash(gh run watch *)",
+      "Bash(git remote -v)",
+      "Bash(git worktree list*)",
+      "Bash(git worktree add)"
     ],
     "ask": [
       "Bash(gh pr close*)"
