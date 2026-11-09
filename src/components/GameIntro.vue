@@ -70,6 +70,17 @@ onMounted(() => startButton.value?.focus());
 .game-intro {
   width: min(100%, 26rem);
   text-align: center;
+  animation: game-intro-grow 350ms ease-out;
+}
+/* Centred on the screen, like Earth, so it grows from inside it */
+@keyframes game-intro-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.05);
+  }
+  30% {
+    opacity: 1;
+  }
 }
 .game-intro__title {
   margin: 0 0 0.5rem;

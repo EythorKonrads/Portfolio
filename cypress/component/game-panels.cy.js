@@ -20,6 +20,29 @@ describe('Game panels', () => {
     cy.get('@start').should('have.been.calledOnce');
   });
 
+  it('grows the help screen out of its centre', () => {
+    cy.mount(GameIntro);
+    cy.get('[data-cy="gameIntro"]').then(([panel]) => {
+      const centre = ({ x, y, width, height }) => [
+        x + width / 2,
+        y + height / 2,
+      ];
+      panel.style.animation = 'none';
+      const full = panel.getBoundingClientRect();
+      panel.style.animation = '';
+
+      const [grow] = panel.getAnimations();
+      grow.pause();
+      expect(grow.effect.getComputedTiming().duration).to.equal(350);
+      grow.currentTime = 0;
+      const start = panel.getBoundingClientRect();
+      expect(start.width).to.be.lessThan(full.width / 10);
+      expect(centre(start)[0]).to.be.closeTo(centre(full)[0], 1);
+      expect(centre(start)[1]).to.be.closeTo(centre(full)[1], 1);
+      expect(getComputedStyle(panel).opacity).to.equal('0');
+    });
+  });
+
   it('explains the joystick and Fire button instead of keys on touch', () => {
     cy.mount(GameIntro, { props: { touch: true } });
     cy.get('[data-cy="gameIntroTouch"]')
