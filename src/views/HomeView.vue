@@ -57,6 +57,8 @@ const { theme } = useTheme();
     /* Fill the space beside the hero regardless of content width */
     flex: 1 1 0;
     min-width: 0;
+    /* Full height even when filtered short, so it can't be centred */
+    align-self: stretch;
     max-height: 100vh;
     overflow: auto;
     padding: 0 2em 2em;
@@ -112,7 +114,8 @@ const { theme } = useTheme();
   @media screen and (max-width: 600px),
     screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
     align-items: center;
-    justify-content: space-between;
+    /* Short filtered content stays under the hero */
+    justify-content: flex-start;
     flex-direction: column;
     max-height: none;
     /* Room for the fixed header above the hero */
