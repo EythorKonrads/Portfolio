@@ -101,6 +101,24 @@ describe('Project popup', () => {
       .click();
     cy.get('@play').should('have.been.calledOnce');
   });
+
+  it('says that its links open in a new tab', () => {
+    cy.mount(ProjectsItemPopup, {
+      props: {
+        project: {
+          ...project,
+          liveUrl: 'https://example.com',
+          githubUrl: 'https://github.com/example',
+        },
+        isOpen: true,
+      },
+    });
+    cy.get('a[target="_blank"]')
+      .should('have.length', 4)
+      .each(($link) =>
+        expect($link.attr('aria-label')).to.include('(opens in a new tab)')
+      );
+  });
 });
 
 describe('Projects gallery fullscreen', () => {

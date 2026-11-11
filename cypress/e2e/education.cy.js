@@ -39,13 +39,18 @@ describe('Education', () => {
           .and('contain.text', education.degree);
       });
 
-      it('opens school links in a new tab', () => {
-        education.titles
+      it('opens school and project links in a new tab', () => {
+        [...education.titles, ...(education.projects ?? [])]
           .filter(({ url }) => url)
-          .forEach(({ url }) => {
+          .forEach(({ title, url }) => {
             cy.get('@education')
               .find(`a[href="${url}"]`)
-              .should('have.attr', 'target', '_blank')
+              .should(
+                'have.attr',
+                'aria-label',
+                `${title} (opens in a new tab)`
+              )
+              .and('have.attr', 'target', '_blank')
               .and('have.attr', 'rel')
               .and('include', 'noopener');
           });

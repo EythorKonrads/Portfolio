@@ -38,10 +38,11 @@ describe('Experience', () => {
         const links = [...job.titles, ...(job.projects ?? [])].filter(
           ({ url }) => url
         );
-        links.forEach(({ url }) => {
+        links.forEach(({ title, url }) => {
           cy.get('@job')
             .find(`a[href="${url}"]`)
-            .should('have.attr', 'target', '_blank')
+            .should('have.attr', 'aria-label', `${title} (opens in a new tab)`)
+            .and('have.attr', 'target', '_blank')
             .and('have.attr', 'rel')
             .and('include', 'noopener');
         });
