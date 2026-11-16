@@ -152,18 +152,6 @@ function onEnter(event) {
     <div v-reveal class="ask-b__box">
       <div v-if="!history.length && !loading" class="ask-b__empty">
         <p>Ask anything about my work, skills or what I'm looking for.</p>
-        <div class="ask-b__chips">
-          <button
-            v-for="s in suggested"
-            :key="s"
-            type="button"
-            class="ask-b__chip"
-            :disabled="loading || !!pending"
-            @click="submit(s)"
-          >
-            {{ s }}
-          </button>
-        </div>
       </div>
 
       <div v-else class="ask-b__thread-wrap">
@@ -201,20 +189,35 @@ function onEnter(event) {
         >
           New message ↓
         </button>
-        <div
-          v-if="!loading && !limit && !pending && suggested.length"
-          class="ask-b__chips ask-b__chips--next"
+      </div>
+
+      <!-- One fixed spot for the suggestions, before and after the first
+           question, so nothing jumps. Old picks fade out when a question is
+           sent; new ones fade in, one by one, once the answer is in. -->
+      <div v-if="!limit" class="ask-b__chips-slot">
+        <!-- duration: the staggered chips run longer than the wrapper -->
+        <Transition
+          name="chips"
+          mode="out-in"
+          :duration="{ enter: 500, leave: 200 }"
         >
-          <button
-            v-for="s in suggested"
-            :key="s"
-            type="button"
-            class="ask-b__chip"
-            @click="submit(s)"
+          <div
+            v-if="!loading && !pending && suggested.length"
+            :key="suggested.join('|')"
+            class="ask-b__chips"
           >
-            {{ s }}
-          </button>
-        </div>
+            <button
+              v-for="(s, i) in suggested"
+              :key="s"
+              type="button"
+              class="ask-b__chip"
+              :style="{ '--i': i }"
+              @click="submit(s)"
+            >
+              {{ s }}
+            </button>
+          </div>
+        </Transition>
       </div>
 
       <!-- Errors and limits share one look. At a limit the form gives way
@@ -339,11 +342,48 @@ function onEnter(event) {
   margin: 0;
   color: var(--color-text-muted);
 }
+/* Three chips, one per row, so the slot is the same height at any width */
+.ask-b__chips-slot {
+  --chip-height: 2.125rem;
+  --chip-gap: 0.5rem;
+  height: calc(3 * var(--chip-height) + 2 * var(--chip-gap));
+  margin-top: 1rem;
+}
 .ask-b__chips {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--chip-gap);
+}
+.ask-b__chips .ask-b__chip {
+  height: var(--chip-height);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Old picks leave together; new ones arrive one after another */
+.chips-leave-active .ask-b__chip {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.chips-enter-active .ask-b__chip {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  transition-delay: calc(var(--i) * 80ms);
+}
+.chips-leave-to .ask-b__chip,
+.chips-enter-from .ask-b__chip {
+  opacity: 0;
+  transform: translateY(6px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .chips-leave-to .ask-b__chip,
+  .chips-enter-from .ask-b__chip {
+    transform: none;
+  }
 }
 .ask-b__chip {
   padding: 0.375rem 0.75rem;
