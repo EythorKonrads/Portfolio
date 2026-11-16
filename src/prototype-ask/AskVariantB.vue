@@ -286,9 +286,11 @@ function onEnter(event) {
   background: var(--color-accent-soft-hover);
   color: var(--color-hdln);
 }
+/* Bordered, so it still reads on the light theme's white card */
 .ask-b__bubble--a {
   align-self: flex-start;
   background: var(--color-background);
+  border: 1px solid var(--color-accent-soft-hover);
 }
 .ask-b__bubble--unknown {
   font-style: italic;
@@ -375,8 +377,10 @@ function onEnter(event) {
 .ask-b__send:active:not(:disabled) {
   transform: translateY(1px);
 }
+/* Greyed rather than a faded accent, which turns lavender on white */
 .ask-b__send:disabled {
-  opacity: 0.5;
+  background: var(--color-accent-soft-hover);
+  color: var(--color-text-muted);
   cursor: default;
 }
 .ask-b__meta {
