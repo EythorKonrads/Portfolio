@@ -11,11 +11,36 @@ const question = ref('');
 const input = ref(null);
 const thread = ref(null);
 const showNewPill = ref(false);
-const SUGGESTED = [
+// Each one answerable from the site's content or the About file, so a
+// suggestion never ends in "I don't know". Three are picked at random.
+const SUGGESTION_POOL = [
   'What is his strongest stack?',
   'What kind of role is he looking for?',
   'What has he built recently?',
+  'Is he open to full-stack roles?',
+  'Can he work part-time?',
+  'Where is he based?',
+  'Does he work remotely?',
+  'When can he start?',
+  'Has he led a team?',
+  'What did he do at Render?',
+  'What does he do at Norduo?',
+  'Has he worked with React?',
+  'Does he know TypeScript?',
+  'Has he done any back-end work?',
+  'Where did he study?',
+  'What languages does he speak?',
+  'How does he like to work?',
+  'What is Defend Earth?',
+  'Did he build this site himself?',
+  'Does he write tests?',
+  'Has he worked with WordPress?',
+  'What does he do outside work?',
+  'How many years of experience does he have?',
+  'How do I contact him?',
 ];
+const shuffled = [...SUGGESTION_POOL].sort(() => Math.random() - 0.5);
+const SUGGESTED = shuffled.slice(0, 3);
 
 // Within this many px of the bottom counts as "at the bottom"
 const BOTTOM_SLACK = 24;
