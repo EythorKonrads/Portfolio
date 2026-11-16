@@ -21,7 +21,7 @@ const MESSAGES = {
   unanswered:
     "I don't know that one. Ask Eythor directly at hello@eythorkonrads.com.",
   hourLimit:
-    "You've asked 20 questions this hour, the most Ask takes. You can ask again in an hour.",
+    "You've hit the limit of 20 questions an hour. Come back in an hour.",
   dayLimit:
     "Ask has answered all the questions it can for today. Try again tomorrow, or email hello@eythorkonrads.com.",
   error: 'Something went wrong. Try again in a moment.',
