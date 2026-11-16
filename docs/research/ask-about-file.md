@@ -7,7 +7,7 @@ Eythor Konradsson is an Icelandic front-end developer based in Copenhagen.
 ## What he's looking for
 
 - Available for work.
-- Roles: front-end, full-stack or lead.
+- Roles: front-end, full-stack or lead. He is open to full-stack work as well as front-end.
 - Full-time or 80%.
 - Hybrid or on-site in the greater Copenhagen area. He would not relocate.
 - Earliest start: the first week of January 2027. After that, he can start straight away.
@@ -17,11 +17,11 @@ Eythor Konradsson is an Icelandic front-end developer based in Copenhagen.
 - Strongest: Vue, JavaScript, SCSS, HTML and Cypress.
 - Also works with: TypeScript, React, PHP, WordPress and Cloudflare.
 - Has also used: Svelte.
-- Has used in the past: jQuery, Gulp and AngularJS.
+- Has used in the past: Python with Django, Node.js, jQuery, Gulp and AngularJS.
 
 ## How he works
 
-He cares about maintainable code in large codebases and is good with architecture. He isn't a perfectionist but likes things tidy. He is easy-going and hard-working.
+He is very product-oriented. He cares about maintainable code in large codebases and is good with architecture. He isn't a perfectionist but likes things tidy. He is easy-going and hard-working.
 
 ## Outside work
 
