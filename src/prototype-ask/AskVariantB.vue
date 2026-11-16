@@ -48,8 +48,18 @@ const SUGGESTION_POOL = [
   'How many years of experience does he have?',
   'How do I contact him?',
 ];
-const shuffled = [...SUGGESTION_POOL].sort(() => Math.random() - 0.5);
-const SUGGESTED = shuffled.slice(0, 3);
+// Three random picks, never one already asked; new picks after each answer
+const pickSuggestions = () => {
+  const asked = new Set(history.value.map((entry) => entry.question));
+  return SUGGESTION_POOL.filter((q) => !asked.has(q))
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+};
+const suggested = ref(pickSuggestions());
+watch(
+  () => history.value.length,
+  () => (suggested.value = pickSuggestions())
+);
 
 // Within this many px of the bottom counts as "at the bottom"
 const BOTTOM_SLACK = 24;
@@ -144,7 +154,7 @@ function onEnter(event) {
         <p>Ask anything about my work, skills or what I'm looking for.</p>
         <div class="ask-b__chips">
           <button
-            v-for="s in SUGGESTED"
+            v-for="s in suggested"
             :key="s"
             type="button"
             class="ask-b__chip"
@@ -191,6 +201,20 @@ function onEnter(event) {
         >
           New message ↓
         </button>
+        <div
+          v-if="!loading && !limit && !pending && suggested.length"
+          class="ask-b__chips ask-b__chips--next"
+        >
+          <button
+            v-for="s in suggested"
+            :key="s"
+            type="button"
+            class="ask-b__chip"
+            @click="submit(s)"
+          >
+            {{ s }}
+          </button>
+        </div>
       </div>
 
       <!-- Errors and limits share one look. At a limit the form gives way
