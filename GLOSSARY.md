@@ -20,6 +20,22 @@ The still northern-lights picture at the top of the content column, shown
 only in the dark theme. It scrolls away with the content.
 _Avoid_: Background animation, northern lights
 
+**Ask**:
+The box where a visitor types a question about Eythor and gets a short
+answer drawn from the site's content and the About file. Earlier questions
+and answers stay shown, but each question is answered on its own.
+_Avoid_: Chatbot, assistant, AI chat
+
+**About file**:
+Extra facts about Eythor (bio, CV highlights, FAQ) that Ask answers from,
+for anything the rest of the site's content doesn't cover.
+_Avoid_: Bio, knowledge base
+
+**Unanswered question**:
+A question Ask couldn't answer from the content. It is kept so the About
+file can be filled in later; answered questions are not kept.
+_Avoid_: Miss, failed question
+
 ## Game
 
 **Asteroid**:
