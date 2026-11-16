@@ -21,8 +21,9 @@ const MESSAGES = {
   unanswered:
     "I don't know that one. Ask Eythor directly at hello@eythorkonrads.com.",
   hourLimit:
-    "You've reached the limit of 20 questions for this hour. Try again later.",
-  dayLimit: 'Ask has answered all it can for today. Try again tomorrow.',
+    "You've asked 20 questions this hour, the most Ask takes. You can ask again in an hour.",
+  dayLimit:
+    "Ask has answered all the questions it can for today. Try again tomorrow, or email hello@eythorkonrads.com.",
   error: 'Something went wrong. Try again in a moment.',
   unavailable: "Ask isn't available here.",
 };
@@ -32,34 +33,70 @@ const history = ref([]);
 const loading = ref(false);
 const notice = ref('');
 const nextReply = ref('answer');
+// The real limits from issue #139. Reaching one blocks asking until reset.
+export const PER_HOUR = 20;
+export const PER_DAY = 100;
+const askedThisHour = ref(0);
+const askedToday = ref(0);
+const limit = ref(null); // null | 'hourLimit' | 'dayLimit'
 let canned = 0;
 
 export function useAskPrototype() {
   async function ask(question) {
     const text = question.trim();
-    if (!text || loading.value) return;
+    if (!text || loading.value || limit.value) return;
     loading.value = true;
     await new Promise((resolve) => setTimeout(resolve, 900));
     const kind = nextReply.value;
-    const isAnswer = kind === 'answer';
-    const entry = {
+    loading.value = false;
+    if (kind === 'hourLimit' || kind === 'dayLimit') {
+      limit.value = kind;
+      notice.value = '';
+      return;
+    }
+    if (kind === 'error' || kind === 'unavailable') {
+      notice.value = MESSAGES[kind];
+      return;
+    }
+    history.value.push({
       question: text,
       kind,
-      answer: isAnswer ? CANNED[canned++ % CANNED.length] : MESSAGES[kind],
-    };
-    // Limits and errors aren't answers: shown as a notice, not in the history
-    if (isAnswer || kind === 'unanswered') {
-      history.value.push(entry);
-      notice.value = '';
-    } else {
-      notice.value = entry.answer;
-    }
-    loading.value = false;
-    return entry;
+      answer:
+        kind === 'answer' ? CANNED[canned++ % CANNED.length] : MESSAGES[kind],
+    });
+    notice.value = '';
+    askedThisHour.value++;
+    askedToday.value++;
+    // The API says how many are left, so the box locks right after the last
+    if (askedToday.value >= PER_DAY) limit.value = 'dayLimit';
+    else if (askedThisHour.value >= PER_HOUR) limit.value = 'hourLimit';
   }
   function clear() {
     history.value = [];
     notice.value = '';
   }
-  return { history, loading, notice, nextReply, ask, clear };
+  // Prototype controls for the switcher
+  function nearLimit() {
+    askedThisHour.value = PER_HOUR - 1;
+  }
+  function resetLimits() {
+    askedThisHour.value = 0;
+    askedToday.value = 0;
+    limit.value = null;
+    nextReply.value = 'answer';
+  }
+  return {
+    history,
+    loading,
+    notice,
+    nextReply,
+    limit,
+    limitMessage: MESSAGES,
+    askedThisHour,
+    askedToday,
+    ask,
+    clear,
+    nearLimit,
+    resetLimits,
+  };
 }

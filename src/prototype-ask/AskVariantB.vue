@@ -5,7 +5,8 @@
 import { nextTick, ref, watch } from 'vue';
 import { useAskPrototype } from './useAskPrototype';
 
-const { history, loading, notice, ask, clear } = useAskPrototype();
+const { history, loading, notice, limit, limitMessage, ask, clear } =
+  useAskPrototype();
 const question = ref('');
 const input = ref(null);
 const thread = ref(null);
@@ -86,14 +87,6 @@ function onEnter(event) {
       </div>
 
       <div v-else class="ask-b__thread-wrap">
-        <button
-          v-if="history.length"
-          type="button"
-          class="ask-b__clear"
-          @click="clear"
-        >
-          Clear
-        </button>
         <ol
           ref="thread"
           class="ask-b__thread"
@@ -127,7 +120,12 @@ function onEnter(event) {
 
       <p v-if="notice" class="ask-b__notice" role="status">{{ notice }}</p>
 
-      <form class="ask-b__form" @submit.prevent="submit()">
+      <!-- At a limit the form gives way to the message, until it resets -->
+      <p v-if="limit" class="ask-b__limit" role="status">
+        <span class="ask-b__limit-icon" aria-hidden="true">⏳</span>
+        {{ limitMessage[limit] }}
+      </p>
+      <form v-else class="ask-b__form" @submit.prevent="submit()">
         <textarea
           ref="input"
           v-model="question"
@@ -146,12 +144,25 @@ function onEnter(event) {
           Send
         </button>
       </form>
+      <!-- Left: count above the links. Right: the note, one sentence a line -->
       <div class="ask-b__meta">
-        <span class="ask-b__count">{{ question.length }}/300</span>
+        <div class="ask-b__side">
+          <span v-if="!limit" class="ask-b__count">
+            {{ question.length }}/300
+          </span>
+          <span class="ask-b__links">
+            <a href="#privacy">Privacy</a>
+            <template v-if="history.length">
+              ·
+              <button type="button" class="ask-b__clear" @click="clear">
+                Clear chat
+              </button>
+            </template>
+          </span>
+        </div>
         <p class="ask-b__note">
-          AI-generated from this site's content, so it can get things wrong.
-          Unanswered questions may be saved.
-          <a href="#privacy">Privacy</a>
+          <span>Answers are AI-generated from this site and can be wrong.</span>
+          <span>Questions it can't answer may be saved.</span>
         </p>
       </div>
     </div>
@@ -180,8 +191,18 @@ function onEnter(event) {
   width: 100%;
   background-color: var(--color-rule);
 }
+/* The card. No top padding: the thread scrolls right up to its rounded top
+   edge, so nothing is cut off mid-card. */
 .ask-b__box {
   margin-top: 1rem;
+  padding: 0 1.25rem 1rem;
+  border-radius: 12px;
+  background: var(--color-card);
+  box-shadow: var(--color-card-shadow) 0 2px 8px;
+  overflow: hidden;
+}
+.ask-b__empty {
+  padding-top: 1.25rem;
 }
 .ask-b__empty p {
   margin: 0;
@@ -210,30 +231,16 @@ function onEnter(event) {
 .ask-b__thread-wrap {
   position: relative;
 }
-.ask-b__clear {
-  position: absolute;
-  top: -2.25rem;
-  right: 0;
-  border: none;
-  background: none;
-  color: var(--color-link);
-  font: inherit;
-  font-size: 0.8125rem;
-  cursor: pointer;
-}
-.ask-b__clear:hover {
-  color: var(--color-link-hover);
-}
+/* Page scrolling carries on once the thread hits its end */
 .ask-b__thread {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   max-height: 320px;
   margin: 0;
-  padding: 0;
+  padding: 1.25rem 0 0;
   overflow-y: auto;
   list-style: none;
-  overscroll-behavior: contain;
 }
 .ask-b__pair {
   display: flex;
@@ -256,7 +263,7 @@ function onEnter(event) {
 }
 .ask-b__bubble--a {
   align-self: flex-start;
-  background: var(--color-card);
+  background: var(--color-background);
 }
 .ask-b__bubble--unknown {
   font-style: italic;
@@ -283,22 +290,37 @@ function onEnter(event) {
   margin: 0.75rem 0 0;
   color: var(--color-link);
 }
+.ask-b__limit {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin: 1rem 0 0;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-accent-soft-hover);
+  border-radius: 8px;
+  background: var(--color-accent-soft);
+  color: var(--color-hdln);
+  line-height: 1.45;
+}
 .ask-b__form {
   display: flex;
-  align-items: stretch;
+  align-items: flex-end;
   gap: 0.5rem;
   margin-top: 1rem;
 }
+/* Send matches this starting height; resizing only grows the textarea */
 .ask-b__input {
   flex: 1;
   min-width: 0;
+  box-sizing: border-box;
+  height: 4rem;
+  min-height: 4rem;
+  max-height: 12rem;
   resize: vertical;
-  min-height: 3.25rem;
-  max-height: 10rem;
   padding: 0.625rem 0.875rem;
   border: 1px solid var(--color-accent-soft-hover);
   border-radius: 8px;
-  background: var(--color-card);
+  background: var(--color-background);
   color: inherit;
   font: inherit;
   line-height: 1.4;
@@ -308,8 +330,9 @@ function onEnter(event) {
   outline-offset: -1px;
 }
 .ask-b__send {
-  align-self: flex-end;
-  padding: 0.625rem 1.125rem;
+  box-sizing: border-box;
+  height: 4rem;
+  padding: 0 1.25rem;
   border: none;
   border-radius: 8px;
   background: var(--color-accent);
@@ -334,37 +357,55 @@ function onEnter(event) {
 .ask-b__meta {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-end;
   gap: 1rem;
-  margin-top: 0.25rem;
-}
-.ask-b__count {
-  flex-shrink: 0;
+  margin-top: 0.375rem;
   font-size: 0.6875rem;
+  line-height: 1.5;
   color: var(--color-text-muted);
+}
+.ask-b__side {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.ask-b__links a,
+.ask-b__clear {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-link);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ask-b__links a:hover,
+.ask-b__clear:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
 }
 .ask-b__note {
+  display: flex;
+  flex-direction: column;
   margin: 0;
-  max-width: 28rem;
   text-align: right;
-  font-size: 0.6875rem;
-  line-height: 1.4;
-  color: var(--color-text-muted);
-}
-.ask-b__note a {
-  color: inherit;
-  text-decoration: underline;
 }
 
 @media screen and (max-width: 600px) {
+  /* The header no longer spaces it from the Hero, like .home__experience */
   .ask-b {
-    padding: 0 1rem;
+    margin-top: 2em;
+    margin-bottom: 0;
   }
-  .ask-b__hdln {
-    font-size: 1.5rem;
+  .ask-b__box {
+    padding: 0 1rem 0.875rem;
   }
   .ask-b__thread {
     max-height: 55vh;
+    padding-top: 1rem;
+  }
+  .ask-b__empty {
+    padding-top: 1rem;
   }
   .ask-b__bubble {
     max-width: 90%;
@@ -375,14 +416,10 @@ function onEnter(event) {
   /* Stacked: the textarea gets the full width, Send sits under it */
   .ask-b__form {
     flex-direction: column;
+    align-items: stretch;
   }
   .ask-b__send {
-    align-self: stretch;
-  }
-  .ask-b__meta {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.125rem;
+    height: 2.75rem;
   }
 }
 </style>

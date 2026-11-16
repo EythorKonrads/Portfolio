@@ -12,7 +12,16 @@ const props = defineProps({
 
 const route = useRoute();
 const router = useRouter();
-const { nextReply, history, notice } = useAskPrototype();
+const {
+  nextReply,
+  history,
+  notice,
+  limit,
+  askedThisHour,
+  askedToday,
+  nearLimit,
+  resetLimits,
+} = useAskPrototype();
 const keys = Object.keys(props.variants);
 
 function go(step) {
@@ -44,8 +53,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
         </option>
       </select>
     </label>
+    <button @click="nearLimit">19 asked</button>
+    <button @click="resetLimits">Reset limits</button>
     <span class="proto-bar__state">
-      history: {{ history.length }} · notice: {{ notice ? 'yes' : 'no' }}
+      hour {{ askedThisHour }}/20 · day {{ askedToday }}/100 · limit:
+      {{ limit ?? 'none' }} · history: {{ history.length }} · notice:
+      {{ notice ? 'yes' : 'no' }}
     </span>
   </div>
 </template>
