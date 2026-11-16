@@ -226,6 +226,13 @@ function onEnter(event) {
   box-shadow: var(--color-card-shadow) 0 2px 8px;
   overflow: hidden;
 }
+/* A white card on the light page barely shows, so tint it like the Hero */
+[data-theme='light'] .ask-b__box {
+  background: var(--color-background-overlay);
+}
+[data-theme='light'] .ask-b__input {
+  background: var(--color-card);
+}
 .ask-b__empty {
   padding-top: 1.25rem;
 }
