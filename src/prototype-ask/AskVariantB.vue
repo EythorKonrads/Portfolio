@@ -320,6 +320,7 @@ function onEnter(event) {
 /* The card. No top padding: the thread scrolls right up to its rounded top
    edge, so nothing is cut off mid-card. */
 .ask-b__box {
+  container: ask-box / inline-size;
   margin-top: 1rem;
   padding: 0 1.25rem 1rem;
   border-radius: 12px;
@@ -361,6 +362,19 @@ function onEnter(event) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* A wide card has room for one row, so the slot is one chip tall there */
+@container ask-box (min-width: 640px) {
+  .ask-b__chips-slot {
+    height: var(--chip-height);
+  }
+  .ask-b__chips {
+    flex-direction: row;
+  }
+  .ask-b__chips .ask-b__chip {
+    min-width: 0;
+    flex-shrink: 1;
+  }
 }
 /* Old picks leave together; new ones arrive one after another */
 .chips-leave-active .ask-b__chip {
