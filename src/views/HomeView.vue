@@ -8,13 +8,29 @@ import SectionNav from '../components/SectionNav.vue';
 import ThemeToggle from '../components/ThemeToggle.vue';
 import HeroAurora from '../components/HeroAurora.vue';
 import { useTheme } from '@/composables/useTheme';
+// PROTOTYPE (issue #140): Ask placement variants, dev builds only
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import AskVariantA from '@/prototype-ask/AskVariantA.vue';
+import AskVariantB from '@/prototype-ask/AskVariantB.vue';
+import AskVariantC from '@/prototype-ask/AskVariantC.vue';
+import PrototypeSwitcher from '@/prototype-ask/PrototypeSwitcher.vue';
 
 const { theme } = useTheme();
+
+const isDev = import.meta.env.DEV;
+const VARIANTS = { A: 'In the Hero', B: 'Own section', C: 'Floating button' };
+const route = useRoute();
+const variant = computed(() =>
+  VARIANTS[route.query.variant] ? route.query.variant : 'A'
+);
 </script>
 
 <template>
   <div class="home">
-    <Hero class="home__hero" />
+    <Hero class="home__hero">
+      <AskVariantA v-if="isDev && variant === 'A'" />
+    </Hero>
     <div class="home__wrapper" data-cy="homeWrapper">
       <!-- Real auroras only show against a dark sky -->
       <HeroAurora v-if="theme === 'dark'" />
@@ -25,10 +41,15 @@ const { theme } = useTheme();
           <TagFilter class="home__filter" />
         </div>
       </header>
+      <AskVariantB v-if="isDev && variant === 'B'" />
       <Experience class="home__experience" />
       <Education class="home__education" />
       <Projects class="home__projects" />
     </div>
+    <template v-if="isDev">
+      <AskVariantC v-if="variant === 'C'" />
+      <PrototypeSwitcher :variants="VARIANTS" :current="variant" />
+    </template>
   </div>
 </template>
 

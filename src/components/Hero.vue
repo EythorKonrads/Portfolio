@@ -43,6 +43,8 @@ import MiniEarth from './MiniEarth.vue';
           coordinating developers and designers, and delegating tasks to support
           effective team delivery.
         </p>
+        <!-- PROTOTYPE (issue #140): Ask variant A mounts here -->
+        <slot />
       </div>
     </div>
     <div
