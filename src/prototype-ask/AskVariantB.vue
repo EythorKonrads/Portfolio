@@ -5,7 +5,7 @@
 import { nextTick, ref, watch } from 'vue';
 import { useAskPrototype } from './useAskPrototype';
 
-const { history, loading, notice, limit, limitMessage, ask, clear } =
+const { history, loading, notice, limit, limitMessage, palette, ask, clear } =
   useAskPrototype();
 const question = ref('');
 const input = ref(null);
@@ -89,7 +89,7 @@ function onEnter(event) {
 </script>
 
 <template>
-  <section id="ask" class="ask-b" data-cy="ask">
+  <section id="ask" class="ask-b" :data-palette="palette" data-cy="ask">
     <div class="ask-b__hdln">
       <h2>Ask about me</h2>
       <div class="ask-b__line"></div>
@@ -418,6 +418,65 @@ function onEnter(event) {
   flex-direction: column;
   margin: 0;
   text-align: right;
+}
+
+/* PROTOTYPE palettes, all from existing theme tokens */
+/* Solid accent: the visitor's bubble in the accent, answers on a raised
+   surface, Send in the heading colour so it differs from the bubble */
+[data-palette='solid'] {
+  .ask-b__bubble--q {
+    background: var(--color-chip-selected-bg);
+    color: var(--color-chip-selected-text);
+  }
+  .ask-b__bubble--a {
+    background: var(--color-surface-raised);
+    border-color: transparent;
+  }
+  .ask-b__send:not(:disabled) {
+    background: var(--color-hdln);
+    color: var(--color-background);
+  }
+}
+/* Quiet: no card; answers are the white cards instead, questions soft */
+[data-palette='quiet'] {
+  .ask-b__box {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+  .ask-b__thread {
+    padding: 1.25rem 0.25rem 0.5rem;
+  }
+  .ask-b__bubble--q {
+    background: var(--color-surface-raised);
+  }
+  .ask-b__bubble--a {
+    background: var(--color-card);
+    border-color: transparent;
+    box-shadow: var(--color-card-shadow) 0 2px 8px;
+  }
+  .ask-b__input {
+    background: var(--color-card);
+  }
+}
+/* Neutral: grey for the visitor, plain text with an accent rule for
+   answers; colour only on Send */
+[data-palette='neutral'] {
+  .ask-b__bubble--q {
+    background: var(--color-background-overlay);
+    color: var(--color-text);
+  }
+  .ask-b__bubble--a {
+    max-width: 100%;
+    background: none;
+    border: none;
+    border-left: 2px solid var(--color-accent);
+    border-radius: 0;
+  }
+  .ask-b__input {
+    background: var(--color-card);
+  }
 }
 
 @media screen and (max-width: 600px) {

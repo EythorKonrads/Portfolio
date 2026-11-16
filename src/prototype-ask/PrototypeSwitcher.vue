@@ -3,7 +3,7 @@
 // pick what the fake /api/ask replies next. Dev builds only.
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { REPLIES, useAskPrototype } from './useAskPrototype';
+import { PALETTES, REPLIES, useAskPrototype } from './useAskPrototype';
 
 const props = defineProps({
   variants: { type: Object, required: true }, // { A: 'In the Hero', ... }
@@ -14,6 +14,7 @@ const route = useRoute();
 const router = useRouter();
 const {
   nextReply,
+  palette,
   history,
   notice,
   limit,
@@ -49,6 +50,14 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
       Next reply
       <select v-model="nextReply">
         <option v-for="(label, key) in REPLIES" :key="key" :value="key">
+          {{ label }}
+        </option>
+      </select>
+    </label>
+    <label class="proto-bar__reply">
+      Palette
+      <select v-model="palette">
+        <option v-for="(label, key) in PALETTES" :key="key" :value="key">
           {{ label }}
         </option>
       </select>

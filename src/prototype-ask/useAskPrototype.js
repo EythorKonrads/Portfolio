@@ -33,6 +33,14 @@ const history = ref([]);
 const loading = ref(false);
 const notice = ref('');
 const nextReply = ref('answer');
+// Colour treatments for variant B, flipped from the switcher
+export const PALETTES = {
+  current: 'Current',
+  solid: 'Solid accent',
+  quiet: 'Quiet, no card',
+  neutral: 'Neutral',
+};
+const palette = ref('current');
 // The real limits from issue #139. Reaching one blocks asking until reset.
 export const PER_HOUR = 20;
 export const PER_DAY = 100;
@@ -90,6 +98,7 @@ export function useAskPrototype() {
     loading,
     notice,
     nextReply,
+    palette,
     limit,
     limitMessage: MESSAGES,
     askedThisHour,
