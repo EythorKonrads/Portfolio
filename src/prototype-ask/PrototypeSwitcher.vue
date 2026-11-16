@@ -15,6 +15,7 @@ const router = useRouter();
 const {
   nextReply,
   palette,
+  challenge,
   history,
   notice,
   limit,
@@ -61,6 +62,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
           {{ label }}
         </option>
       </select>
+    </label>
+    <label class="proto-bar__reply">
+      <input v-model="challenge" type="checkbox" />
+      Turnstile challenge
     </label>
     <button @click="nearLimit">19 asked</button>
     <button @click="resetLimits">Reset limits</button>

@@ -5,8 +5,17 @@
 import { nextTick, ref, watch } from 'vue';
 import { useAskPrototype } from './useAskPrototype';
 
-const { history, loading, notice, limit, limitMessage, palette, ask, clear } =
-  useAskPrototype();
+const {
+  history,
+  loading,
+  notice,
+  limit,
+  limitMessage,
+  palette,
+  challenge,
+  ask,
+  clear,
+} = useAskPrototype();
 const question = ref('');
 const input = ref(null);
 const thread = ref(null);
@@ -48,9 +57,12 @@ const atBottom = () => {
   const el = thread.value;
   return !el || el.scrollHeight - el.scrollTop - el.clientHeight < BOTTOM_SLACK;
 };
+const reducedMotion = () =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function scrollToBottom() {
   const el = thread.value;
-  if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  const behavior = reducedMotion() ? 'auto' : 'smooth';
+  if (el) el.scrollTo({ top: el.scrollHeight, behavior });
   showNewPill.value = false;
 }
 function onThreadScroll() {
@@ -69,15 +81,47 @@ watch(
   }
 );
 
+// Split an answer into text and email parts, so emails render as links
+const EMAIL = /([\w.+-]+@[\w-]+\.[\w.]+[\w])/;
+const parts = (text) =>
+  text
+    .split(EMAIL)
+    .filter(Boolean)
+    .map((value) => ({ value, email: EMAIL.test(value) }));
+
+const COUNT_WARN = 280;
+
+// Turnstile's interactive fallback: the question waits until it's ticked
+const pending = ref(null); // the question waiting for the check
+const verifying = ref(false);
+async function verify() {
+  verifying.value = true;
+  await new Promise((resolve) => setTimeout(resolve, 700));
+  verifying.value = false;
+  challenge.value = false;
+  const text = pending.value;
+  pending.value = null;
+  submit(text);
+}
+
 async function submit(text = question.value) {
   if (!text.trim() || loading.value) return;
+  if (challenge.value) {
+    pending.value = text;
+    question.value = '';
+    return;
+  }
   question.value = '';
   input.value?.focus();
+  const answeredBefore = history.value.length;
   const asking = ask(text);
   // Their own question always scrolls into view, with the "Thinking…" line
   await nextTick();
   scrollToBottom();
   await asking;
+  // Failed (an error, not a limit): give the question back to retry
+  const failed = history.value.length === answeredBefore && !limit.value;
+  if (failed && !question.value) question.value = text;
   input.value?.focus();
 }
 function onEnter(event) {
@@ -90,12 +134,12 @@ function onEnter(event) {
 
 <template>
   <section id="ask" class="ask-b" :data-palette="palette" data-cy="ask">
-    <div class="ask-b__hdln">
+    <div v-reveal class="ask-b__hdln">
       <h2>Ask about me</h2>
-      <div class="ask-b__line"></div>
+      <div class="ask-b__line reveal-line"></div>
     </div>
 
-    <div class="ask-b__box">
+    <div v-reveal class="ask-b__box">
       <div v-if="!history.length && !loading" class="ask-b__empty">
         <p>Ask anything about my work, skills or what I'm looking for.</p>
         <div class="ask-b__chips">
@@ -104,6 +148,7 @@ function onEnter(event) {
             :key="s"
             type="button"
             class="ask-b__chip"
+            :disabled="loading || !!pending"
             @click="submit(s)"
           >
             {{ s }}
@@ -124,7 +169,12 @@ function onEnter(event) {
               class="ask-b__bubble ask-b__bubble--a"
               :class="{ 'ask-b__bubble--unknown': entry.kind === 'unanswered' }"
             >
-              {{ entry.answer }}
+              <template v-for="(part, j) in parts(entry.answer)" :key="j">
+                <a v-if="part.email" :href="`mailto:${part.value}`">{{
+                  part.value
+                }}</a>
+                <template v-else>{{ part.value }}</template>
+              </template>
             </p>
           </li>
           <li v-if="loading" class="ask-b__pair">
@@ -143,14 +193,34 @@ function onEnter(event) {
         </button>
       </div>
 
-      <p v-if="notice" class="ask-b__notice" role="status">{{ notice }}</p>
-
-      <!-- At a limit the form gives way to the message, until it resets -->
-      <p v-if="limit" class="ask-b__limit" role="status">
-        <span class="ask-b__limit-icon" aria-hidden="true">⏳</span>
+      <!-- Errors and limits share one look. At a limit the form gives way
+           to the message, until it resets. -->
+      <p v-if="notice && !limit" class="ask-b__alert" role="status">
+        <span aria-hidden="true">⚠️</span>
+        {{ notice }}
+      </p>
+      <p v-if="limit" class="ask-b__alert" role="status">
+        <span aria-hidden="true">⏳</span>
         {{ limitMessage[limit] }}
       </p>
-      <form v-else class="ask-b__form" @submit.prevent="submit()">
+
+      <!-- Turnstile's interactive fallback (mock), right above the input -->
+      <div v-if="pending" class="ask-b__turnstile" role="group">
+        <p class="ask-b__turnstile-why">
+          One quick check before we send “{{ pending }}”
+        </p>
+        <div class="ask-b__ts-widget">
+          <label class="ask-b__ts-check">
+            <input type="checkbox" :disabled="verifying" @change="verify" />
+            {{ verifying ? 'Verifying…' : 'Verify you are human' }}
+          </label>
+          <span class="ask-b__ts-brand">
+            <strong>CLOUDFLARE</strong>
+            <small>Privacy · Terms</small>
+          </span>
+        </div>
+      </div>
+      <form v-else-if="!limit" class="ask-b__form" @submit.prevent="submit()">
         <textarea
           ref="input"
           v-model="question"
@@ -163,7 +233,7 @@ function onEnter(event) {
         ></textarea>
         <button
           class="ask-b__send"
-          :disabled="loading || !question.trim()"
+          :disabled="loading || !!pending || !question.trim()"
           aria-label="Send"
         >
           Send
@@ -172,7 +242,11 @@ function onEnter(event) {
       <!-- Left: count above the links. Right: the note, one sentence a line -->
       <div class="ask-b__meta">
         <div class="ask-b__side">
-          <span v-if="!limit" class="ask-b__count">
+          <span
+            v-if="!limit"
+            class="ask-b__count"
+            :class="{ 'ask-b__count--warn': question.length >= COUNT_WARN }"
+          >
             {{ question.length }}/300
           </span>
           <span class="ask-b__links">
@@ -321,11 +395,8 @@ function onEnter(event) {
   box-shadow: var(--color-box-shadow) 0 2px 8px;
   cursor: pointer;
 }
-.ask-b__notice {
-  margin: 0.75rem 0 0;
-  color: var(--color-link);
-}
-.ask-b__limit {
+/* Errors and limits share one box */
+.ask-b__alert {
   display: flex;
   align-items: flex-start;
   gap: 0.625rem;
@@ -336,6 +407,50 @@ function onEnter(event) {
   background: var(--color-accent-soft);
   color: var(--color-hdln);
   line-height: 1.45;
+}
+.ask-b__bubble a {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+}
+/* Mock of Cloudflare's widget, at its real 300 x 65 size */
+.ask-b__turnstile {
+  margin-top: 1rem;
+}
+.ask-b__turnstile-why {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+.ask-b__ts-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: 100%;
+  height: 65px;
+  padding: 0 0.875rem;
+  border: 1px solid var(--color-accent-soft-hover);
+  border-radius: 4px;
+  background: var(--color-card);
+  font-size: 0.875rem;
+}
+.ask-b__ts-check {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+.ask-b__ts-check input {
+  width: 22px;
+  height: 22px;
+}
+.ask-b__ts-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
 }
 .ask-b__form {
   display: flex;
@@ -400,6 +515,10 @@ function onEnter(event) {
   font-size: 0.6875rem;
   line-height: 1.5;
   color: var(--color-text-muted);
+}
+.ask-b__count--warn {
+  color: var(--color-game-health-warn);
+  font-weight: 600;
 }
 .ask-b__side {
   display: flex;

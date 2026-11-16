@@ -41,6 +41,8 @@ export const PALETTES = {
   neutral: 'Neutral',
 };
 const palette = ref('current');
+// When on, Turnstile asks for its checkbox before the next question is sent
+const challenge = ref(false);
 // The real limits from issue #139. Reaching one blocks asking until reset.
 export const PER_HOUR = 20;
 export const PER_DAY = 100;
@@ -99,6 +101,7 @@ export function useAskPrototype() {
     notice,
     nextReply,
     palette,
+    challenge,
     limit,
     limitMessage: MESSAGES,
     askedThisHour,
