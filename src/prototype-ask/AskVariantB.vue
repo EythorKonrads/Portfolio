@@ -228,7 +228,8 @@ function onEnter(event) {
 }
 /* A white card on the light page barely shows, so tint it like the Hero */
 [data-theme='light'] .ask-b__box {
-  background: var(--color-background-overlay);
+  /* A bit stronger than the Hero's 4% */
+  background: color-mix(in srgb, var(--color-hdln) 7%, transparent);
 }
 [data-theme='light'] .ask-b__input {
   background: var(--color-card);
