@@ -32,9 +32,14 @@ for anything the rest of the site's content doesn't cover.
 _Avoid_: Bio, knowledge base
 
 **Unanswered question**:
-A question Ask couldn't answer from the content. It is kept so the About
-file can be filled in later; answered questions are not kept.
+A question about Eythor that Ask couldn't answer from the content. It is
+kept so the About file can be filled in later; answered questions and
+Off-topic questions are not kept.
 _Avoid_: Miss, failed question
+
+**Off-topic question**:
+A question that isn't about Eythor, which Ask declines and doesn't keep.
+_Avoid_: Refusal, invalid question
 
 ## Game
 
