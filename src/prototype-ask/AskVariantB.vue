@@ -355,12 +355,14 @@ function onEnter(event) {
   flex-direction: column;
   align-items: flex-start;
   gap: var(--chip-gap);
+  /* Chips too long for the card scroll sideways instead of being cut off */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 .ask-b__chips .ask-b__chip {
+  flex-shrink: 0;
   height: var(--chip-height);
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 /* A wide card has room for one row, so the slot is one chip tall there */
@@ -370,10 +372,6 @@ function onEnter(event) {
   }
   .ask-b__chips {
     flex-direction: row;
-  }
-  .ask-b__chips .ask-b__chip {
-    min-width: 0;
-    flex-shrink: 1;
   }
 }
 /* Old picks leave together; new ones arrive one after another */
