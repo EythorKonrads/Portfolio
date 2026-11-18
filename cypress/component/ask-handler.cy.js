@@ -1,6 +1,12 @@
 // Ask's API (worker/ask.mjs) with in-memory stores and stubbed Turnstile,
 // Claude, IP hash and clock, so nothing here calls a real service
-import { UNKNOWN_TEXT, cleanup, handleAsk } from '../../worker/ask.mjs';
+import {
+  UNKNOWN_TEXT,
+  cleanup,
+  handleAsk,
+  ipHasher,
+  turnstileVerifier,
+} from '../../worker/ask.mjs';
 
 const NOW = new Date('2026-11-18T14:25:00.000Z');
 
@@ -227,6 +233,52 @@ describe('Ask handler', () => {
       const response = await handleAsk(ask(valid), deps);
       expect(response.status).to.equal(200);
       expect((await response.json()).answer).to.equal(UNKNOWN_TEXT);
+    });
+  });
+
+  context('Turnstile and the visitor hash', () => {
+    const siteverify = (response) => cy.stub().resolves(response);
+
+    it('passes or rejects tokens as siteverify says', async () => {
+      const fetcher = siteverify(Response.json({ success: true }));
+      expect(await turnstileVerifier('secret', fetcher)('tok')).to.be.true;
+      const [url, init] = fetcher.firstCall.args;
+      expect(url).to.equal(
+        'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+      );
+      expect(JSON.parse(init.body)).to.deep.equal({
+        secret: 'secret',
+        response: 'tok',
+      });
+      expect(init.signal).to.be.an.instanceOf(AbortSignal);
+      const no = siteverify(Response.json({ success: false }));
+      expect(await turnstileVerifier('secret', no)('tok')).to.be.false;
+    });
+
+    it('fails closed when siteverify is down or replies with non-JSON', async () => {
+      const replies = [
+        cy.stub().rejects(new TypeError('network')),
+        siteverify(new Response('<html>', { status: 200 })),
+        siteverify(Response.json({ success: false }, { status: 500 })),
+        siteverify(Response.json({})),
+      ];
+      for (const fetcher of replies) {
+        let threw = false;
+        try {
+          await turnstileVerifier('secret', fetcher)('tok');
+        } catch {
+          threw = true;
+        }
+        expect(threw).to.be.true;
+      }
+    });
+
+    it('hashes the IP with HMAC-SHA-256 of the key', async () => {
+      // RFC 4231 test case 2
+      const hash = await ipHasher('Jefe');
+      expect(await hash('what do ya want for nothing?')).to.equal(
+        '5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843'
+      );
     });
   });
 

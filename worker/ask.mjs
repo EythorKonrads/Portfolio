@@ -12,25 +12,24 @@
 //   hmac(ip) -> the visitor's hash
 //   now() -> the current Date
 
-export const HOUR_LIMIT = 20; // questions per visitor per UTC clock hour
-export const DAY_LIMIT = 100; // questions for the whole site per UTC day
-export const MAX_QUESTION = 300; // characters
+const HOUR_LIMIT = 20; // questions per visitor per UTC clock hour
+const DAY_LIMIT = 100; // questions for the whole site per UTC day
+const MAX_QUESTION = 300; // characters
 const MAX_BODY = 8000; // characters; a question and a Turnstile token fit
 const KEEP_DAYS = 90; // how long Unanswered questions are kept
 
 export const UNKNOWN_TEXT =
   "I don't know that one. Ask Eythor directly at hello@eythorkonrads.com.";
-export const OFF_TOPIC_TEXT =
-  'I only answer questions about Eythor and his work.';
+const OFF_TOPIC_TEXT = 'I only answer questions about Eythor and his work.';
 
 const headers = { 'Cache-Control': 'no-store' };
-export const json = (body, status = 200) =>
-  Response.json(body, { status, headers });
+const json = (body, status = 200) => Response.json(body, { status, headers });
 export const unavailable = () => json({ error: 'unavailable' }, 503);
 
-const DAY = 24 * 60 * 60 * 1000;
+const HOUR = 60 * 60 * 1000;
+const DAY = 24 * HOUR;
 const nextHour = (now) =>
-  new Date(Math.floor(now.getTime() / 3600_000) * 3600_000 + 3600_000);
+  new Date(Math.floor(now.getTime() / HOUR) * HOUR + HOUR);
 const nextMidnight = (now) =>
   new Date(Math.floor(now.getTime() / DAY) * DAY + DAY);
 const day = (date) => date.toISOString().slice(0, 10);
