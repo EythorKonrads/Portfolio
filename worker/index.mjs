@@ -1,6 +1,13 @@
 // Only /api/* reaches this Worker (wrangler.jsonc); Cloudflare serves the site
 // itself as static files, so using up the Worker's limits can't touch the page.
 import { BOARD_SIZE } from '../src/game/scoreboard.js';
+import {
+  cleanup,
+  handleAsk,
+  ipHasher,
+  turnstileVerifier,
+  unavailable,
+} from './ask.mjs';
 import { handleScores } from './handler.mjs';
 
 const d1Store = (db) => ({
@@ -25,11 +32,67 @@ const d1Store = (db) => ({
       .run(),
 });
 
+const d1AskStore = (db) => ({
+  increment: (key, expiresAt) =>
+    db
+      .prepare(
+        `INSERT INTO ask_counters (key, count, expires_at) VALUES (?, 1, ?)
+         ON CONFLICT(key) DO UPDATE SET count = count + 1 RETURNING count`
+      )
+      .bind(key, expiresAt)
+      .first('count'),
+  add: ({ id, question, date }) =>
+    db
+      .prepare(
+        'INSERT INTO unanswered_questions (id, question, date) VALUES (?, ?, ?)'
+      )
+      .bind(id, question, date)
+      .run(),
+  deleteCounters: (before) =>
+    db
+      .prepare('DELETE FROM ask_counters WHERE expires_at <= ?')
+      .bind(before)
+      .run(),
+  deleteQuestions: (before) =>
+    db
+      .prepare('DELETE FROM unanswered_questions WHERE date < ?')
+      .bind(before)
+      .run(),
+});
+
+// PR previews and CI have none of these, so Ask stays off there
+const askConfigured = (env) =>
+  env.ANTHROPIC_API_KEY &&
+  env.TURNSTILE_SECRET_KEY &&
+  env.ASK_IP_KEY &&
+  env.ASK_DB;
+
+async function ask(request, env) {
+  if (!askConfigured(env)) return unavailable();
+  const store = d1AskStore(env.ASK_DB);
+  return handleAsk(request, {
+    counters: store,
+    questions: store,
+    verifyTurnstile: turnstileVerifier(env.TURNSTILE_SECRET_KEY),
+    // The Claude call comes in issue #161; until then Ask returns 503
+    answer: undefined,
+    hmac: await ipHasher(env.ASK_IP_KEY),
+    now: () => new Date(),
+  });
+}
+
 export default {
   fetch(request, env) {
-    if (new URL(request.url).pathname !== '/api/scores') {
-      return new Response('Not found', { status: 404 });
-    }
-    return handleScores(request, d1Store(env.DB));
+    const { pathname } = new URL(request.url);
+    if (pathname === '/api/scores')
+      return handleScores(request, d1Store(env.DB));
+    if (pathname === '/api/ask') return ask(request, env);
+    return new Response('Not found', { status: 404 });
+  },
+
+  // Hourly (wrangler.jsonc): drops Ask's ended counters and old questions
+  scheduled(controller, env, ctx) {
+    if (!env.ASK_DB) return;
+    ctx.waitUntil(cleanup(d1AskStore(env.ASK_DB), new Date()));
   },
 };
