@@ -31,6 +31,14 @@ describe('Accessibility', () => {
     assertAllNamed('[data-cy="popup"] a, [data-cy="popup"] button');
   });
 
+  it('gives every link on the privacy page a name and safe new tabs', () => {
+    cy.visitHome({ path: '/privacy' });
+    assertAllNamed('a, button');
+    cy.get('a[target="_blank"]').each(($link) => {
+      expect($link.attr('rel'), $link.attr('href')).to.include('noopener');
+    });
+  });
+
   it('hides decorative icons from screen readers', () => {
     cy.visitHome();
     cy.get('.icon').each(($icon) => {
