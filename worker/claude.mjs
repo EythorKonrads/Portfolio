@@ -70,7 +70,7 @@ const failReason = (reason) => fail({ ask: 'claude', reason });
 export const claudeAnswerer =
   (apiKey, system, fetcher = fetch) =>
   async (question) => {
-    let response;
+    let response, message;
     try {
       response = await fetcher('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -91,19 +91,14 @@ export const claudeAnswerer =
         }),
         signal: AbortSignal.timeout(20_000),
       });
+      if (response.ok) message = await response.json();
     } catch (error) {
+      // The timeout covers reading the body too
       if (error?.name === 'TimeoutError') throw failReason('timeout');
-      throw error;
-    }
-    if (!response.ok) throw fail({ ask: 'claude', status: response.status });
-
-    let message;
-    try {
-      message = await response.json();
-    } catch (error) {
-      if (error?.name === 'TimeoutError') throw failReason('timeout');
+      if (!response) throw error;
       throw failReason('json');
     }
+    if (!response.ok) throw fail({ ask: 'claude', status: response.status });
     if (message?.stop_reason !== 'end_turn') throw failReason('stop');
 
     const text = message.content?.find((block) => block.type === 'text')?.text;

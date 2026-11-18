@@ -133,7 +133,7 @@ describe('Ask handler', () => {
       expect(await response.text()).to.equal('');
     });
 
-    it('returns 503 when siteverify fails, a counter fails, Claude fails', async () => {
+    it('returns 503 when siteverify, a counter or Claude fails', async () => {
       const failures = [
         { verifyTurnstile: cy.stub().rejects(new Error('down')) },
         {
