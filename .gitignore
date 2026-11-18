@@ -32,3 +32,6 @@ coverage
 
 # Claude Code worktrees
 .claude/worktrees
+
+# Local Worker secrets for wrangler dev
+.dev.vars*

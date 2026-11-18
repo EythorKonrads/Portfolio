@@ -20,7 +20,20 @@
       "database_id": "d7bb3da4-a71f-46dc-bac7-955551c54ea7",
       "migrations_dir": "migrations",
     },
+    // Ask's limits and Unanswered questions (docs/ask.md), in the EU. Not in
+    // previews, so Ask returns 503 there.
+    {
+      "binding": "ASK_DB",
+      "database_name": "portfolio-ask",
+      "database_id": "79c4ba6c-0b6c-4c8c-bc82-d528998e7911",
+      "migrations_dir": "migrations-ask",
+    },
   ],
+  // Ask's hourly cleanup (the scheduled handler in worker/index.mjs)
+  "triggers": { "crons": ["0 * * * *"] },
+  // Logs only what the Worker logs itself: invocation logs would keep request
+  // headers, CF-Connecting-IP among them
+  "observability": { "enabled": true, "logs": { "invocation_logs": false } },
   // PR previews: branches of this Worker, each with its own URL, on a test
   // database so testing doesn't put scores on the real board
   "preview_urls": true,
