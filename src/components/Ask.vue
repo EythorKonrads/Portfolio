@@ -436,7 +436,7 @@ onBeforeUnmount(() => clearTimeout(limitTimer));
             </template>
           </span>
         </div>
-        <p class="ask__note">
+        <p class="ask__note" data-cy="askNote">
           <span
             >Answered by Claude, an AI from Anthropic, using this site. Answers
             can be wrong.</span
@@ -705,7 +705,8 @@ onBeforeUnmount(() => clearTimeout(limitTimer));
 .ask__meta {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  /* The counter stays under the input however far the small print wraps */
+  align-items: flex-start;
   gap: 1rem;
   margin-top: 0.375rem;
   font-size: 0.6875rem;
@@ -738,10 +739,21 @@ onBeforeUnmount(() => clearTimeout(limitTimer));
   display: flex;
   flex-direction: column;
   margin: 0;
+  /* Desktop has room to spare, so the small print stays out of the way */
+  font-size: 0.625rem;
   text-align: right;
 }
 
+/* Phones and tablets: the alert's text would otherwise outweigh the chat */
+@media screen and (max-width: 900px) {
+  .ask__alert {
+    font-size: 0.875rem;
+  }
+}
 @media screen and (max-width: 600px) {
+  .ask__note {
+    font-size: inherit;
+  }
   .ask__card {
     padding: 0 1rem 0.875rem;
   }

@@ -23,6 +23,20 @@ describe('Privacy page', () => {
     cy.get('[data-cy="homeHeader"]').should('not.exist');
   });
 
+  it('fades in when opened', () => {
+    cy.visitHome({ path: '/privacy' });
+    cy.get('[data-cy="privacy"]').should(
+      'have.css',
+      'animation-name',
+      'fade-up'
+    );
+  });
+
+  it('opens without the fade with reduced motion', () => {
+    cy.visitHome({ path: '/privacy', reducedMotion: true });
+    cy.get('[data-cy="privacy"]').should('have.css', 'animation-name', 'none');
+  });
+
   it('goes back to the home page', () => {
     cy.visitHome({ path: '/privacy' });
     cy.get('[data-cy="privacyBack"]').should('have.text', '← Back').click();

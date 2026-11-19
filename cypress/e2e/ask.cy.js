@@ -443,6 +443,60 @@ describe('Ask', () => {
     });
   });
 
+  context('below the input', () => {
+    const fontSize = ($el) => parseFloat(getComputedStyle($el[0]).fontSize);
+
+    [
+      { width: 1280, height: 800 },
+      { width: 375, height: 812 },
+    ].forEach(({ width, height }) => {
+      it(`keeps the counter and Privacy right under the form at ${width}px`, () => {
+        cy.viewport(width, height);
+        visitAsk();
+        cy.get('[data-cy="askForm"]').then(($form) => {
+          cy.get('[data-cy="askCounter"]').should(($counter) => {
+            const gap = rect($counter).top - rect($form).bottom;
+            expect(gap).to.be.within(0, 12);
+          });
+        });
+        cy.get('[data-cy="askCounter"]').then(($counter) => {
+          cy.get('[data-cy="askPrivacy"]').should(($privacy) => {
+            expect(rect($privacy).top).to.be.closeTo(rect($counter).bottom, 4);
+          });
+        });
+      });
+    });
+
+    it('sets the small print smaller than the counter on desktop', () => {
+      cy.viewport(1280, 800);
+      visitAsk();
+      cy.get('[data-cy="askCounter"]').then(($counter) => {
+        cy.get('[data-cy="askNote"]').should(($note) => {
+          expect(fontSize($note)).to.be.lessThan(fontSize($counter));
+        });
+      });
+    });
+
+    [
+      { name: 'phone', width: 375, height: 812 },
+      { name: 'tablet', width: 820, height: 1180 },
+    ].forEach(({ name, width, height }) => {
+      it(`sets the alert smaller than on desktop on a ${name}`, () => {
+        cy.intercept('POST', '/api/ask', { statusCode: 503, body: {} });
+        cy.viewport(1280, 800);
+        visitAsk();
+        send('Has he led a team?');
+        cy.get('[data-cy="askAlert"]').then(($alert) => {
+          const desktop = fontSize($alert);
+          cy.viewport(width, height);
+          cy.get('[data-cy="askAlert"]').should(($smaller) => {
+            expect(fontSize($smaller)).to.be.lessThan(desktop);
+          });
+        });
+      });
+    });
+  });
+
   it('stays within the screen on a 360px phone', () => {
     cy.viewport(360, 780);
     visitAsk();
