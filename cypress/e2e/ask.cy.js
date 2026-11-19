@@ -486,6 +486,12 @@ describe('Ask', () => {
       });
     });
 
+    it('sets the small print at 9px on a phone', () => {
+      cy.viewport(375, 812);
+      visitAsk();
+      cy.get('[data-cy="askNote"]').should('have.css', 'font-size', '9px');
+    });
+
     it('sets the small print smaller than the counter on desktop', () => {
       cy.viewport(1280, 800);
       visitAsk();

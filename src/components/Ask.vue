@@ -751,8 +751,9 @@ onBeforeUnmount(() => clearTimeout(limitTimer));
   }
 }
 @media screen and (max-width: 600px) {
+  /* In px: the root size changes across phones, and 9px is the floor */
   .ask__note {
-    font-size: inherit;
+    font-size: 9px;
   }
   /* In line with the alert and chips around them */
   .ask__input,
