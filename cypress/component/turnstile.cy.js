@@ -8,7 +8,7 @@ const SCRIPT_URL =
 
 // A fake Turnstile. `mode` sets what a run does: 'pass' calls back with a new
 // token, 'error' calls the error callback, 'interactive' asks for a visible
-// check, 'hang' never answers.
+// check, 'hang' never answers, 'throw' makes render throw.
 function stubTurnstile(win, mode = 'pass') {
   const widgets = {};
   let tokens = 0;
@@ -21,6 +21,7 @@ function stubTurnstile(win, mode = 'pass') {
     });
   const turnstile = {
     render: cy.stub().callsFake((container, options) => {
+      if (mode === 'throw') throw new Error('Invalid sitekey');
       const id = `widget-${Object.keys(widgets).length + 1}`;
       widgets[id] = { container, options };
       // An interactive widget runs as soon as it's rendered
@@ -105,6 +106,22 @@ describe('Turnstile', () => {
       stubTurnstile(win, 'error');
       const { getToken } = useTurnstile();
       cy.wrap(reasonOf(getToken())).should('equal', 'widget');
+    });
+  });
+
+  it('rejects when the widget fails to render', () => {
+    serveScript();
+    cy.window().then((win) => {
+      const turnstile = stubTurnstile(win, 'throw');
+      const slot = win.document.createElement('div');
+      win.document.body.append(slot);
+      const { getToken, getInteractiveToken } = useTurnstile();
+      cy.wrap(reasonOf(getToken())).should('equal', 'widget');
+      cy.then(() => reasonOf(getInteractiveToken(slot))).should(
+        'equal',
+        'widget'
+      );
+      cy.then(() => expect(turnstile.remove).not.to.have.been.called);
     });
   });
 

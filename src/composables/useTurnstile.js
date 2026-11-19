@@ -52,51 +52,61 @@ function withTimeout(promise) {
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
+// Options both widgets share. `onToken` and `fail` settle the current call.
+const widgetOptions = (onToken, fail) => ({
+  sitekey: SITE_KEY,
+  // Errors reject at once instead of Turnstile retrying
+  retry: 'never',
+  callback: onToken,
+  'error-callback': () => {
+    fail(failure('widget'));
+    // Tells Turnstile the error is handled
+    return true;
+  },
+});
+
 export function useTurnstile() {
   let widgetId = null;
   let container = null;
-  // The current call's resolve and reject, which the widget's callbacks settle
+  // The hidden widget's callbacks outlive one call, so they settle this one
   let pending = null;
-  const settle = (outcome, value) => {
-    pending?.[outcome](value);
-    pending = null;
-  };
 
-  async function run() {
+  async function executeHiddenWidget() {
     const turnstile = await loadScript();
     return new Promise((resolve, reject) => {
       pending = { resolve, reject };
-      if (widgetId === null) {
-        container = document.createElement('div');
-        document.body.append(container);
-        widgetId = turnstile.render(container, {
-          sitekey: SITE_KEY,
-          execution: 'execute',
-          appearance: 'interaction-only',
-          // Errors reject at once instead of Turnstile retrying
-          retry: 'never',
-          callback: (token) => settle('resolve', token),
-          'error-callback': () => {
-            settle('reject', failure('widget'));
-            // Tells Turnstile the error is handled
-            return true;
-          },
-          'before-interactive-callback': () => {
-            settle('reject', failure('interactive'));
-            // Keeps the hidden widget from showing its check
-            turnstile.reset(widgetId);
-          },
-        });
-      } else {
-        // A token is good for one submit
-        turnstile.reset(widgetId);
+      try {
+        if (widgetId === null) {
+          container ??= document.body.appendChild(
+            document.createElement('div')
+          );
+          widgetId = turnstile.render(container, {
+            ...widgetOptions(
+              (token) => pending?.resolve(token),
+              (error) => pending?.reject(error)
+            ),
+            execution: 'execute',
+            appearance: 'interaction-only',
+            'before-interactive-callback': () => {
+              pending?.reject(failure('interactive'));
+              // Keeps the hidden widget from showing its check
+              turnstile.reset(widgetId);
+            },
+          });
+        } else {
+          // A token is good for one submit
+          turnstile.reset(widgetId);
+        }
+        turnstile.execute(widgetId);
+      } catch {
+        // Turnstile throws on bad input, such as an unknown site key
+        reject(failure('widget'));
       }
-      turnstile.execute(widgetId);
     });
   }
 
   const getToken = () =>
-    withTimeout(run()).finally(() => {
+    withTimeout(executeHiddenWidget()).finally(() => {
       pending = null;
     });
 
@@ -104,18 +114,18 @@ export function useTurnstile() {
     const turnstile = await withTimeout(loadScript());
     let id;
     return new Promise((resolve, reject) => {
-      id = turnstile.render(slot, {
-        sitekey: SITE_KEY,
-        retry: 'never',
-        callback: resolve,
-        'error-callback': () => {
-          reject(failure('widget'));
-          return true;
-        },
-        // The visitor didn't finish the check in time
-        'timeout-callback': () => reject(failure('timeout')),
-      });
-    }).finally(() => turnstile.remove(id));
+      try {
+        id = turnstile.render(slot, {
+          ...widgetOptions(resolve, reject),
+          // The visitor didn't finish the check in time
+          'timeout-callback': () => reject(failure('timeout')),
+        });
+      } catch {
+        reject(failure('widget'));
+      }
+    }).finally(() => {
+      if (id !== undefined) turnstile.remove(id);
+    });
   }
 
   // So a remounted Ask section doesn't leave hidden widgets behind
