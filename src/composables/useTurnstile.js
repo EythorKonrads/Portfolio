@@ -14,9 +14,9 @@ const TIMEOUT_MS = 15_000;
 
 // Cloudflare's always-pass test key
 const TEST_SITE_KEY = '1x00000000000000000000AA';
-// TODO: the production site key isn't posted on issue 159 (Ask: account
-// setup) yet. Until it is, production renders fail, so Ask shows Unavailable.
-const PRODUCTION_SITE_KEY = 'PRODUCTION_SITE_KEY_NOT_SET';
+// Public, and only valid on eythorkonrads.com, so PR previews still fail
+// their Turnstile render and show Unavailable
+const PRODUCTION_SITE_KEY = '0x4AAAAAAGI1ul8MTXSiOoiH';
 const SITE_KEY = import.meta.env.DEV ? TEST_SITE_KEY : PRODUCTION_SITE_KEY;
 
 const failure = (reason) =>

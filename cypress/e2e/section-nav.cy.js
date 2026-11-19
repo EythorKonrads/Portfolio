@@ -2,7 +2,7 @@ import jobs from '../../src/assets/jobs.json';
 import educations from '../../src/assets/educations.json';
 import projects from '../../src/assets/projects.json';
 
-// The sticky header: a link per section next to the tag filter
+// The sections the tag filter applies to
 const sections = [
   {
     id: 'experience',
@@ -26,6 +26,10 @@ const sections = [
     empty: 'projectsEmpty',
   },
 ];
+
+// The sticky header: a link per section next to the tag filter. Ask comes
+// first and isn't filtered.
+const navSections = [{ id: 'ask', title: 'Ask' }, ...sections];
 
 const rect = ($el) => $el[0].getBoundingClientRect();
 const link = (id) => cy.get(`[data-cy="navLink"][data-section="${id}"]`);
@@ -126,8 +130,8 @@ describe('Section nav', () => {
           'aria-label',
           'Sections'
         );
-        cy.get('[data-cy="navLink"]').should('have.length', sections.length);
-        sections.forEach(({ id, title }, index) => {
+        cy.get('[data-cy="navLink"]').should('have.length', navSections.length);
+        navSections.forEach(({ id, title }, index) => {
           cy.get('[data-cy="navLink"]')
             .eq(index)
             .should('be.visible')
@@ -159,10 +163,10 @@ describe('Section nav', () => {
       });
 
       it('marks the first section as active at load', () => {
-        expectActive(sections[0].id);
+        expectActive('ask');
       });
 
-      sections.forEach(({ id }) => {
+      navSections.forEach(({ id }) => {
         it(`scrolls to ${id} and marks it active when clicked`, () => {
           link(id).click();
           assertJumpedTo(id);
@@ -187,6 +191,16 @@ describe('Section nav', () => {
         expectActive('projects');
         cy.get('[data-cy="experience"]').scrollIntoView();
         expectActive('experience');
+        cy.get('[data-cy="ask"]').scrollIntoView();
+        expectActive('ask');
+      });
+
+      it('jumps back up to Ask from further down', () => {
+        link('projects').click();
+        assertJumpedTo('projects');
+        link('ask').click();
+        assertJumpedTo('ask');
+        expectActive('ask');
       });
 
       it('keeps a clicked section active even when it cannot reach the top', () => {

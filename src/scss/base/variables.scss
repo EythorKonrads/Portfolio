@@ -89,6 +89,8 @@
   --color-chip-text: #c4c4f4;
   --color-chip-selected-bg: rgba(147, 147, 232, 0.45);
   --color-chip-selected-text: var(--color-white);
+  /* A warning in text, such as Ask's counter near its limit */
+  --color-warning: #fb923c;
 
   /* Popups and their close button */
   --color-surface: #0f172a;
@@ -129,6 +131,7 @@
   --color-chip-text: var(--color-accent);
   --color-chip-selected-bg: #5050c8;
   --color-chip-selected-text: var(--color-white);
+  --color-warning: #9a3412;
 
   --color-surface: var(--color-white);
   --color-popup-button: rgba(80, 80, 200, 0.15);

@@ -7,7 +7,7 @@ const EMAIL = 'hello@eythorkonrads.com';
 </script>
 
 <template>
-  <main class="privacy" data-cy="privacy">
+  <main class="privacy anim-fade-up" data-cy="privacy">
     <RouterLink to="/" class="privacy__back" data-cy="privacyBack"
       >← Back</RouterLink
     >
