@@ -8,7 +8,7 @@
 //   questions.add({ id, question, date }) saves an Unanswered question
 //   verifyTurnstile(token) -> true or false; throws if it can't tell
 //   answer(question) -> { status, answer }; on failure it throws an error
-//     whose `log` is what to log. Missing until the Claude call is built.
+//     whose `log` is what to log (worker/claude.mjs)
 //   hmac(ip) -> the visitor's hash
 //   now() -> the current Date
 
@@ -90,7 +90,6 @@ export async function handleAsk(request, deps) {
     return unavailable();
   }
 
-  if (!deps.answer) return unavailable();
   let reply;
   try {
     reply = await deps.answer(trimmed);

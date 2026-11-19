@@ -3,6 +3,8 @@
   "name": "portfolio",
   "main": "worker/index.mjs",
   "compatibility_date": "2026-11-01",
+  // Lets the Worker import the About file (src/assets/about.md) as text
+  "rules": [{ "type": "Text", "globs": ["**/*.md"] }],
   // The live site only lives on its own domains
   "workers_dev": false,
   // www and ekonrads.com redirect here through Cloudflare Redirect Rules

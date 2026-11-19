@@ -16,9 +16,35 @@ Off-topic question) are in `GLOSSARY.md`.
 - `worker/index.mjs`: connects that API to D1, Turnstile siteverify and the
   `ASK_IP_KEY` hash, and runs the cleanup from the hourly Cron Trigger. Ask
   returns 503 when `ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, `ASK_IP_KEY`
-  or `ASK_DB` is missing, as in PR previews and CI. The Claude call isn't built
-  yet (issue #161), so for now every question that passes the limits gets 503.
+  or `ASK_DB` is missing, as in PR previews and CI.
+- `worker/claude.mjs`: the Claude call. It builds the system prompt (the rules
+  for how answers read, then the site's JSON content and the About file) and
+  sends one request to the Messages API with plain `fetch`: Claude Haiku 5.5,
+  low effort, a JSON schema for `{ status, answer }`, a 20-second timeout and
+  no retries. Any failure (timeout, an error status, a reply that isn't JSON or
+  doesn't match the schema, or a stop other than `end_turn`) gives 503. Its
+  component spec is `cypress/component/ask-claude.cy.js`.
+- `src/assets/about.md`: the About file (see below).
 - `migrations-ask/`: the database's tables.
+
+## The About file
+
+`src/assets/about.md` tells Ask what the rest of the site doesn't: what Eythor
+is looking for, his skills, how he works, life outside work, contact details
+and a FAQ. Ask sends it to Claude as written with every question, next to
+`src/assets/*.json`, so anything in it can end up in an answer.
+
+- Plain Markdown with `##` sections, about Eythor in the third person.
+- No "as of" dates: write it so it stays true, and edit it by hand when it
+  doesn't.
+- Grow the FAQ from Unanswered questions (below): add the question in bold and
+  a short answer under it.
+- Never put in it: salary, home address, phone number, or family details beyond
+  a mention. Questions about them stay Unanswered questions.
+
+A change to it changes the prompt, so the first question after a deploy writes
+the prompt cache again. CI skips PRs that only change `.md` files, which is
+fine for this file.
 
 ## Running it locally
 

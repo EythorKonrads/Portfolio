@@ -1,5 +1,10 @@
 // Only /api/* reaches this Worker (wrangler.jsonc); Cloudflare serves the site
 // itself as static files, so using up the Worker's limits can't touch the page.
+import about from '../src/assets/about.md';
+import educations from '../src/assets/educations.json';
+import jobs from '../src/assets/jobs.json';
+import languages from '../src/assets/languages.json';
+import projects from '../src/assets/projects.json';
 import { BOARD_SIZE } from '../src/game/scoreboard.js';
 import {
   cleanup,
@@ -8,7 +13,11 @@ import {
   turnstileVerifier,
   unavailable,
 } from './ask.mjs';
+import { buildSystem, claudeAnswerer } from './claude.mjs';
 import { handleScores } from './handler.mjs';
+
+// Built once per isolate; identical on every request so the prompt cache hits
+const system = buildSystem({ jobs, educations, projects, languages }, about);
 
 const d1Store = (db) => ({
   board: async () => {
@@ -74,8 +83,7 @@ async function ask(request, env) {
     counters: store,
     questions: store,
     verifyTurnstile: turnstileVerifier(env.TURNSTILE_SECRET_KEY),
-    // The Claude call comes in issue #161; until then Ask returns 503
-    answer: undefined,
+    answer: claudeAnswerer(env.ANTHROPIC_API_KEY, system),
     hmac: await ipHasher(env.ASK_IP_KEY),
     now: () => new Date(),
   });
