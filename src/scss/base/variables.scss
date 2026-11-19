@@ -6,6 +6,9 @@
   /* Height of the sticky section nav / filter row on the home page */
   --header-height: 4rem;
 
+  /* The widest section content gets, so lines stay easy to read */
+  --reading-width: 48rem;
+
   /* The site's font, shared with the game, which sits outside .app */
   --font-body:
     Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
