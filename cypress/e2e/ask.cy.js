@@ -285,6 +285,20 @@ describe('Ask', () => {
       cy.get('[data-cy="askTurnstile"]').should('not.exist');
     });
 
+    it('shows Unavailable, not a second check, on a 403 after a visible check', () => {
+      cy.intercept('POST', '/api/ask', {
+        statusCode: 403,
+        body: { error: 'turnstile' },
+      }).as('ask');
+      visitAsk({}, { interactive: true });
+      send(question);
+      expectCheck();
+      cy.window().invoke('passTurnstileCheck');
+      expectUnavailable(question);
+      cy.get('@ask.all').should('have.length', 1);
+      cy.get('[data-cy="askTurnstile"]').should('not.exist');
+    });
+
     it('shows the visible check when Turnstile asks for one', () => {
       answer({ status: 'answered', answer: 'Yes.' });
       visitAsk({}, { interactive: true });

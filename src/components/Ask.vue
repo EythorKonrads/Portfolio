@@ -182,15 +182,18 @@ async function checkInteractively(text) {
 async function ask(text) {
   try {
     let token;
+    let checked = false;
     try {
       token = await getToken();
     } catch (error) {
       if (error.reason !== 'interactive') throw error;
       token = await checkInteractively(text);
+      checked = true;
     }
     const result = await post(text, token);
     if (result.kind !== 'turnstile') return result;
-    // One visible check after a 403; a second 403 is Unavailable
+    // One visible check per question; a 403 after it is Unavailable
+    if (checked) return { kind: 'unavailable' };
     const retry = await post(text, await checkInteractively(text));
     return retry.kind === 'turnstile' ? { kind: 'unavailable' } : retry;
   } catch {
