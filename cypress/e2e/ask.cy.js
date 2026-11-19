@@ -467,6 +467,25 @@ describe('Ask', () => {
       });
     });
 
+    it('sets the input and empty text at the alert size on a phone', () => {
+      cy.intercept('POST', '/api/ask', { statusCode: 503, body: {} });
+      cy.viewport(1280, 800);
+      visitAsk();
+      cy.get('[data-cy="askInput"]').then(($input) => {
+        const desktop = fontSize($input);
+        cy.viewport(375, 812);
+        cy.get('[data-cy="askEmpty"]').should(($empty) => {
+          expect(fontSize($empty)).to.be.lessThan(desktop);
+        });
+        send('Has he led a team?');
+        cy.get('[data-cy="askAlert"]').then(($alert) => {
+          cy.get('[data-cy="askInput"]').should(($smaller) => {
+            expect(fontSize($smaller)).to.eq(fontSize($alert));
+          });
+        });
+      });
+    });
+
     it('sets the small print smaller than the counter on desktop', () => {
       cy.viewport(1280, 800);
       visitAsk();

@@ -754,6 +754,11 @@ onBeforeUnmount(() => clearTimeout(limitTimer));
   .ask__note {
     font-size: inherit;
   }
+  /* In line with the alert and chips around them */
+  .ask__input,
+  .ask__empty {
+    font-size: 0.875rem;
+  }
   .ask__card {
     padding: 0 1rem 0.875rem;
   }
