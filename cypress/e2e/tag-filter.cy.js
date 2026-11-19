@@ -88,18 +88,37 @@ describe('Tag filter', () => {
     assertShown([]);
   });
 
-  it('sits above the Experience section, on the right', () => {
+  it('shows only its icon on a phone, still named "Filter"', () => {
+    cy.viewport(375, 812);
+    cy.visitHome();
+    cy.get('[data-cy="filterButton"]')
+      .should('contain.text', 'Filter')
+      .then(($button) => {
+        const label = [...$button[0].querySelectorAll('span')].find(
+          (span) => span.textContent.trim() === 'Filter'
+        );
+        expect(label.getBoundingClientRect().width).to.be.at.most(1);
+      });
+    cy.get('[data-cy="filterButton"] svg').should('be.visible');
+  });
+
+  it('sits above the first section, Ask, on the right', () => {
     cy.visitHome();
     cy.get('[data-cy="filterButton"]').then(($button) => {
-      cy.get('[data-cy="experience"]').then(($experience) => {
+      cy.get('[data-cy="ask"]').then(($ask) => {
         const button = $button[0].getBoundingClientRect();
-        const experience = $experience[0].getBoundingClientRect();
-        expect(button.bottom).to.be.at.most(experience.top);
-        expect(button.left).to.be.greaterThan(
-          experience.left + experience.width / 2
-        );
+        const ask = $ask[0].getBoundingClientRect();
+        expect(button.bottom).to.be.at.most(ask.top);
+        expect(button.left).to.be.greaterThan(ask.left + ask.width / 2);
       });
     });
+  });
+
+  it('leaves Ask alone', () => {
+    cy.visitHome({ path: `/?tags=${rareTag.tag}` });
+    cy.get('[data-cy="ask"] h2').should('have.text', 'Ask about me');
+    cy.get('[data-cy="askChip"]').should('have.length', 3);
+    cy.get('[data-cy="askInput"]').should('be.visible');
   });
 
   it('lists every unique tag once in the popup', () => {

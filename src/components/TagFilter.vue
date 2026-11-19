@@ -24,7 +24,7 @@ const isOpen = ref(false);
       @click="isOpen = true"
     >
       <Icon name="filter" :icon="false" class="tag-filter__button-icon" />
-      Filter
+      <span class="tag-filter__button-label">Filter</span>
       <span v-if="hasFilter" data-cy="filterCount">
         ({{ selectedTags.length }})
       </span>
@@ -156,6 +156,23 @@ const isOpen = ref(false);
   .tag-filter__clear {
     font-size: 0.875rem;
     padding: 0.375em 0.875em;
+  }
+}
+/* Icon only wherever the section nav shrinks, so it fits beside it; screen
+   readers still hear "Filter" */
+@media screen and (max-width: 600px),
+  screen and (orientation: landscape) and (max-height: 500px) {
+  /* The height a line of text would give it, to match the theme toggle */
+  .tag-filter__button {
+    min-height: calc(1lh + 0.75em);
+  }
+  .tag-filter__button-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 </style>

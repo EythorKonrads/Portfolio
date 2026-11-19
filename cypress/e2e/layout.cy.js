@@ -15,10 +15,34 @@ describe('Layout', () => {
 
     it('puts the hero beside the content column', () => {
       cy.get('[data-cy="hero"]').then(($hero) => {
-        cy.get('[data-cy="experience"]').should(($experience) => {
-          expect(rect($experience).left).to.be.at.least(rect($hero).right - 1);
-          expect(rect($experience).top).to.be.lessThan(800);
+        cy.get('[data-cy="ask"]').should(($ask) => {
+          expect(rect($ask).left).to.be.at.least(rect($hero).right - 1);
+          expect(rect($ask).top).to.be.lessThan(800);
         });
+      });
+    });
+
+    it('puts Ask first, above Experience', () => {
+      cy.get('[data-cy="homeWrapper"] > [id]').then(($sections) => {
+        expect([...$sections].map((section) => section.id)).to.deep.eq([
+          'ask',
+          'experience',
+          'education',
+          'projects',
+        ]);
+      });
+    });
+
+    it('spaces Experience from Ask like Education from Experience', () => {
+      cy.get('[data-cy="experience"]').should(($experience) => {
+        const aboveExperience =
+          rect($experience).top - rect(Cypress.$('[data-cy="ask"]')).bottom;
+        const aboveEducation =
+          rect(Cypress.$('[data-cy="education"]')).top -
+          rect($experience).bottom;
+
+        expect(aboveEducation).to.be.greaterThan(0);
+        expect(aboveExperience).to.be.closeTo(aboveEducation, 1);
       });
     });
 
@@ -43,8 +67,8 @@ describe('Layout', () => {
 
     it('stacks the hero above the content', () => {
       cy.get('[data-cy="hero"]').then(($hero) => {
-        cy.get('[data-cy="experience"]').should(($experience) => {
-          expect(rect($experience).top).to.be.at.least(rect($hero).bottom - 1);
+        cy.get('[data-cy="ask"]').should(($ask) => {
+          expect(rect($ask).top).to.be.at.least(rect($hero).bottom - 1);
         });
       });
     });
@@ -58,15 +82,18 @@ describe('Layout', () => {
       cy.assertNoHorizontalOverflow();
     });
 
-    it('spaces Experience from the hero like Education from Experience', () => {
+    it('spaces Ask from the hero, and Experience from Ask, like Education from Experience', () => {
       cy.get('[data-cy="experience"]').should(($experience) => {
-        const aboveExperience =
-          rect($experience).top - rect(Cypress.$('[data-cy="hero"]')).bottom;
+        const $ask = Cypress.$('[data-cy="ask"]');
+        const aboveAsk =
+          rect($ask).top - rect(Cypress.$('[data-cy="hero"]')).bottom;
+        const aboveExperience = rect($experience).top - rect($ask).bottom;
         const aboveEducation =
           rect(Cypress.$('[data-cy="education"]')).top -
           rect($experience).bottom;
 
         expect(aboveEducation).to.be.greaterThan(0);
+        expect(aboveAsk).to.be.closeTo(aboveEducation, 1);
         expect(aboveExperience).to.be.closeTo(aboveEducation, 1);
       });
     });
@@ -75,14 +102,14 @@ describe('Layout', () => {
   context('sideways phones and the upright layout', () => {
     const expectStacked = () =>
       cy.get('[data-cy="hero"]').then(($hero) => {
-        cy.get('[data-cy="experience"]').should(($experience) => {
-          expect(rect($experience).top).to.be.at.least(rect($hero).bottom - 1);
+        cy.get('[data-cy="ask"]').should(($ask) => {
+          expect(rect($ask).top).to.be.at.least(rect($hero).bottom - 1);
         });
       });
     const expectSideBySide = () =>
       cy.get('[data-cy="hero"]').then(($hero) => {
-        cy.get('[data-cy="experience"]').should(($experience) => {
-          expect(rect($experience).left).to.be.at.least(rect($hero).right - 1);
+        cy.get('[data-cy="ask"]').should(($ask) => {
+          expect(rect($ask).left).to.be.at.least(rect($hero).right - 1);
         });
       });
 

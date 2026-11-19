@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Ask: typeof import('./components/Ask.vue')['default']
     BasePopup: typeof import('./components/BasePopup.vue')['default']
     Education: typeof import('./components/Education.vue')['default']
     EducationItem: typeof import('./components/EducationItem.vue')['default']

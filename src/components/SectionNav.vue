@@ -4,6 +4,7 @@ import GameLaunchButton from './GameLaunchButton.vue';
 
 // Each entry matches the id on the section component's root element
 const sections = [
+  { id: 'ask', title: 'Ask' },
   { id: 'experience', title: 'Experience' },
   { id: 'education', title: 'Education' },
   { id: 'projects', title: 'Projects' },

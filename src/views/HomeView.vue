@@ -1,5 +1,6 @@
 <script setup>
 import Hero from '../components/Hero.vue';
+import Ask from '../components/Ask.vue';
 import Experience from '../components/Experience.vue';
 import Education from '../components/Education.vue';
 import Projects from '../components/Projects.vue';
@@ -25,6 +26,7 @@ const { theme } = useTheme();
           <TagFilter class="home__filter" />
         </div>
       </header>
+      <Ask class="home__ask" />
       <Experience class="home__experience" />
       <Education class="home__education" />
       <Projects class="home__projects" />
@@ -96,11 +98,13 @@ const { theme } = useTheme();
     gap: 0.5rem;
   }
   /* Keep a section's heading clear of the header when jumped to */
+  .home__ask,
   .home__experience,
   .home__education,
   .home__projects {
     scroll-margin-top: var(--header-height);
   }
+  .home__experience,
   .home__education {
     margin-top: 2em;
   }
@@ -137,7 +141,7 @@ const { theme } = useTheme();
       box-shadow: 0 1px 0 var(--color-accent-soft);
     }
     /* The header no longer spaces it from the hero, so match .home__education */
-    .home__experience {
+    .home__ask {
       margin-top: 2em;
     }
   }
