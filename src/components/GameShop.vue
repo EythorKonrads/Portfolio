@@ -14,17 +14,23 @@ const props = defineProps({
 });
 const emit = defineEmits(['buy', 'next']);
 
-// A row per thing being improved. Its first, bigger card is the thing itself:
-// the Ship, which can't be bought, or a Turret or Satellite, which can.
-const ROWS = [
+// A section per thing being improved, under a headline naming it
+const SECTIONS = [
   {
-    head: 'ship',
+    id: 'ship',
     label: 'Ship',
-    info: 'Your Ship. Upgrades in this row make it stronger.',
-    upgrades: ['shipRate', 'shipWeapon', 'shipEngine'],
+    items: ['shipRate', 'shipWeapon', 'shipEngine'],
   },
-  { head: 'turret', upgrades: ['turretRate', 'turretDamage'] },
-  { head: 'satellite', upgrades: ['satelliteRate', 'satelliteDamage'] },
+  {
+    id: 'turret',
+    label: 'Turret',
+    items: ['turret', 'turretRate', 'turretDamage'],
+  },
+  {
+    id: 'satellite',
+    label: 'Satellite',
+    items: ['satellite', 'satelliteRate', 'satelliteDamage'],
+  },
 ];
 
 const byId = computed(() =>
@@ -75,8 +81,7 @@ function onCardClick(id) {
 // A card's name, shown on touch screens. Locked ones still don't say what
 // they are.
 function cardName(id) {
-  if (isLocked(id)) return 'Locked';
-  return SHOP_ITEMS[id]?.label ?? ROWS.find((r) => r.head === id).label;
+  return isLocked(id) ? 'Locked' : SHOP_ITEMS[id].label;
 }
 
 // Read from the items each time, so buying a Turret unlocks its upgrades
@@ -84,8 +89,6 @@ function cardName(id) {
 const tipText = computed(() => {
   const id = tip.value?.id;
   if (!id) return null;
-  const row = ROWS.find((r) => r.head === id && !SHOP_ITEMS[id]);
-  if (row) return { title: row.label, body: row.info };
   if (isLocked(id)) {
     const needs = SHOP_ITEMS[SHOP_ITEMS[id].needs].label;
     return {
@@ -104,15 +107,25 @@ const tipText = computed(() => {
       <Icon name="ore" :icon="false" class="game-shop__ore-icon" />
       {{ ore }}
     </p>
-    <ul class="game-shop__items">
-      <template v-for="row in ROWS" :key="row.head">
+    <section
+      v-for="section in SECTIONS"
+      :key="section.id"
+      class="game-shop__section"
+    >
+      <h3 class="game-shop__headline">
+        <Icon
+          :name="iconName(section.id)"
+          :icon="false"
+          class="game-shop__headline-icon"
+        />
+        <span :data-cy="`shopHeadline-${section.id}`">{{ section.label }}</span>
+      </h3>
+      <ul class="game-shop__items">
         <li
-          v-for="id in [row.head, ...row.upgrades]"
+          v-for="id in section.items"
           :key="id"
           class="game-shop__item"
           :class="{
-            'game-shop__item--head': id === row.head,
-            'game-shop__item--display': !byId[id],
             'game-shop__item--locked': isLocked(id),
             'game-shop__item--buyable': canBuy(id),
           }"
@@ -159,8 +172,8 @@ const tipText = computed(() => {
             </button>
           </template>
         </li>
-      </template>
-    </ul>
+      </ul>
+    </section>
     <button
       type="button"
       class="game-button game-shop__next"
@@ -185,7 +198,7 @@ const tipText = computed(() => {
 
 <style lang="scss" scoped>
 .game-shop {
-  width: min(100%, 23rem);
+  width: min(100%, 31rem);
 }
 .game-shop__title {
   text-align: center;
@@ -204,16 +217,41 @@ const tipText = computed(() => {
   height: 1.5rem;
   color: var(--color-game-ore);
 }
+/* Lets its cards size their height from the section's width */
+.game-shop__section {
+  container-type: inline-size;
+}
+.game-shop__headline {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--color-game-defence);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.game-shop__headline-icon {
+  flex: none;
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--color-game-defence);
+}
 .game-shop__items {
   display: grid;
-  /* The first card in each row is a little bigger */
-  grid-template-columns: 1.3fr repeat(3, 1fr);
-  /* Every card the same height, whatever its button says */
-  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(4, 1fr);
+  /* Cards are square, unless one's content needs more height, and every
+     card in a row is as tall as the tallest */
+  grid-auto-rows: minmax(calc((100cqi - 3 * 0.5rem) / 4), auto);
   gap: 0.5rem;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
   padding: 0;
   list-style: none;
+}
+.game-shop__section:last-of-type .game-shop__items {
+  margin-bottom: 1.25rem;
 }
 .game-shop__item {
   display: flex;
@@ -235,25 +273,6 @@ const tipText = computed(() => {
     .game-shop__buy {
       background: var(--color-game-button-hover);
     }
-  }
-}
-/* Starts a new row, leaving any spare cells in the row before empty */
-.game-shop__item--head {
-  grid-column: 1;
-  background: var(--color-game-key);
-
-  .game-shop__icon {
-    width: 2.75rem;
-    height: 2.75rem;
-  }
-}
-/* The Ship's card has no button, so its icon takes the whole card */
-.game-shop__item--display {
-  justify-content: center;
-
-  .game-shop__icon {
-    width: 3.25rem;
-    height: 3.25rem;
   }
 }
 .game-shop__item--locked {
@@ -311,7 +330,7 @@ const tipText = computed(() => {
   line-height: 1.15;
   text-align: center;
 }
-/* Phones held sideways: wider and flatter, so the whole Shop and its Start
+/* Phones held sideways: flatter and tighter, so the whole Shop and its Start
    button fit without scrolling. Each card puts its icon beside its name
    and level, with the buy button underneath. */
 @media (orientation: landscape) and (max-height: 500px) {
@@ -320,7 +339,7 @@ const tipText = computed(() => {
     grid-template-columns: 1fr auto;
     align-items: center;
     column-gap: 1rem;
-    width: min(100%, 40rem);
+    width: min(100%, 28rem);
   }
   .game-shop__title {
     margin: 0;
@@ -334,25 +353,33 @@ const tipText = computed(() => {
     width: 1.2rem;
     height: 1.2rem;
   }
-  .game-shop__items {
+  .game-shop__section {
     grid-column: 1 / -1;
+    margin-top: 0.25rem;
+  }
+  .game-shop__headline {
+    margin-bottom: 0.15rem;
+    padding: 0 0.4rem;
+    font-size: 0.7rem;
+  }
+  .game-shop__items,
+  .game-shop__section:last-of-type .game-shop__items {
+    grid-auto-rows: auto;
     gap: 0.3rem;
-    margin: 0.35rem 0;
+    margin: 0;
   }
   .game-shop__item {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
     column-gap: 0.4rem;
-    row-gap: 0.25rem;
-    padding: 0.3rem 0.35rem;
+    row-gap: 0.15rem;
+    padding: 0.2rem 0.3rem;
   }
-  .game-shop__item .game-shop__icon,
-  .game-shop__item--head .game-shop__icon,
-  .game-shop__item--display .game-shop__icon {
+  .game-shop__icon {
     grid-row: span 2;
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 1.3rem;
+    height: 1.3rem;
   }
   .game-shop__name,
   .game-shop__owned {
@@ -363,11 +390,12 @@ const tipText = computed(() => {
   }
   .game-shop__buy {
     grid-column: 1 / -1;
-    height: 1.4rem;
+    height: 1.25rem;
     margin-top: 0;
   }
   .game-shop__next {
     grid-column: 1 / -1;
+    margin-top: 0.3rem;
     padding: 0.35rem 1rem;
   }
 }
