@@ -66,7 +66,7 @@ import MiniEarth from './MiniEarth.vue';
 <style lang="scss" scoped>
 .hero {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   flex-direction: column;
   height: 100vh;
@@ -74,11 +74,23 @@ import MiniEarth from './MiniEarth.vue';
   overflow-y: auto;
   /* Sized by the viewport only, so filtering the content can't resize it */
   flex-shrink: 0;
-  width: clamp(300px, 30vw, 450px);
+  /* On wide screens it grows until the content's Reading width sits in the
+     middle of the screen, less the content column's 2em padding and the
+     sections' 2rem */
+  width: max(
+    clamp(300px, 30vw, 450px),
+    calc((100vw - var(--reading-width)) / 2 - 2em - 2rem)
+  );
   box-sizing: border-box;
   background-color: var(--color-background-overlay);
   padding: 1.5rem;
 
+  /* No wider than when the Hero stopped at 450px, less its padding */
+  .hero__wrapper,
+  .hero__links {
+    width: 100%;
+    max-width: calc(450px - 3rem);
+  }
   .hero__wrapper {
     display: flex;
     align-items: center;
@@ -164,6 +176,10 @@ import MiniEarth from './MiniEarth.vue';
     height: auto;
     width: 100vw;
 
+    .hero__wrapper,
+    .hero__links {
+      max-width: none;
+    }
     .hero__links {
       justify-content: space-evenly;
       margin-top: 1.5rem;

@@ -2,6 +2,8 @@
 // the Header's blurred bar still fill the Content column
 const rect = (el) => el.getBoundingClientRect();
 const READING_WIDTH = 768;
+// The Hero's widest text before it could widen: 450px less its padding
+const HERO_TEXT_WIDTH = 402;
 const sections = ['ask', 'experience', 'education', 'projects'];
 
 // The text box: the section without its side padding
@@ -34,6 +36,31 @@ describe('Reading width', () => {
             1
           );
           expect(rect(section).left, `${id} left`).to.be.closeTo(columnLeft, 1);
+        });
+      });
+    });
+
+    it('centers the text on the screen, the Hero widening to meet it', () => {
+      cy.get('[data-cy="experience"]').should(($experience) => {
+        const { left, right } = textBox($experience[0]);
+        const screen = Cypress.$('html')[0].clientWidth;
+        expect((left + right) / 2).to.be.closeTo(screen / 2, 1);
+        expect(rect(Cypress.$('[data-cy="hero"]')[0]).width).to.be.greaterThan(
+          450
+        );
+      });
+    });
+
+    it('keeps the Hero text as narrow as before, centered in the Hero', () => {
+      cy.get('[data-cy="hero"]').should(($hero) => {
+        const hero = rect($hero[0]);
+        ['heroText', 'heroLinks'].forEach((id) => {
+          const box = rect($hero[0].querySelector(`[data-cy="${id}"]`));
+          expect(box.width, `${id} width`).to.be.at.most(HERO_TEXT_WIDTH + 1);
+          expect((box.left + box.right) / 2, `${id} center`).to.be.closeTo(
+            (hero.left + hero.right) / 2,
+            1
+          );
         });
       });
     });
@@ -79,6 +106,11 @@ describe('Reading width', () => {
       const columnWidth =
         column.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
       expect(columnWidth).to.be.lessThan(READING_WIDTH + 64);
+      // 30vw, as before
+      expect(rect(Cypress.$('[data-cy="hero"]')[0]).width).to.be.closeTo(
+        307.2,
+        1
+      );
       sections.forEach((id) => {
         const section = column.querySelector(`[data-cy="${id}"]`);
         expect(rect(section).width, id).to.be.closeTo(columnWidth, 1);
