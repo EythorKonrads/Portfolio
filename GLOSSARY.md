@@ -10,6 +10,15 @@ The panel that introduces Eythor: profile photo, name, role and the
 "Let's talk" link.
 _Avoid_: Header, banner, intro, About Me
 
+**Content column**:
+The full-width scrolling area beside the Hero.
+_Avoid_: Wrapper, main
+
+**Reading width**:
+The widest the section content may get inside the Content column, so text
+stays easy to read on large screens. The Aurora ignores it.
+_Avoid_: Max width, container
+
 **Header**:
 The bar pinned to the top of the content column, holding the section links,
 theme toggle and filter.

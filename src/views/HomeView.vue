@@ -77,6 +77,8 @@ const { theme } = useTheme();
     gap: 1rem;
     height: var(--header-height);
     padding: 0 2rem;
+    /* The bar stays full width; its contents end where the text does */
+    padding-right: max(2rem, calc(100% - var(--reading-width) - 2rem));
     margin-bottom: 1.5rem;
     box-sizing: border-box;
   }
@@ -103,6 +105,8 @@ const { theme } = useTheme();
   .home__education,
   .home__projects {
     scroll-margin-top: var(--header-height);
+    /* Capped here, not on the column, which scrolls and holds the Aurora */
+    max-width: var(--reading-width);
   }
   .home__experience,
   .home__education {

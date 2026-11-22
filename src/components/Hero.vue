@@ -66,7 +66,8 @@ import MiniEarth from './MiniEarth.vue';
 <style lang="scss" scoped>
 .hero {
   display: flex;
-  align-items: flex-start;
+  /* Against the split, beside the content, when the Hero widens */
+  align-items: flex-end;
   justify-content: flex-start;
   flex-direction: column;
   height: 100vh;
@@ -74,11 +75,36 @@ import MiniEarth from './MiniEarth.vue';
   overflow-y: auto;
   /* Sized by the viewport only, so filtering the content can't resize it */
   flex-shrink: 0;
-  width: clamp(300px, 30vw, 450px);
+  /* The colored panel behind the text, at its widest */
+  --hero-panel-width: 500px;
+  /* On wide screens it grows until its text and the content's text sit
+     centered together on the screen. Between them: its 1.5rem padding, the
+     content column's 2em and the sections' 2rem. */
+  width: max(
+    clamp(300px, 30vw, 450px),
+    calc(
+      (
+          100vw + var(--hero-panel-width) - 1.5rem - 2em -
+            2rem - var(--reading-width)
+        ) /
+        2
+    )
+  );
   box-sizing: border-box;
-  background-color: var(--color-background-overlay);
+  /* Only the panel against the split is colored; narrower, it fills it all */
+  background: linear-gradient(
+      var(--color-background-overlay),
+      var(--color-background-overlay)
+    )
+    right / var(--hero-panel-width) 100% no-repeat;
   padding: 1.5rem;
 
+  /* The panel less its padding */
+  .hero__wrapper,
+  .hero__links {
+    width: 100%;
+    max-width: calc(var(--hero-panel-width) - 3rem);
+  }
   .hero__wrapper {
     display: flex;
     align-items: center;
@@ -163,7 +189,12 @@ import MiniEarth from './MiniEarth.vue';
     screen and (orientation: landscape) and (max-width: 739px) and (max-height: 500px) {
     height: auto;
     width: 100vw;
+    background-size: 100% 100%;
 
+    .hero__wrapper,
+    .hero__links {
+      max-width: none;
+    }
     .hero__links {
       justify-content: space-evenly;
       margin-top: 1.5rem;
