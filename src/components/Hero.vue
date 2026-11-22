@@ -66,7 +66,8 @@ import MiniEarth from './MiniEarth.vue';
 <style lang="scss" scoped>
 .hero {
   display: flex;
-  align-items: center;
+  /* Against the split, beside the content, when the Hero widens */
+  align-items: flex-end;
   justify-content: flex-start;
   flex-direction: column;
   height: 100vh;
@@ -74,12 +75,12 @@ import MiniEarth from './MiniEarth.vue';
   overflow-y: auto;
   /* Sized by the viewport only, so filtering the content can't resize it */
   flex-shrink: 0;
-  /* On wide screens it grows until the content's Reading width sits in the
-     middle of the screen, less the content column's 2em padding and the
-     sections' 2rem */
+  /* On wide screens it grows until its text and the content's text sit
+     centered together on the screen. Between them: its 1.5rem padding, the
+     content column's 2em and the sections' 2rem. */
   width: max(
     clamp(300px, 30vw, 450px),
-    calc((100vw - var(--reading-width)) / 2 - 2em - 2rem)
+    calc((100vw + 450px - 1.5rem - 2em - 2rem - var(--reading-width)) / 2)
   );
   box-sizing: border-box;
   background-color: var(--color-background-overlay);

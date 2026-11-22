@@ -40,9 +40,10 @@ describe('Reading width', () => {
       });
     });
 
-    it('centers the text on the screen, the Hero widening to meet it', () => {
+    it('centers the Hero text and the content text together on the screen', () => {
       cy.get('[data-cy="experience"]').should(($experience) => {
-        const { left, right } = textBox($experience[0]);
+        const { right } = textBox($experience[0]);
+        const { left } = rect(Cypress.$('[data-cy="heroLinks"]')[0]);
         const screen = Cypress.$('html')[0].clientWidth;
         expect((left + right) / 2).to.be.closeTo(screen / 2, 1);
         expect(rect(Cypress.$('[data-cy="hero"]')[0]).width).to.be.greaterThan(
@@ -51,16 +52,15 @@ describe('Reading width', () => {
       });
     });
 
-    it('keeps the Hero text as narrow as before, centered in the Hero', () => {
+    it('keeps the Hero text as narrow as before, against the split', () => {
       cy.get('[data-cy="hero"]').should(($hero) => {
-        const hero = rect($hero[0]);
+        const hero = $hero[0];
+        const edge =
+          rect(hero).right - parseFloat(getComputedStyle(hero).paddingRight);
         ['heroText', 'heroLinks'].forEach((id) => {
-          const box = rect($hero[0].querySelector(`[data-cy="${id}"]`));
+          const box = rect(hero.querySelector(`[data-cy="${id}"]`));
           expect(box.width, `${id} width`).to.be.at.most(HERO_TEXT_WIDTH + 1);
-          expect((box.left + box.right) / 2, `${id} center`).to.be.closeTo(
-            (hero.left + hero.right) / 2,
-            1
-          );
+          expect(box.right, `${id} right`).to.be.closeTo(edge, 1);
         });
       });
     });
@@ -106,11 +106,6 @@ describe('Reading width', () => {
       const columnWidth =
         column.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
       expect(columnWidth).to.be.lessThan(READING_WIDTH + 64);
-      // 30vw, as before
-      expect(rect(Cypress.$('[data-cy="hero"]')[0]).width).to.be.closeTo(
-        307.2,
-        1
-      );
       sections.forEach((id) => {
         const section = column.querySelector(`[data-cy="${id}"]`);
         expect(rect(section).width, id).to.be.closeTo(columnWidth, 1);
