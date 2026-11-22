@@ -2,8 +2,9 @@
 // the Header's blurred bar still fill the Content column
 const rect = (el) => el.getBoundingClientRect();
 const READING_WIDTH = 768;
-// The Hero's widest text before it could widen: 450px less its padding
-const HERO_TEXT_WIDTH = 402;
+// The Hero's panel at its widest, and its text: the panel less its padding
+const HERO_PANEL_WIDTH = 500;
+const HERO_TEXT_WIDTH = 452;
 const sections = ['ask', 'experience', 'education', 'projects'];
 
 // The text box: the section without its side padding
@@ -52,7 +53,16 @@ describe('Reading width', () => {
       });
     });
 
-    it('keeps the Hero text as narrow as before, against the split', () => {
+    it('colors only a panel around the Hero text, against the split', () => {
+      cy.get('[data-cy="hero"]').should(($hero) => {
+        const style = getComputedStyle($hero[0]);
+        expect(style.backgroundSize).to.eq(`${HERO_PANEL_WIDTH}px 100%`);
+        expect(style.backgroundPositionX).to.eq('100%');
+        expect(style.backgroundRepeat).to.eq('no-repeat');
+      });
+    });
+
+    it('keeps the Hero text narrow, against the split', () => {
       cy.get('[data-cy="hero"]').should(($hero) => {
         const hero = $hero[0];
         const edge =
@@ -95,6 +105,16 @@ describe('Reading width', () => {
         );
       });
     });
+  });
+
+  it('colors the whole Hero on a phone', () => {
+    cy.viewport(375, 812);
+    cy.visitHome();
+    cy.get('[data-cy="hero"]').should(
+      'have.css',
+      'background-size',
+      '100% 100%'
+    );
   });
 
   it('caps nothing on a smaller screen', () => {
