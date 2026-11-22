@@ -112,13 +112,8 @@ const tipText = computed(() => {
       :key="section.id"
       class="game-shop__section"
     >
-      <h3 class="game-shop__headline">
-        <Icon
-          :name="iconName(section.id)"
-          :icon="false"
-          class="game-shop__headline-icon"
-        />
-        <span :data-cy="`shopHeadline-${section.id}`">{{ section.label }}</span>
+      <h3 class="game-shop__headline" :data-cy="`shopHeadline-${section.id}`">
+        {{ section.label }}
       </h3>
       <ul class="game-shop__items">
         <li
@@ -197,18 +192,22 @@ const tipText = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+/* The title and Ore share the top line, with everything else below */
 .game-shop {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem 1rem;
   width: min(100%, 31rem);
 }
 .game-shop__title {
-  text-align: center;
+  margin: 0;
 }
 .game-shop__ore {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.4rem;
-  margin: 0 0 1rem;
+  margin: 0;
   font-size: 1.2rem;
   font-weight: 700;
 }
@@ -219,25 +218,19 @@ const tipText = computed(() => {
 }
 /* Lets its cards size their height from the section's width */
 .game-shop__section {
+  grid-column: 1 / -1;
   container-type: inline-size;
 }
+/* As far from its cards as sections are from each other */
 .game-shop__headline {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0 0 0.5rem;
-  padding: 0.2rem 0.5rem;
+  margin: 0 0 0.75rem;
+  padding: 0.45rem 0.5rem;
   border: 1px solid var(--color-game-defence);
   border-radius: 0.5rem;
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 1.2;
-}
-.game-shop__headline-icon {
-  flex: none;
-  width: 1.2em;
-  height: 1.2em;
-  color: var(--color-game-defence);
+  text-align: center;
 }
 .game-shop__items {
   display: grid;
@@ -246,14 +239,12 @@ const tipText = computed(() => {
      card in a row is as tall as the tallest */
   grid-auto-rows: minmax(calc((100cqi - 3 * 0.5rem) / 4), auto);
   gap: 0.5rem;
-  margin: 0 0 1rem;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
-.game-shop__section:last-of-type .game-shop__items {
-  margin-bottom: 1.25rem;
-}
 .game-shop__item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -292,8 +283,11 @@ const tipText = computed(() => {
   color: var(--color-game-defence);
 }
 .game-shop__owned {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.4rem;
   opacity: 0.6;
-  font-size: 0.8em;
+  font-size: 0.7em;
   line-height: 1;
 }
 .game-shop__buy {
@@ -315,6 +309,9 @@ const tipText = computed(() => {
   width: 1rem;
   height: 1rem;
 }
+.game-shop__next {
+  grid-column: 1 / -1;
+}
 .game-shop__tip {
   position: fixed;
   display: block;
@@ -330,73 +327,55 @@ const tipText = computed(() => {
   line-height: 1.15;
   text-align: center;
 }
-/* Phones held sideways: flatter and tighter, so the whole Shop and its Start
-   button fit without scrolling. Each card puts its icon beside its name
-   and level, with the buy button underneath. */
+/* Phones held sideways: flatter, scrolling to the Start button if it must.
+   Each card puts its icon beside its name, with the buy button
+   underneath. */
 @media (orientation: landscape) and (max-height: 500px) {
   .game-shop {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    column-gap: 1rem;
+    gap: 0.5rem 1rem;
     width: min(100%, 28rem);
   }
-  .game-shop__title {
-    margin: 0;
-    text-align: left;
-  }
   .game-shop__ore {
-    margin: 0;
     font-size: 1rem;
   }
   .game-shop__ore-icon {
     width: 1.2rem;
     height: 1.2rem;
   }
-  .game-shop__section {
-    grid-column: 1 / -1;
-    margin-top: 0.25rem;
-  }
   .game-shop__headline {
-    margin-bottom: 0.15rem;
-    padding: 0 0.4rem;
-    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.75rem;
   }
-  .game-shop__items,
-  .game-shop__section:last-of-type .game-shop__items {
+  .game-shop__items {
     grid-auto-rows: auto;
     gap: 0.3rem;
-    margin: 0;
   }
   .game-shop__item {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
     column-gap: 0.4rem;
-    row-gap: 0.15rem;
-    padding: 0.2rem 0.3rem;
+    row-gap: 0.3rem;
+    padding: 0.35rem;
   }
   .game-shop__icon {
-    grid-row: span 2;
-    width: 1.3rem;
-    height: 1.3rem;
+    width: 1.6rem;
+    height: 1.6rem;
   }
-  .game-shop__name,
-  .game-shop__owned {
-    text-align: left;
-  }
+  /* Clear of the level in the corner */
   .game-shop__name {
+    padding-right: 1.5rem;
     font-size: 0.7em;
+    text-align: left;
   }
   .game-shop__buy {
     grid-column: 1 / -1;
-    height: 1.25rem;
+    height: 1.4rem;
     margin-top: 0;
   }
   .game-shop__next {
-    grid-column: 1 / -1;
-    margin-top: 0.3rem;
-    padding: 0.35rem 1rem;
+    padding: 0.5rem 1rem;
   }
 }
 </style>

@@ -215,14 +215,22 @@ describe('Game on phones', () => {
         expectFits('[data-cy="gameIntro"]');
       });
 
-      it('the Shop', () => {
+      // The Shop may scroll instead, for roomier cards
+      it('the Shop, which scrolls to its Start button', () => {
         startGame();
         withGame((game) => {
           game.spawnQueue = [];
           game.asteroids = [];
           game.ore = 500;
         });
-        expectFits('[data-cy="gameShop"]');
+        cy.get('[data-cy="gameShop"]').should(($panel) => {
+          const rect = $panel[0].getBoundingClientRect();
+          expect(rect.top, 'top on screen').to.be.at.least(0);
+          expect(rect.bottom, 'bottom on screen').to.be.at.most(
+            document.documentElement.clientHeight + 1
+          );
+        });
+        cy.get('[data-cy="shopNext"]').scrollIntoView().should('be.visible');
       });
 
       it('the Menu, which has no title', () => {
