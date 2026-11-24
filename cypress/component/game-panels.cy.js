@@ -94,10 +94,15 @@ describe('Game panels', () => {
       .should('contain.text', '6/6')
       .find('[data-cy="shopBuy"]')
       .should('contain.text', 'Max');
-    // The Ship's card shows the Ship itself, with nothing to buy
-    cy.get('[data-cy="shopItem-ship"]')
-      .find('[data-cy="shopBuy"]')
-      .should('not.exist');
+    // Each section has a headline naming it, and the Ship has no card
+    [
+      ['ship', 'Ship'],
+      ['turret', 'Turret'],
+      ['satellite', 'Satellite'],
+    ].forEach(([id, name]) =>
+      cy.get(`[data-cy="shopHeadline-${id}"]`).should('have.text', name)
+    );
+    cy.get('[data-cy="shopItem-ship"]').should('not.exist');
     cy.get('[data-cy="shopNext"]').should('contain.text', 'Wave 3').click();
     cy.get('@next').should('have.been.calledOnce');
   });
