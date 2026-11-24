@@ -227,6 +227,11 @@ const tipText = computed(() => {
   padding: 0.45rem 0.5rem;
   border: 1px solid var(--color-game-defence);
   border-radius: 0.5rem;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-game-defence-stripe) 0 2px,
+    transparent 2px 8px
+  );
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 1.2;
